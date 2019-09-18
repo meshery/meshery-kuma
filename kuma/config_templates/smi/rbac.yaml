@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: smi-adapter-istio
-  namespace: istio-system
+  name: smi-adapter-kuma
+  namespace: kuma-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: smi-adapter-istio
-  namespace: istio-system
+  name: smi-adapter-kuma
+  namespace: kuma-system
 rules:
   - apiGroups:
       - ""
@@ -41,7 +41,7 @@ rules:
   - apiGroups:
       - apps
     resourceNames:
-      - smi-adapter-istio
+      - smi-adapter-kuma
     resources:
       - deployments/finalizers
     verbs:
@@ -53,7 +53,7 @@ rules:
     verbs:
       - '*'
   - apiGroups:
-      - networking.istio.io
+      - networking.kuma.io
     resources:
       - '*'
     verbs:
@@ -62,12 +62,12 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: smi-adapter-istio
+  name: smi-adapter-kuma
 subjects:
   - kind: ServiceAccount
-    name: smi-adapter-istio
-    namespace: istio-system
+    name: smi-adapter-kuma
+    namespace: kuma-system
 roleRef:
   kind: ClusterRole
-  name: smi-adapter-istio
+  name: smi-adapter-kuma
   apiGroup: rbac.authorization.k8s.io

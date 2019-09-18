@@ -1,4 +1,4 @@
-package istio
+package kuma
 
 import (
 	"archive/tar"
@@ -20,21 +20,21 @@ import (
 )
 
 const (
-	repoURL     = "https://api.github.com/repos/istio/istio/releases/latest"
+	repoURL     = "https://api.github.com/repos/containous/kuma/releases/latest"
 	URLSuffix   = "-linux.tar.gz"
 	crdPattern  = "crd(.*)yaml"
 	cachePeriod = 1 * time.Hour
 )
 
 var (
-	localFile                  = path.Join(os.TempDir(), "istio.tar.gz")
-	destinationFolder          = path.Join(os.TempDir(), "istio")
+	localFile                  = path.Join(os.TempDir(), "kuma.tar.gz")
+	destinationFolder          = path.Join(os.TempDir(), "kuma")
 	basePath                   = path.Join(destinationFolder, "%s")
-	installFile                = path.Join(basePath, "install/kubernetes/istio-demo.yaml")
-	installWithmTLSFile        = path.Join(basePath, "install/kubernetes/istio-demo-auth.yaml")
+	installFile                = path.Join(basePath, "install/kubernetes/kuma.yaml")
+	installWithmTLSFile        = path.Join(basePath, "install/kubernetes/kuma-demo-auth.yaml")
 	bookInfoInstallFile        = path.Join(basePath, "samples/bookinfo/platform/kube/bookinfo.yaml")
 	bookInfoGatewayInstallFile = path.Join(basePath, "samples/bookinfo/networking/bookinfo-gateway.yaml")
-	crdFolder                  = path.Join(basePath, "install/kubernetes/helm/istio-init/files/")
+	crdFolder                  = path.Join(basePath, "install/kubernetes/helm/kuma-init/files/")
 )
 
 type APIInfo struct {
@@ -49,8 +49,8 @@ type Asset struct {
 	DownloadURL string `json:"browser_download_url,omitempty"`
 }
 
-func (iClient *IstioClient) getLatestReleaseURL() error {
-	if iClient.istioReleaseDownloadURL == "" || time.Since(iClient.istioReleaseUpdatedAt) > cachePeriod {
+func (iClient *KumaClient) getLatestReleaseURL() error {
+	if iClient.kumaReleaseDownloadURL == "" || time.Since(iClient.kumaReleaseUpdatedAt) > cachePeriod {
 		logrus.Debugf("API info url: %s", repoURL)
 		resp, err := http.Get(repoURL)
 		if err != nil {
@@ -84,9 +84,9 @@ func (iClient *IstioClient) getLatestReleaseURL() error {
 		if result != nil && result.Assets != nil && len(result.Assets) > 0 {
 			for _, asset := range result.Assets {
 				if strings.HasSuffix(asset.Name, URLSuffix) {
-					iClient.istioReleaseVersion = strings.Replace(asset.Name, URLSuffix, "", -1)
-					iClient.istioReleaseDownloadURL = asset.DownloadURL
-					iClient.istioReleaseUpdatedAt = time.Now()
+					iClient.kumaReleaseVersion = strings.Replace(asset.Name, URLSuffix, "", -1)
+					iClient.kumaReleaseDownloadURL = asset.DownloadURL
+					iClient.kumaReleaseUpdatedAt = time.Now()
 					return nil
 				}
 			}
@@ -98,7 +98,7 @@ func (iClient *IstioClient) getLatestReleaseURL() error {
 	return nil
 }
 
-func (iClient *IstioClient) downloadFile(localFile string) error {
+func (iClient *KumaClient) downloadFile(localFile string) error {
 	dFile, err := os.Create(localFile)
 	if err != nil {
 		err = errors.Wrapf(err, "unable to create a file on the filesystem at %s", localFile)
@@ -107,16 +107,16 @@ func (iClient *IstioClient) downloadFile(localFile string) error {
 	}
 	defer dFile.Close()
 
-	resp, err := http.Get(iClient.istioReleaseDownloadURL)
+	resp, err := http.Get(iClient.kumaReleaseDownloadURL)
 	if err != nil {
-		err = errors.Wrapf(err, "unable to download the file from URL: %s", iClient.istioReleaseDownloadURL)
+		err = errors.Wrapf(err, "unable to download the file from URL: %s", iClient.kumaReleaseDownloadURL)
 		logrus.Error(err)
 		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		err = fmt.Errorf("unable to download the file from URL: %s, status: %s", iClient.istioReleaseDownloadURL, resp.Status)
+		err = fmt.Errorf("unable to download the file from URL: %s, status: %s", iClient.kumaReleaseDownloadURL, resp.Status)
 		logrus.Error(err)
 		return err
 	}
@@ -130,7 +130,7 @@ func (iClient *IstioClient) downloadFile(localFile string) error {
 	return nil
 }
 
-func (iClient *IstioClient) untarPackage(destination, fileToUntar string) error {
+func (iClient *KumaClient) untarPackage(destination, fileToUntar string) error {
 	lFile, err := os.Open(fileToUntar)
 	if err != nil {
 		err = errors.Wrapf(err, "unable to read the local file %s", fileToUntar)
@@ -188,14 +188,14 @@ func (iClient *IstioClient) untarPackage(destination, fileToUntar string) error 
 	}
 }
 
-func (iClient *IstioClient) downloadIstio() (string, error) {
-	logrus.Debug("preparing to download the latest istio release")
+func (iClient *KumaClient) downloadKuma() (string, error) {
+	logrus.Debug("preparing to download the latest kuma release")
 	err := iClient.getLatestReleaseURL()
 	if err != nil {
 		return "", err
 	}
-	fileName := iClient.istioReleaseVersion
-	downloadURL := iClient.istioReleaseDownloadURL
+	fileName := iClient.kumaReleaseVersion
+	downloadURL := iClient.kumaReleaseDownloadURL
 	logrus.Debugf("retrieved latest file name: %s and download url: %s", fileName, downloadURL)
 
 	proceedWithDownload := true
@@ -222,8 +222,8 @@ func (iClient *IstioClient) downloadIstio() (string, error) {
 	return fileName, nil
 }
 
-func (iClient *IstioClient) getIstioComponentYAML(fileName string) (string, error) {
-	specificVersionName, err := iClient.downloadIstio()
+func (iClient *KumaClient) getKumaComponentYAML(fileName string) (string, error) {
+	specificVersionName, err := iClient.downloadKuma()
 	if err != nil {
 		return "", err
 	}
@@ -249,7 +249,7 @@ func (iClient *IstioClient) getIstioComponentYAML(fileName string) (string, erro
 	return string(fileContents), nil
 }
 
-func (iClient *IstioClient) getCRDsYAML() ([]string, error) {
+func (iClient *KumaClient) getCRDsYAML() ([]string, error) {
 	res := []string{}
 
 	rEx, err := regexp.Compile(crdPattern)
@@ -259,7 +259,7 @@ func (iClient *IstioClient) getCRDsYAML() ([]string, error) {
 		return nil, err
 	}
 
-	specificVersionName, err := iClient.downloadIstio()
+	specificVersionName, err := iClient.downloadKuma()
 	if err != nil {
 		return nil, err
 	}
@@ -284,18 +284,22 @@ func (iClient *IstioClient) getCRDsYAML() ([]string, error) {
 	return res, nil
 }
 
-func (iClient *IstioClient) getLatestIstioYAML(installmTLS bool) (string, error) {
+func (iClient *KumaClient) getLatestKumaYAML(installmTLS bool) (string, error) {
 	if installmTLS {
-		return iClient.getIstioComponentYAML(installWithmTLSFile)
+		return iClient.getKumaComponentYAML(installWithmTLSFile)
 	} else {
-		return iClient.getIstioComponentYAML(installFile)
+		return iClient.getKumaComponentYAML(installFile)
 	}
 }
 
-func (iClient *IstioClient) getBookInfoAppYAML() (string, error) {
-	return iClient.getIstioComponentYAML(bookInfoInstallFile)
+func (iClient *KumaClient) getBookInfoAppYAML() (string, error) {
+	return iClient.getKumaComponentYAML(bookInfoInstallFile)
 }
 
-func (iClient *IstioClient) getBookInfoGatewayYAML() (string, error) {
-	return iClient.getIstioComponentYAML(bookInfoGatewayInstallFile)
+func (iClient *KumaClient) getBookInfoGatewayYAML() (string, error) {
+	return iClient.getKumaComponentYAML(bookInfoGatewayInstallFile)
+}
+
+func getSMIYamls() (string, error) {
+	return "", nil
 }

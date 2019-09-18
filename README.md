@@ -1,16 +1,16 @@
-<img align="right" src="https://layer5.io/assets/images/cube-sh-small.png" />
+<a href="https://layer5.io/meshery"><img align="right" src="https://raw.githubusercontent.com/layer5io/meshery/master/ui/static/img/meshery-logo/meshery-logo-light-text.png"  width="25%" /></a>
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/layer5/meshery-istio.svg)](https://hub.docker.com/r/layer5/meshery-istio)
-[![Go Report Card](https://goreportcard.com/badge/github.com/layer5io/meshery-istio)](https://goreportcard.com/report/github.com/layer5io/meshery-istio)
-[![Build Status](https://travis-ci.com/layer5io/meshery-istio.svg?branch=master)](https://travis-ci.com/layer5io/meshery-istio)
-![GitHub](https://img.shields.io/github/license/layer5io/meshery-istio.svg)
-![GitHub issues by-label](https://img.shields.io/github/issues/layer5io/meshery-istio/help%20wanted.svg)
+[![Docker Pulls](https://img.shields.io/docker/pulls/layer5/meshery-kuma.svg)](https://hub.docker.com/r/layer5/meshery-kuma)
+[![Go Report Card](https://goreportcard.com/badge/github.com/layer5io/meshery-kuma)](https://goreportcard.com/report/github.com/layer5io/meshery-kuma)
+[![Build Status](https://travis-ci.com/layer5io/meshery-kuma.svg?branch=master)](https://travis-ci.com/layer5io/meshery-kuma)
+![GitHub](https://img.shields.io/github/license/layer5io/meshery-kuma.svg)
+![GitHub issues by-label](https://img.shields.io/github/issues/layer5io/meshery-kuma/help%20wanted.svg)
 ![Website](https://img.shields.io/website/https/layer5.io/meshery.svg)
 ![Twitter Follow](https://img.shields.io/twitter/follow/layer5.svg?label=Follow&style=social)
 [![Slack](https://img.shields.io/badge/slack-380-lightgrey)](http://slack.layer5.io)
 
-# meshery-istio
-Meshery Adapter for Istio
+# meshery-kuma
+Meshery Adapter for Kuma
 
 ><p align="center"><i>If you’re using Meshery or if you like the project, please ★ star this repository to show your support! 🤩</i></p>
 
