@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package istio
+package kuma
 
 import (
 	"time"
 
-	"github.com/layer5io/meshery-istio/meshes"
+	"github.com/layer5io/meshery-kuma/meshes"
 	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
@@ -28,16 +28,16 @@ import (
 	"github.com/ghodss/yaml"
 )
 
-// IstioClient represents an Istio client in Meshery
-type IstioClient struct {
+// KumaClient represents an Kuma client in Meshery
+type KumaClient struct {
 	config           *rest.Config
 	k8sClientset     *kubernetes.Clientset
 	k8sDynamicClient dynamic.Interface
 	eventChan        chan *meshes.EventsResponse
 
-	istioReleaseVersion     string
-	istioReleaseDownloadURL string
-	istioReleaseUpdatedAt   time.Time
+	kumaReleaseVersion     string
+	kumaReleaseDownloadURL string
+	kumaReleaseUpdatedAt   time.Time
 }
 
 func configClient(kubeconfig []byte, contextName string) (*rest.Config, error) {
@@ -55,9 +55,9 @@ func configClient(kubeconfig []byte, contextName string) (*rest.Config, error) {
 	return rest.InClusterConfig()
 }
 
-func newClient(kubeconfig []byte, contextName string) (*IstioClient, error) {
+func newClient(kubeconfig []byte, contextName string) (*KumaClient, error) {
 	kubeconfig = monkeyPatchingToSupportInsecureConn(kubeconfig)
-	client := IstioClient{}
+	client := KumaClient{}
 	config, err := configClient(kubeconfig, contextName)
 	if err != nil {
 		return nil, err

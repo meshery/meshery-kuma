@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: smi-adapter-istio
-  namespace: istio-system
+  name: smi-adapter-kuma
+  namespace: kuma-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: smi-adapter-istio
+      name: smi-adapter-kuma
   template:
     metadata:
       labels:
-        name: smi-adapter-istio
+        name: smi-adapter-kuma
       annotations:
-        sidecar.istio.io/inject: "false"
+        sidecar.kuma.io/inject: "false"
     spec:
-      serviceAccountName: smi-adapter-istio
+      serviceAccountName: smi-adapter-kuma
       containers:
-        - name: smi-adapter-istio
-          image: layer5/smi-istio:latest
+        - name: smi-adapter-kuma
+          image: layer5/smi-kuma:latest
           command:
-          - smi-adapter-istio
+          - smi-adapter-kuma
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -30,4 +30,4 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
-              value: "smi-adapter-istio"
+              value: "smi-adapter-kuma"
