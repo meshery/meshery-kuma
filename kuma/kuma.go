@@ -35,6 +35,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
+//CreateMeshInstance is called from UI
 func (iClient *KumaClient) CreateMeshInstance(_ context.Context, k8sReq *meshes.CreateMeshInstanceRequest) (*meshes.CreateMeshInstanceResponse, error) {
 	var k8sConfig []byte
 	contextName := ""
@@ -370,7 +371,7 @@ func (iClient *KumaClient) executeBookInfoInstall(ctx context.Context, arReq *me
 	return nil
 }
 
-// ApplyRule is a method invoked to apply a particular operation on the mesh in a namespace
+// ApplyOperation is a method invoked to apply a particular operation on the mesh in a namespace
 func (iClient *KumaClient) ApplyOperation(ctx context.Context, arReq *meshes.ApplyRuleRequest) (*meshes.ApplyRuleResponse, error) {
 	if arReq == nil {
 		return nil, errors.New("mesh client has not been created")
