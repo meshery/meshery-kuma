@@ -27,9 +27,9 @@ import (
 
 	"github.com/ghodss/yaml"
 )
-
+ 
 // KumaClient represents an Kuma client in Meshery
-type KumaClient struct {
+type Client struct {
 	config           *rest.Config
 	k8sClientset     *kubernetes.Clientset
 	k8sDynamicClient dynamic.Interface
