@@ -35,7 +35,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-func (iClient *KumaClient) CreateMeshInstance(_ context.Context, k8sReq *meshes.CreateMeshInstanceRequest) (*meshes.CreateMeshInstanceResponse, error) {
+func (iClient *Client) CreateMeshInstance(_ context.Context, k8sReq *meshes.CreateMeshInstanceRequest) (*meshes.CreateMeshInstanceResponse, error) {
 	var k8sConfig []byte
 	contextName := ""
 	if k8sReq != nil {
@@ -58,7 +58,7 @@ func (iClient *KumaClient) CreateMeshInstance(_ context.Context, k8sReq *meshes.
 	return &meshes.CreateMeshInstanceResponse{}, nil
 }
 
-func (iClient *KumaClient) createResource(ctx context.Context, res schema.GroupVersionResource, data *unstructured.Unstructured) error {
+func (iClient *Client) createResource(ctx context.Context, res schema.GroupVersionResource, data *unstructured.Unstructured) error {
 	_, err := iClient.k8sDynamicClient.Resource(res).Namespace(data.GetNamespace()).Create(data, metav1.CreateOptions{})
 	if err != nil {
 		err = errors.Wrapf(err, "unable to create the requested resource, attempting operation without namespace")
@@ -74,7 +74,7 @@ func (iClient *KumaClient) createResource(ctx context.Context, res schema.GroupV
 	return nil
 }
 
-func (iClient *KumaClient) deleteResource(ctx context.Context, res schema.GroupVersionResource, data *unstructured.Unstructured) error {
+func (iClient *Client) deleteResource(ctx context.Context, res schema.GroupVersionResource, data *unstructured.Unstructured) error {
 	if iClient.k8sDynamicClient == nil {
 		return errors.New("mesh client has not been created")
 	}
@@ -114,7 +114,7 @@ func (iClient *KumaClient) deleteResource(ctx context.Context, res schema.GroupV
 	return nil
 }
 
-func (iClient *KumaClient) getResource(ctx context.Context, res schema.GroupVersionResource, data *unstructured.Unstructured) (*unstructured.Unstructured, error) {
+func (iClient *Client) getResource(ctx context.Context, res schema.GroupVersionResource, data *unstructured.Unstructured) (*unstructured.Unstructured, error) {
 	data1, err := iClient.k8sDynamicClient.Resource(res).Namespace(data.GetNamespace()).Get(data.GetName(), metav1.GetOptions{})
 	if err != nil {
 		err = errors.Wrap(err, "unable to retrieve the resource with a matching name, attempting operation without namespace")
@@ -131,7 +131,7 @@ func (iClient *KumaClient) getResource(ctx context.Context, res schema.GroupVers
 	return data1, nil
 }
 
-func (iClient *KumaClient) updateResource(ctx context.Context, res schema.GroupVersionResource, data *unstructured.Unstructured) error {
+func (iClient *Client) updateResource(ctx context.Context, res schema.GroupVersionResource, data *unstructured.Unstructured) error {
 	if _, err := iClient.k8sDynamicClient.Resource(res).Namespace(data.GetNamespace()).Update(data, metav1.UpdateOptions{}); err != nil {
 		err = errors.Wrap(err, "unable to update resource with the given name, attempting operation without namespace")
 		logrus.Warn(err)
@@ -147,11 +147,11 @@ func (iClient *KumaClient) updateResource(ctx context.Context, res schema.GroupV
 }
 
 // MeshName just returns the name of the mesh the client is representing
-func (iClient *KumaClient) MeshName(context.Context, *meshes.MeshNameRequest) (*meshes.MeshNameResponse, error) {
+func (iClient *Client) MeshName(context.Context, *meshes.MeshNameRequest) (*meshes.MeshNameResponse, error) {
 	return &meshes.MeshNameResponse{Name: "Kuma"}, nil
 }
 
-func (iClient *KumaClient) applyRulePayload(ctx context.Context, namespace string, newBytes []byte, delete, isCustomOp bool) error {
+func (iClient *Client) applyRulePayload(ctx context.Context, namespace string, newBytes []byte, delete, isCustomOp bool) error {
 	if iClient.k8sDynamicClient == nil {
 		return errors.New("mesh client has not been created")
 	}
@@ -183,7 +183,7 @@ func (iClient *KumaClient) applyRulePayload(ctx context.Context, namespace strin
 	return nil
 }
 
-func (iClient *KumaClient) executeRule(ctx context.Context, data *unstructured.Unstructured, namespace string, delete, isCustomOp bool) error {
+func (iClient *Client) executeRule(ctx context.Context, data *unstructured.Unstructured, namespace string, delete, isCustomOp bool) error {
 	// logrus.Debug("========================================================")
 	// logrus.Debugf("Received data: %+#v", data)
 	if namespace != "" {
@@ -243,7 +243,7 @@ func (iClient *KumaClient) executeRule(ctx context.Context, data *unstructured.U
 	return nil
 }
 
-func (iClient *KumaClient) applyKumaCRDs(ctx context.Context, delete bool) error {
+func (iClient *Client) applyKumaCRDs(ctx context.Context, delete bool) error {
 	crdYAMLs, err := iClient.getCRDsYAML()
 	if err != nil {
 		return err
@@ -257,7 +257,7 @@ func (iClient *KumaClient) applyKumaCRDs(ctx context.Context, delete bool) error
 	return nil
 }
 
-func (iClient *KumaClient) labelNamespaceForAutoInjection(ctx context.Context, namespace string) error {
+func (iClient *Client) labelNamespaceForAutoInjection(ctx context.Context, namespace string) error {
 	ns := &unstructured.Unstructured{}
 	res := schema.GroupVersionResource{
 		Version:  "v1",
