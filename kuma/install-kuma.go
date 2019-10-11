@@ -42,14 +42,14 @@ type APIInfo struct {
 	PreRelease bool     `json:"prerelease,omitempty"`
 	Assets     []*Asset `json:"assets,omitempty"`
 }
-
+// Asset is used to store individual response from GitHub release call
 type Asset struct {
 	Name        string `json:"name,omitempty"`
 	State       string `json:"state,omitempty"`
 	DownloadURL string `json:"browser_download_url,omitempty"`
 }
 
-func (iClient *KumaClient) getLatestReleaseURL() error {
+func (iClient *Client) getLatestReleaseURL() error {
 	if iClient.kumaReleaseDownloadURL == "" || time.Since(iClient.kumaReleaseUpdatedAt) > cachePeriod {
 		logrus.Debugf("API info url: %s", repoURL)
 		resp, err := http.Get(repoURL)
@@ -98,7 +98,7 @@ func (iClient *KumaClient) getLatestReleaseURL() error {
 	return nil
 }
 
-func (iClient *KumaClient) downloadFile(localFile string) error {
+func (iClient *Client) downloadFile(localFile string) error {
 	dFile, err := os.Create(localFile)
 	if err != nil {
 		err = errors.Wrapf(err, "unable to create a file on the filesystem at %s", localFile)
@@ -130,7 +130,7 @@ func (iClient *KumaClient) downloadFile(localFile string) error {
 	return nil
 }
 
-func (iClient *KumaClient) untarPackage(destination, fileToUntar string) error {
+func (iClient *Client) untarPackage(destination, fileToUntar string) error {
 	lFile, err := os.Open(fileToUntar)
 	if err != nil {
 		err = errors.Wrapf(err, "unable to read the local file %s", fileToUntar)
@@ -188,7 +188,7 @@ func (iClient *KumaClient) untarPackage(destination, fileToUntar string) error {
 	}
 }
 
-func (iClient *KumaClient) downloadKuma() (string, error) {
+func (iClient *Client) downloadKuma() (string, error) {
 	logrus.Debug("preparing to download the latest kuma release")
 	err := iClient.getLatestReleaseURL()
 	if err != nil {
@@ -222,7 +222,7 @@ func (iClient *KumaClient) downloadKuma() (string, error) {
 	return fileName, nil
 }
 
-func (iClient *KumaClient) getKumaComponentYAML(fileName string) (string, error) {
+func (iClient *Client) getKumaComponentYAML(fileName string) (string, error) {
 	specificVersionName, err := iClient.downloadKuma()
 	if err != nil {
 		return "", err
@@ -234,11 +234,10 @@ func (iClient *KumaClient) getKumaComponentYAML(fileName string) (string, error)
 		if os.IsNotExist(err) {
 			logrus.Error(err)
 			return "", err
-		} else {
-			err = errors.Wrap(err, "unknown error")
-			logrus.Error(err)
-			return "", err
 		}
+		err = errors.Wrap(err, "unknown error")
+		logrus.Error(err)
+		return "", err
 	}
 	fileContents, err := ioutil.ReadFile(installFileLoc)
 	if err != nil {
@@ -249,7 +248,7 @@ func (iClient *KumaClient) getKumaComponentYAML(fileName string) (string, error)
 	return string(fileContents), nil
 }
 
-func (iClient *KumaClient) getCRDsYAML() ([]string, error) {
+func (iClient *Client) getCRDsYAML() ([]string, error) {
 	res := []string{}
 
 	rEx, err := regexp.Compile(crdPattern)
@@ -284,19 +283,18 @@ func (iClient *KumaClient) getCRDsYAML() ([]string, error) {
 	return res, nil
 }
 
-func (iClient *KumaClient) getLatestKumaYAML(installmTLS bool) (string, error) {
+func (iClient *Client) getLatestKumaYAML(installmTLS bool) (string, error) {
 	if installmTLS {
-		return iClient.getKumaComponentYAML(installWithmTLSFile)
-	} else {
-		return iClient.getKumaComponentYAML(installFile)
+		return iClient.getIstioComponentYAML(installWithmTLSFile)
 	}
+	return iClient.getIstioComponentYAML(installFile)
 }
 
-func (iClient *KumaClient) getBookInfoAppYAML() (string, error) {
+func (iClient *Client) getBookInfoAppYAML() (string, error) {
 	return iClient.getKumaComponentYAML(bookInfoInstallFile)
 }
 
-func (iClient *KumaClient) getBookInfoGatewayYAML() (string, error) {
+func (iClient *Client) getBookInfoGatewayYAML() (string, error) {
 	return iClient.getKumaComponentYAML(bookInfoGatewayInstallFile)
 }
 
