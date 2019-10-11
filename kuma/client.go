@@ -21,14 +21,15 @@ import (
 	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
+	//to resolve the "a blank import should be only in a main or test package, or have a comment justifying it" problem
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/ghodss/yaml"
 )
- 
-// KumaClient represents an Kuma client in Meshery
+
+// Client represents an Kuma client in Meshery
 type Client struct {
 	config           *rest.Config
 	k8sClientset     *kubernetes.Clientset
@@ -55,9 +56,9 @@ func configClient(kubeconfig []byte, contextName string) (*rest.Config, error) {
 	return rest.InClusterConfig()
 }
 
-func newClient(kubeconfig []byte, contextName string) (*KumaClient, error) {
+func newClient(kubeconfig []byte, contextName string) (*Client, error) {
 	kubeconfig = monkeyPatchingToSupportInsecureConn(kubeconfig)
-	client := KumaClient{}
+	client := Client{}
 	config, err := configClient(kubeconfig, contextName)
 	if err != nil {
 		return nil, err
