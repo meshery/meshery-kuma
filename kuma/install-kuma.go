@@ -21,7 +21,7 @@ import (
 
 const (
 	repoURL     = "https://api.github.com/repos/containous/kuma/releases/latest"
-	URLSuffix   = "-linux.tar.gz"
+	URLSuffix   = "-linux.tar.gz" // URLSuffix declaration
 	crdPattern  = "crd(.*)yaml"
 	cachePeriod = 1 * time.Hour
 )
@@ -36,7 +36,7 @@ var (
 	bookInfoGatewayInstallFile = path.Join(basePath, "samples/bookinfo/networking/bookinfo-gateway.yaml")
 	crdFolder                  = path.Join(basePath, "install/kubernetes/helm/kuma-init/files/")
 )
-
+// APIInfo is used to store individual response from GitHub release call
 type APIInfo struct {
 	TagName    string   `json:"tag_name,omitempty"`
 	PreRelease bool     `json:"prerelease,omitempty"`
