@@ -21,7 +21,8 @@ import (
 
 const (
 	repoURL     = "https://api.github.com/repos/containous/kuma/releases/latest"
-	URLSuffix   = "-linux.tar.gz"
+	// URLSuffix declaration
+	URLSuffix   = "-linux.tar.gz" 
 	crdPattern  = "crd(.*)yaml"
 	cachePeriod = 1 * time.Hour
 )
