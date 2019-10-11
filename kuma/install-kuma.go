@@ -42,7 +42,7 @@ type APIInfo struct {
 	PreRelease bool     `json:"prerelease,omitempty"`
 	Assets     []*Asset `json:"assets,omitempty"`
 }
-// APIInfo is used to store individual response from GitHub release call
+// Asset is used to store individual response from GitHub release call
 type Asset struct {
 	Name        string `json:"name,omitempty"`
 	State       string `json:"state,omitempty"`
