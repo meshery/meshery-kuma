@@ -1,5 +1,5 @@
 package kuma
 
-func (iClient *KumaClient) runVet() error {
+func (iClient *Client) runVet() error {
 	return nil
 }
