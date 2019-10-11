@@ -18,7 +18,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
-
+// URLSuffix declaration
 const (
 	repoURL     = "https://api.github.com/repos/containous/kuma/releases/latest"
 	// URLSuffix declaration
