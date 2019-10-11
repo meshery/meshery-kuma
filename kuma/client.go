@@ -58,7 +58,7 @@ func configClient(kubeconfig []byte, contextName string) (*rest.Config, error) {
 
 func newClient(kubeconfig []byte, contextName string) (*Client, error) {
 	kubeconfig = monkeyPatchingToSupportInsecureConn(kubeconfig)
-	client := KumaClient{}
+	client := Client{}
 	config, err := configClient(kubeconfig, contextName)
 	if err != nil {
 		return nil, err
