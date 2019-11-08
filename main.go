@@ -30,7 +30,7 @@ import (
 )
 
 var (
-	gRPCPort = flag.Int("grpc-port", 10000, "The gRPC server port")
+	gRPCPort = flag.Int("grpc-port", 10007, "The gRPC server port")
 )
 
 var log grpclog.LoggerV2
@@ -55,7 +55,7 @@ func main() {
 	s := grpc.NewServer(
 	// grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 	)
-	mesh.RegisterMeshServiceServer(s, &kuma.KumaClient{})
+	mesh.RegisterMeshServiceServer(s, &kuma.Client{})
 
 	// Serve gRPC Server
 	logrus.Infof("Serving gRPC on %s", addr)

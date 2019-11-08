@@ -18,11 +18,12 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
+
 // URLSuffix declaration
 const (
-	repoURL     = "https://api.github.com/repos/containous/kuma/releases/latest"
+	repoURL = "https://api.github.com/repos/containous/kuma/releases/latest"
 	// URLSuffix declaration
-	URLSuffix   = "-linux.tar.gz" 
+	URLSuffix   = "-linux.tar.gz"
 	crdPattern  = "crd(.*)yaml"
 	cachePeriod = 1 * time.Hour
 )
@@ -37,12 +38,14 @@ var (
 	bookInfoGatewayInstallFile = path.Join(basePath, "samples/bookinfo/networking/bookinfo-gateway.yaml")
 	crdFolder                  = path.Join(basePath, "install/kubernetes/helm/kuma-init/files/")
 )
+
 // APIInfo is used to store individual response from GitHub release call
 type APIInfo struct {
 	TagName    string   `json:"tag_name,omitempty"`
 	PreRelease bool     `json:"prerelease,omitempty"`
 	Assets     []*Asset `json:"assets,omitempty"`
 }
+
 // Asset is used to store individual response from GitHub release call
 type Asset struct {
 	Name        string `json:"name,omitempty"`
@@ -286,9 +289,9 @@ func (iClient *Client) getCRDsYAML() ([]string, error) {
 
 func (iClient *Client) getLatestKumaYAML(installmTLS bool) (string, error) {
 	if installmTLS {
-		return iClient.getIstioComponentYAML(installWithmTLSFile)
+		return iClient.getKumaComponentYAML(installWithmTLSFile)
 	}
-	return iClient.getIstioComponentYAML(installFile)
+	return iClient.getKumaComponentYAML(installFile)
 }
 
 func (iClient *Client) getBookInfoAppYAML() (string, error) {
