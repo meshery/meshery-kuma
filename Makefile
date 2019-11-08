@@ -11,7 +11,7 @@ docker:
 docker-run:
 	(docker rm -f meshery-kuma) || true
 	docker run --name meshery-kuma -d \
-	-p 10000:10000 \
+	-p 10007:10007 \
 	-e DEBUG=true \
 	layer5/meshery-kuma
 
