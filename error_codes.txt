@@ -1,0 +1,15 @@
+Error codes
+
+# 700 - 800 for config package
+700 - Failure in config initialization
+701 - Failure in viper initialization
+
+# 600 - 700 for grpc package
+600 - Panic
+601 - Error during grpc listener initialization
+602 - Error during grpc server initialization
+
+#1000-1500 for kuma package
+1000 - Unable to fetch mesh name
+1001 - Error configuration mesh
+1002 - Error portforwarding mesh gui

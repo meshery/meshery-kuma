@@ -1,63 +1,58 @@
-// Copyright 2019 Layer5.io
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package main
 
 import (
-	"flag"
 	"fmt"
-	"net"
 	"os"
+	"time"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/grpclog"
-
-	"github.com/sirupsen/logrus"
-
+	"github.com/kumarabd/gokit/logger"
+	"github.com/layer5io/meshery-kuma/api/grpc"
+	"github.com/layer5io/meshery-kuma/internal/config"
+	"github.com/layer5io/meshery-kuma/internal/tracing"
 	"github.com/layer5io/meshery-kuma/kuma"
-	mesh "github.com/layer5io/meshery-kuma/meshes"
 )
 
 var (
-	gRPCPort = flag.Int("grpc-port", 10007, "The gRPC server port")
+	configProvider = "local"
 )
 
-var log grpclog.LoggerV2
-
-func init() {
-	log = grpclog.NewLoggerV2(os.Stdout, os.Stdout, os.Stdout)
-	grpclog.SetLoggerV2(log)
-}
-
+// main is the entrypoint of the adaptor
 func main() {
-	flag.Parse()
 
-	if os.Getenv("DEBUG") == "true" {
-		logrus.SetLevel(logrus.DebugLevel)
-	}
-
-	addr := fmt.Sprintf(":%d", *gRPCPort)
-	lis, err := net.Listen("tcp", addr)
+	// Initialize application specific configs and dependencies
+	// App and request config
+	cfg, err := config.New(configProvider)
 	if err != nil {
-		logrus.Fatalln("Failed to listen:", err)
+		fmt.Println("Config Init Failed", err.Error())
+		os.Exit(1)
 	}
-	s := grpc.NewServer(
-	// grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
-	)
-	mesh.RegisterMeshServiceServer(s, &kuma.Client{})
+	service := &grpc.Service{}
+	_ = cfg.Server(&service)
 
-	// Serve gRPC Server
-	logrus.Infof("Serving gRPC on %s", addr)
-	logrus.Fatal(s.Serve(lis))
+	// Initialize Logger instance
+	log, err := logger.New(service.Name)
+	if err != nil {
+		fmt.Println("Logger Init Failed", err.Error())
+		os.Exit(1)
+	}
+
+	// Initialize Tracing instance
+	traceProvider, err := tracing.New(service.Name, service.TraceURL)
+	if err != nil {
+		fmt.Println("Tracing Init Failed", err.Error())
+		os.Exit(1)
+	}
+
+	// Initialize Handler intance
+	handler := kuma.New(cfg, log)
+	service.Handler = handler
+	service.StartedAt = time.Now()
+
+	// Server Initialization
+	log.Info("Adaptor Started")
+	err = grpc.Start(service, traceProvider)
+	if err != nil {
+		log.Err("Adaptor crashed!!", err.Error())
+		os.Exit(1)
+	}
 }
