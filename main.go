@@ -16,6 +16,7 @@ var (
 	configProvider = "local"
 )
 
+// main is the entrypoint of the adaptor
 func main() {
 
 	// Initialize application specific configs and dependencies
