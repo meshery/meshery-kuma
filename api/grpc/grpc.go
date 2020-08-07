@@ -33,7 +33,7 @@ func panicHandler(r interface{}) error {
 	return ErrPanic(r)
 }
 
-// StartServer starts grpc server
+// Start starts grpc server
 func Start(s *Service, tr tracing.Handler) error {
 
 	address := fmt.Sprintf(":%s", s.Port)

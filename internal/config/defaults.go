@@ -24,14 +24,14 @@ var (
 
 	// operations holds the supported operations inside mesh
 	operations = map[string]interface{}{
-		INSTALL_KUMA: map[string]interface{}{
+		installKuma: map[string]interface{}{
 			"type": "INSTALL",
 			"properties": map[string]string{
 				"description": "Kuma installation",
 				"version":     "latest",
 			},
 		},
-		INSTALL_SAMPLE: map[string]interface{}{
+		installSample: map[string]interface{}{
 			"type": "INSTALL",
 			"properties": map[string]string{
 				"description": "Sample application installation",
@@ -46,6 +46,7 @@ var (
 	filetype = "yaml"
 )
 
+// GetHome returns the home path
 func GetHome() string {
 	usr, _ := user.Current()
 	return usr.HomeDir

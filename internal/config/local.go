@@ -62,7 +62,7 @@ func (l *Local) MeshInstance(result interface{}) error {
 	return utils.Unmarshal(d, result)
 }
 
-// Mesh provides mesh specific configuration
+// Operations provides operations in the mesh
 func (l *Local) Operations(result interface{}) error {
 	d, err := utils.Marshal(operations)
 	if err != nil {

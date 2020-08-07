@@ -1,9 +1,9 @@
 package config
 
 const (
-	local = "local"
+	local = "local" // local is the key for local config
 
 	// Operation keys
-	INSTALL_KUMA   = "installKuma"
-	INSTALL_SAMPLE = "installSample"
+	installKuma   = "installKuma"   // INSTALL_KUMA is the key to install kuma
+	installSample = "installSample" // INSTALL_SAMPLE is the key to install sample application
 )
