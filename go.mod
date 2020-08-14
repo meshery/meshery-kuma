@@ -23,7 +23,7 @@ require (
 	google.golang.org/grpc v1.31.0
 	istio.io/api v0.0.0-20190905172106-906cbe6415a5 // indirect
 	k8s.io/api v0.18.6
-	k8s.io/apimachinery v0.18.6
+	k8s.io/apimachinery v0.18.8
 	k8s.io/cli-runtime v0.18.6
 	k8s.io/client-go v0.18.6
 )
