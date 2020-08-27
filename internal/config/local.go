@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/kumarabd/gokit/utils"
+	"github.com/layer5io/gokit/utils"
 )
 
 // Local instance for configuration

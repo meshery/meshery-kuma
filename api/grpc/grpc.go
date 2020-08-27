@@ -25,6 +25,7 @@ type Service struct {
 	StartedAt time.Time `json:"startedat,string"`
 	TraceURL  string    `json:"traceurl"`
 	Handler   kuma.Handler
+	Channel   chan interface{}
 }
 
 // panicHandler is the handler function to handle panic errors

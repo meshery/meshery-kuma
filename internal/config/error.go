@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 
-	"github.com/kumarabd/gokit/errors"
+	"github.com/layer5io/gokit/errors"
 )
 
 var (
@@ -13,5 +13,5 @@ var (
 
 // ErrViper is the error object for viper
 func ErrViper(err error) error {
-	return errors.New("701", fmt.Sprintf("Viper initialization failed with error: %s", err.Error()))
+	return errors.New(errors.ErrViper, fmt.Sprintf("Viper initialization failed with error: %s", err.Error()))
 }

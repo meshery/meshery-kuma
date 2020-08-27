@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/kumarabd/gokit/logger"
+	"github.com/layer5io/gokit/logger"
 	"github.com/layer5io/meshery-kuma/api/grpc"
 	"github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/internal/tracing"
@@ -37,7 +37,7 @@ func main() {
 	}
 
 	// Initialize Tracing instance
-	traceProvider, err := tracing.New(service.Name, service.TraceURL)
+	_, err = tracing.New(service.Name, service.TraceURL)
 	if err != nil {
 		fmt.Println("Tracing Init Failed", err.Error())
 		os.Exit(1)
@@ -46,11 +46,12 @@ func main() {
 	// Initialize Handler intance
 	handler := kuma.New(cfg, log)
 	service.Handler = handler
+	service.Channel = make(chan interface{}, 100)
 	service.StartedAt = time.Now()
 
 	// Server Initialization
-	log.Info("Adaptor Started")
-	err = grpc.Start(service, traceProvider)
+	log.Info(fmt.Sprintf("Adaptor Started at: %s", service.Port))
+	err = grpc.Start(service, nil)
 	if err != nil {
 		log.Err("Adaptor crashed!!", err.Error())
 		os.Exit(1)
