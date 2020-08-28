@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os/user"
 )
 
@@ -48,7 +47,7 @@ var (
 	}
 
 	// Viper configuration
-	filepath = fmt.Sprintf("/root/.kuma", GetHome())
+	filepath = "/root/.kuma"
 	filename = "config.yml"
 	filetype = "yaml"
 )

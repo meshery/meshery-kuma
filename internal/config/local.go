@@ -42,7 +42,7 @@ func (l *Local) Server(result interface{}) error {
 // MeshSpec provides mesh specific configuration
 func (l *Local) MeshSpec(result interface{}) error {
 	d := `{
-		"name":    "kuma",
+		"name":    "Kuma",
 		"status":  "not installed",
 		"version": "none"
 	}`
