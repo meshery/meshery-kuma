@@ -2,27 +2,44 @@
 
 set -e
 
-: "${OSM_VERSION:=}"
-: "${OSM_ARCH:=amd64}"
-: "${OS:=$(uname | awk '{print tolower($0)}')}"
-URL="https://github.com/openservicemesh/osm/releases/download/$OSM_VERSION/osm-$OSM_VERSION-$OS-$OSM_ARCH.tar.gz"
+: "${KUMA_VERSION:=}"
+: "${KUMA_ARCH:=amd64}"
+: "${DISTRO:=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')}"
 
-printf "INFO\tDownloading osmctl from: %s" "$URL"
-printf "\n\n"
-
-if curl -L "$URL" | tar xz; then
-  printf "\n"
-  printf "INFO\tosmctl %s has been downloaded!\n" "$OSM_VERSION"
-  printf "\n"
+OS=`uname -s`
+if [ "$OS" = "Linux" ]; then
+  DISTRO=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')
+  if [ "$DISTRO" = "amzn" ]; then
+    DISTRO="centos"
+  fi
+elif [ "$OS" = "Darwin" ]; then
+  DISTRO="darwin"
 else
-  printf "\n"
-  printf "ERROR\tUnable to download osmctl\n"
+  printf "ERROR\tOperating system %s not supported by Kuma\n" "$OS"
   exit 1
 fi
 
-printf "INFO\tDeleting deployment......\n"
-if ! ./$OS-$OSM_ARCH/osm delete; then
-	printf "ERROR\tUnable to delete\n"
-	exit 1
+if [ -z "$DISTRO" ]; then
+  printf "ERROR\tUnable to detect the operating system\n"
+  exit 1
 fi
-printf "INFO\tDeleted successfully\n"
+
+URL="https://kong.bintray.com/kuma/kuma-$KUMA_VERSION-$DISTRO-$KUMA_ARCH.tar.gz"
+
+if curl -L "$URL" | tar xz; then
+  printf "\n"
+  printf "INFO\tkumactl %s has been downloaded!\n" "$KUMA_VERSION"
+  printf "\n"
+else
+  printf "\n"
+  printf "ERROR\tUnable to download kumactl\n"
+  exit 1
+fi
+
+# For flat deployment mode
+if [ "$MODE" = "flat" ]; then
+  if ! kuma-$VERSION/bin/kumactl install control-plane | kubectl delete -f -; then
+  	printf "ERROR\tUnable to delete manifests\n"
+  	exit 1
+  fi
+fi

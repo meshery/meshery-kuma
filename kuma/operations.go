@@ -20,6 +20,9 @@ type Operations map[string]*Operation
 // ApplyOperation applies the operation on kuma
 func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del bool) error {
 
+	operations := make(Operations, 0)
+	h.config.Operations(&operations)
+
 	status := "deploying"
 	e := &Event{
 		Operationid: id,
@@ -28,9 +31,9 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 	}
 
 	switch op {
-	case cfg.InstallKuma:
+	case cfg.InstallKumav071, cfg.InstallKumav070, cfg.InstallKumav060:
 		go func(hh *handler, ee *Event) {
-			if status, err := hh.installKuma(del); err != nil {
+			if status, err := hh.installKuma(del, operations[op].Properties["version"]); err != nil {
 				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", status)
 				e.Details = err.Error()
 				hh.StreamErr(e, err)
@@ -54,7 +57,7 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 		}(h, e)
 	case cfg.RunSmiConformance:
 		go func(hh *handler, ee *Event) {
-			result, err := h.runSmiTest(context.TODO(), h.kubeClient)
+			result, err := h.runSmiTest(context.TODO(), h.kubeClient, ee.Operationid)
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s running smi-conformance test", result.Status)
 				e.Details = err.Error()

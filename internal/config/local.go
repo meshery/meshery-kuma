@@ -55,7 +55,6 @@ func (l *Local) MeshInstance(result interface{}) error {
 		"installmode": "flat",
 		"installplatform": "kubernetes",
 		"installzone": " ",
-		"installversion": "0.7.0",
 		"mgmtaddr": "0.0.0.0:8000",
 		"kumaaddr": "5681"
 	}`

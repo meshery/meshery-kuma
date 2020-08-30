@@ -23,11 +23,25 @@ var (
 
 	// operations holds the supported operations inside mesh
 	operations = map[string]interface{}{
-		InstallKuma: map[string]interface{}{
+		InstallKumav071: map[string]interface{}{
 			"type": "0",
 			"properties": map[string]string{
-				"description": "Install kuma service mesh",
-				"version":     "latest",
+				"description": "Install kuma service mesh (0.7.1)",
+				"version":     "0.7.1",
+			},
+		},
+		InstallKumav070: map[string]interface{}{
+			"type": "0",
+			"properties": map[string]string{
+				"description": "Install kuma service mesh (0.7.0)",
+				"version":     "0.7.0",
+			},
+		},
+		InstallKumav060: map[string]interface{}{
+			"type": "0",
+			"properties": map[string]string{
+				"description": "Install kuma service mesh (0.6.0)",
+				"version":     "0.6.0",
 			},
 		},
 		InstallSample: map[string]interface{}{

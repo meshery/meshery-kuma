@@ -17,7 +17,7 @@ type MeshInstance struct {
 }
 
 // CreateInstance installs and creates a mesh environment up and running
-func (h *handler) installKuma(del bool) (string, error) {
+func (h *handler) installKuma(del bool, version string) (string, error) {
 	status := "installing"
 
 	if del {
@@ -25,7 +25,9 @@ func (h *handler) installKuma(del bool) (string, error) {
 		// Implement delete instance
 	}
 
-	meshinstance := &MeshInstance{}
+	meshinstance := &MeshInstance{
+		InstallVersion: version,
+	}
 	err := h.config.MeshInstance(meshinstance)
 	if err != nil {
 		return status, ErrMeshConfig(err)
