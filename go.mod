@@ -10,7 +10,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/googleapis/gnostic v0.3.1 // indirect
 	github.com/gophercloud/gophercloud v0.4.0 // indirect
-	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.2.1
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/kumarabd/go-http v0.0.0-20200731120215-4f5f95fb4f30 // indirect
