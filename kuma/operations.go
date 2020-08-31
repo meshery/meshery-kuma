@@ -21,7 +21,10 @@ type Operations map[string]*Operation
 func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del bool) error {
 
 	operations := make(Operations, 0)
-	h.config.Operations(&operations)
+	err := h.config.Operations(&operations)
+	if err != nil {
+		return err
+	}
 
 	status := "deploying"
 	e := &Event{
@@ -79,6 +82,9 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 // ListOperations lists the operations available
 func (h *handler) ListOperations() (Operations, error) {
 	operations := make(Operations, 0)
-	h.config.Operations(&operations)
+	err := h.config.Operations(&operations)
+	if err != nil {
+		return nil, err
+	}
 	return operations, nil
 }

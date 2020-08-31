@@ -144,12 +144,11 @@ func (test *SmiTest) installConformanceTool() error {
 	iCli := action.NewInstall(actionConfig)
 	iCli.Namespace = test.namespace
 	iCli.ReleaseName = "smi-conformance"
-	rel, err := iCli.Run(chart, nil)
+	_, err = iCli.Run(chart, nil)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("installed: ", rel.Name)
 	time.Sleep(10 * time.Second) // Required for all the resources to be created
 
 	return nil
