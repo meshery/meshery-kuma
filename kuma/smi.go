@@ -190,7 +190,6 @@ func (test *SmiTest) runConformanceTest(adaptorname string, response *Conformanc
 	if err != nil {
 		return err
 	}
-	defer cClient.Close()
 
 	result, err := cClient.CClient.RunTest(context.TODO(), &conformance.Request{
 		Annotations: annotations,
@@ -218,6 +217,11 @@ func (test *SmiTest) runConformanceTest(adaptorname string, response *Conformanc
 				Message: res.Failure.Message,
 			},
 		})
+	}
+
+	err = cClient.Close()
+	if err != nil {
+		return err
 	}
 
 	return nil

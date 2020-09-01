@@ -84,5 +84,4 @@ func (s *Service) StreamEvents(ctx *meshes.EventsRequest, srv meshes.MeshService
 		}
 		time.Sleep(500 * time.Millisecond)
 	}
-	return nil
 }
