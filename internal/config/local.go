@@ -1,6 +1,9 @@
 package config
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/layer5io/gokit/utils"
 )
 
@@ -30,12 +33,13 @@ func (l *Local) GetKey(key string) string {
 
 // Server provides server specific configuration
 func (l *Local) Server(result interface{}) error {
-	d := `{
+
+	d := fmt.Sprintf(`{
 		"name":    "kuma-adaptor",
 		"port":    "10007",
-		"traceurl": "http://localhost:14268/api/traces",
+		"traceurl": "%s",
 		"version": "v1.0.0"
-	}`
+	}`, os.Getenv("TRACING_ENDPOINT"))
 	return utils.Unmarshal(d, result)
 }
 

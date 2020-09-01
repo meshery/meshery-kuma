@@ -37,7 +37,7 @@ func main() {
 	}
 
 	// Initialize Tracing instance
-	_, err = tracing.New(service.Name, service.TraceURL)
+	tracer, err := tracing.New(service.Name, service.TraceURL)
 	if err != nil {
 		fmt.Println("Tracing Init Failed", err.Error())
 		os.Exit(1)
@@ -51,7 +51,7 @@ func main() {
 
 	// Server Initialization
 	log.Info(fmt.Sprintf("Adaptor Started at: %s", service.Port))
-	err = grpc.Start(service, nil)
+	err = grpc.Start(service, tracer)
 	if err != nil {
 		log.Err("Adaptor crashed!!", err.Error())
 		os.Exit(1)

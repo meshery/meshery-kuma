@@ -31,6 +31,11 @@ type handler struct {
 
 // New initiates the tracing provider for a given service
 func New(service string, endpoint string) (Handler, error) {
+
+	if len(endpoint) < 2 {
+		return nil, nil
+	}
+
 	provider, flush, err := jaeger.NewExportPipeline(
 		jaeger.WithCollectorEndpoint(endpoint),
 		jaeger.WithProcess(jaeger.Process{
