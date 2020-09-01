@@ -75,7 +75,10 @@ func clientConfig(kubeconfig []byte, contextName string) (*rest.Config, error) {
 		if contextName != "" {
 			ccfg.CurrentContext = contextName
 		}
-		writeKubeconfig(kubeconfig, contextName)
+		err = writeKubeconfig(kubeconfig, contextName)
+		if err != nil {
+			return nil, err
+		}
 		return clientcmd.NewDefaultClientConfig(*ccfg, &clientcmd.ConfigOverrides{}).ClientConfig()
 	}
 	return rest.InClusterConfig()
