@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os/user"
 )
 
@@ -24,24 +23,31 @@ var (
 
 	// operations holds the supported operations inside mesh
 	operations = map[string]interface{}{
-		installKuma: map[string]interface{}{
-			"type": "INSTALL",
+		InstallKuma: map[string]interface{}{
+			"type": "0",
 			"properties": map[string]string{
-				"description": "Kuma installation",
+				"description": "Install kuma service mesh",
 				"version":     "latest",
 			},
 		},
-		installSample: map[string]interface{}{
-			"type": "INSTALL",
+		InstallSample: map[string]interface{}{
+			"type": "1",
 			"properties": map[string]string{
-				"description": "Sample application installation",
+				"description": "Install sample application",
+				"version":     "latest",
+			},
+		},
+		RunSmiConformance: map[string]interface{}{
+			"type": "3",
+			"properties": map[string]string{
+				"description": "Run SMI conformance test",
 				"version":     "latest",
 			},
 		},
 	}
 
 	// Viper configuration
-	filepath = fmt.Sprintf("%s/.kuma", GetHome())
+	filepath = "/root/.kuma"
 	filename = "config.yml"
 	filetype = "yaml"
 )

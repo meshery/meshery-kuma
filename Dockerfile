@@ -1,16 +1,22 @@
-FROM golang:1.14-alpine3.11 as build-img
-ARG CONFIG_PROVIDER="viper"
-RUN apk update && apk add --no-cache git libc-dev gcc pkgconf && mkdir /home/adaptor
+FROM golang:1.14-stretch as bd
+ARG CONFIG_PROVIDER="local"
+RUN apt update && apt install git libc-dev gcc pkgconf -y
 COPY ${PWD} /go/src/github.com/layer5io/meshery-kuma/
 WORKDIR /go/src/github.com/layer5io/meshery-kuma/
-RUN go mod vendor && go build -ldflags="-w -s -X main.configProvider=$CONFIG_PROVIDER" -a -o /home/adaptor/kuma
+RUN go mod vendor && go build -ldflags="-w -s -X main.configProvider=$CONFIG_PROVIDER" -a -o meshery-kuma
 
-FROM alpine
-RUN apk --update add ca-certificates
-RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
-	mkdir ${HOME}/.kuma/ && \
-	mkdir /home/adaptor/scripts/
-COPY --from=bd /home/adaptor /home/
-COPY --from=bd /go/src/github.com/layer5io/meshery-kuma/scripts/** /home/adaptor/scripts/
-WORKDIR /home/adaptor
-CMD ./kuma
+FROM golang:1.14-stretch
+RUN apt update && apt install ca-certificates curl -y
+# Install kubectl
+RUN curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl" && \
+	chmod +x ./kubectl && \
+	mv ./kubectl /usr/local/bin/kubectl
+
+RUN mkdir ${HOME}/.kuma/ && \
+	mkdir /home/scripts/ && \
+	mkdir -p /root/.kube/
+
+COPY --from=bd /go/src/github.com/layer5io/meshery-kuma/meshery-kuma /home/
+COPY ${PWD}/scripts /home/scripts
+WORKDIR /home
+CMD ./meshery-kuma

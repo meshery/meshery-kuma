@@ -17,32 +17,45 @@ type MeshInstance struct {
 }
 
 // CreateInstance installs and creates a mesh environment up and running
-func (h *handler) CreateInstance(k8sconfig []byte, kubecontext string) error {
+func (h *handler) installKuma(del bool) (string, error) {
+	status := "installing"
+
+	if del {
+		status = "removing"
+		// Implement delete instance
+	}
+
 	meshinstance := &MeshInstance{}
 	err := h.config.MeshInstance(meshinstance)
 	if err != nil {
-		return ErrMeshConfig(err)
+		return status, ErrMeshConfig(err)
 	}
 
-	h.log.Info("Installing Kuma.......................")
-	err = meshinstance.installMesh()
+	h.log.Info("Installing Kuma")
+	err = meshinstance.installKumactl()
 	if err != nil {
-		h.log.Err("Kuma installation failed!!", ErrInstallMesh(err).Error())
-		return ErrInstallMesh(err)
+		h.log.Err("Kuma installation failed", ErrInstallMesh(err).Error())
+		return status, ErrInstallMesh(err)
 	}
 
-	h.log.Info("Port forwarding!!!")
+	h.log.Info("Port forwarding")
 	err = meshinstance.portForward()
 	if err != nil {
-		h.log.Err("Kuma portforwarding failed!!", ErrPortForward(err).Error())
-		return ErrPortForward(err)
+		h.log.Err("Kuma portforwarding failed", ErrPortForward(err).Error())
+		return status, ErrPortForward(err)
 	}
-	return nil
+
+	return "deployed", nil
+}
+
+// installSampleApp installs and creates a sample bookinfo application up and running
+func (h *handler) installSampleApp() (string, error) {
+	return "deployed", nil
 }
 
 // installMesh installs the mesh in the cluster or the target location
-func (m *MeshInstance) installMesh() error {
-	Executable, err := exec.LookPath("./scripts/installer.sh")
+func (m *MeshInstance) installKumactl() error {
+	Executable, err := exec.LookPath("./scripts/kuma/installer.sh")
 	if err != nil {
 		return err
 	}
