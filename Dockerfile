@@ -3,7 +3,7 @@ ARG CONFIG_PROVIDER="local"
 RUN apt update && apt install git libc-dev gcc pkgconf -y
 COPY ${PWD} /go/src/github.com/layer5io/meshery-kuma/
 WORKDIR /go/src/github.com/layer5io/meshery-kuma/
-RUN go mod vendor && go build -ldflags="-w -s -X main.configProvider=$CONFIG_PROVIDER" -a -o meshery-kuma
+RUN go build -ldflags="-w -s -X main.configProvider=$CONFIG_PROVIDER" -a -o meshery-kuma
 
 FROM golang:1.14-stretch
 RUN apt update && apt install ca-certificates curl -y
