@@ -180,7 +180,7 @@ func tcpCheck(ip string, port int32) bool {
 }
 
 // runConformanceTest runs the conformance test
-func (test *SmiTest) runConformanceTest(adaptorname string, response *ConformanceResponse) error {
+func (test *SmiTest) runConformanceTest(adaptername string, response *ConformanceResponse) error {
 	labels := make(map[string]string, 0)
 	annotations := map[string]string{
 		"kuma.io/gateway": "enabled",
@@ -194,7 +194,7 @@ func (test *SmiTest) runConformanceTest(adaptorname string, response *Conformanc
 	result, err := cClient.CClient.RunTest(context.TODO(), &conformance.Request{
 		Annotations: annotations,
 		Labels:      labels,
-		Meshname:    adaptorname,
+		Meshname:    adaptername,
 	})
 	if err != nil {
 		return err

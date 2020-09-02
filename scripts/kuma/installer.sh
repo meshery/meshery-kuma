@@ -81,4 +81,4 @@ if ! rm -rf kuma-$KUMA_VERSION; then
 fi
 
 printf "INFO\tKuma service mesh has been installed successfully!!\n"
-printf "Visit: https://meshery.io/adaptors/kuma/dashboard for more information\n"
+printf "Visit: https://meshery.io/adapters/kuma/dashboard for more information\n"

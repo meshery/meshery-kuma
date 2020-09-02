@@ -16,7 +16,7 @@ var (
 	configProvider = "local"
 )
 
-// main is the entrypoint of the adaptor
+// main is the entrypoint of the adapter
 func main() {
 
 	// Initialize application specific configs and dependencies
@@ -50,10 +50,10 @@ func main() {
 	service.StartedAt = time.Now()
 
 	// Server Initialization
-	log.Info(fmt.Sprintf("Adaptor Started at: %s", service.Port))
+	log.Info(fmt.Sprintf("adapter Started at: %s", service.Port))
 	err = grpc.Start(service, tracer)
 	if err != nil {
-		log.Err("Adaptor crashed!!", err.Error())
+		log.Err("adapter crashed!!", err.Error())
 		os.Exit(1)
 	}
 }
