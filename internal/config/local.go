@@ -35,7 +35,7 @@ func (l *Local) GetKey(key string) string {
 func (l *Local) Server(result interface{}) error {
 
 	d := fmt.Sprintf(`{
-		"name":    "kuma-adaptor",
+		"name":    "kuma-adapter",
 		"port":    "10007",
 		"traceurl": "%s",
 		"version": "v1.0.0"

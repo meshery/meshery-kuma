@@ -16,7 +16,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// Handler provides the methods supported by the adaptor
+// Handler provides the methods supported by the adapter
 type Handler interface {
 	GetName() string
 	CreateInstance([]byte, string, *chan interface{}) error
@@ -27,7 +27,7 @@ type Handler interface {
 	StreamInfo(*Event)
 }
 
-// handler holds the dependencies for kuma-adaptor
+// handler holds the dependencies for kuma-adapter
 type handler struct {
 	config  config.Handler
 	log     logger.Handler
