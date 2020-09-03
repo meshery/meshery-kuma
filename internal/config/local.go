@@ -1,9 +1,6 @@
 package config
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/layer5io/gokit/utils"
 )
 
@@ -33,13 +30,12 @@ func (l *Local) GetKey(key string) string {
 
 // Server provides server specific configuration
 func (l *Local) Server(result interface{}) error {
-
-	d := fmt.Sprintf(`{
+	d := `{
 		"name":    "kuma-adaptor",
 		"port":    "10007",
-		"traceurl": "%s",
+		"traceurl": " ",
 		"version": "v1.0.0"
-	}`, os.Getenv("TRACING_ENDPOINT"))
+	}`
 	return utils.Unmarshal(d, result)
 }
 
@@ -59,7 +55,6 @@ func (l *Local) MeshInstance(result interface{}) error {
 		"installmode": "flat",
 		"installplatform": "kubernetes",
 		"installzone": " ",
-		"installversion": "0.7.0",
 		"mgmtaddr": "0.0.0.0:8000",
 		"kumaaddr": "5681"
 	}`

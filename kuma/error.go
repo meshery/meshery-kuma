@@ -39,23 +39,3 @@ func ErrClientSet(err error) error {
 func ErrStreamEvent(err error) error {
 	return errors.New(errors.ErrStreamEvent, fmt.Sprintf("Error streaming event: %s", err.Error()))
 }
-
-// ErrInstallSmi is the error for streaming event
-func ErrInstallSmi(err error) error {
-	return errors.New(errors.ErrInstallSmi, fmt.Sprintf("Error installing smi tool: %s", err.Error()))
-}
-
-// ErrConnectSmi is the error for streaming event
-func ErrConnectSmi(err error) error {
-	return errors.New(errors.ErrConnectSmi, fmt.Sprintf("Error connecting to smi tool: %s", err.Error()))
-}
-
-// ErrRunSmi is the error for streaming event
-func ErrRunSmi(err error) error {
-	return errors.New(errors.ErrRunSmi, fmt.Sprintf("Error running smi tool: %s", err.Error()))
-}
-
-// ErrDeleteSmi is the error for streaming event
-func ErrDeleteSmi(err error) error {
-	return errors.New(errors.ErrDeleteSmi, fmt.Sprintf("Error deleting smi tool: %s", err.Error()))
-}

@@ -2,7 +2,6 @@ package kuma
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	cfg "github.com/layer5io/meshery-kuma/internal/config"
@@ -20,6 +19,12 @@ type Operations map[string]*Operation
 // ApplyOperation applies the operation on kuma
 func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del bool) error {
 
+	operations := make(Operations, 0)
+	err := h.config.Operations(&operations)
+	if err != nil {
+		return err
+	}
+
 	status := "deploying"
 	e := &Event{
 		Operationid: id,
@@ -28,9 +33,9 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 	}
 
 	switch op {
-	case cfg.InstallKuma:
+	case cfg.InstallKumav071, cfg.InstallKumav070, cfg.InstallKumav060:
 		go func(hh *handler, ee *Event) {
-			if status, err := hh.installKuma(del); err != nil {
+			if status, err := hh.installKuma(del, operations[op].Properties["version"]); err != nil {
 				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", status)
 				e.Details = err.Error()
 				hh.StreamErr(e, err)
@@ -40,31 +45,24 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 			ee.Details = fmt.Sprintf("The Kuma service mesh is now %s.", status)
 			hh.StreamInfo(e)
 		}(h, e)
-	case cfg.InstallSample:
+	case cfg.InstallSampleBookInfo:
 		go func(hh *handler, ee *Event) {
-			if status, err := h.installSampleApp(); err != nil {
-				e.Summary = fmt.Sprintf("Error while %s Sample application", status)
+			if status, err := hh.installSampleApp(operations[op].Properties["description"]); err != nil {
+				e.Summary = fmt.Sprintf("Error while %s Sample %s application", status, operations[op].Properties["description"])
 				e.Details = err.Error()
-				h.StreamErr(e, err)
+				hh.StreamErr(e, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("Sample application %s successfully", status)
-			ee.Details = fmt.Sprintf("The Sample application is now %s.", status)
+			ee.Summary = fmt.Sprintf("Sample %s application %s successfully", operations[op].Properties["description"], status)
+			ee.Details = fmt.Sprintf("The Sample %s application is now %s.", operations[op].Properties["description"], status)
 			hh.StreamInfo(e)
 		}(h, e)
-	case cfg.RunSmiConformance:
+	case cfg.ValidateSmiConformance:
 		go func(hh *handler, ee *Event) {
-			result, err := h.runSmiTest(context.TODO(), h.kubeClient)
+			err := hh.smiTest(ee.Operationid)
 			if err != nil {
-				e.Summary = fmt.Sprintf("Error while %s running smi-conformance test", result.Status)
-				e.Details = err.Error()
-				h.StreamErr(e, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("Smi conformance test %s successfully", result.Status)
-			jsondata, _ := json.Marshal(result)
-			ee.Details = string(jsondata)
-			hh.StreamInfo(e)
 		}(h, e)
 	default:
 		h.StreamErr(e, ErrOpInvalid)
@@ -76,6 +74,9 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 // ListOperations lists the operations available
 func (h *handler) ListOperations() (Operations, error) {
 	operations := make(Operations, 0)
-	h.config.Operations(&operations)
+	err := h.config.Operations(&operations)
+	if err != nil {
+		return nil, err
+	}
 	return operations, nil
 }

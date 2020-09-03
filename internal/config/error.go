@@ -8,7 +8,7 @@ import (
 
 var (
 	// ErrEmptyConfig is the error object for empty config
-	ErrEmptyConfig = errors.New("700", "Config not initialized")
+	ErrEmptyConfig = errors.New(errors.ErrEmptyConfig, "Config not initialized")
 )
 
 // ErrViper is the error object for viper

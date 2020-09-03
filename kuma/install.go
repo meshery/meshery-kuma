@@ -17,7 +17,7 @@ type MeshInstance struct {
 }
 
 // CreateInstance installs and creates a mesh environment up and running
-func (h *handler) installKuma(del bool) (string, error) {
+func (h *handler) installKuma(del bool, version string) (string, error) {
 	status := "installing"
 
 	if del {
@@ -25,7 +25,9 @@ func (h *handler) installKuma(del bool) (string, error) {
 		// Implement delete instance
 	}
 
-	meshinstance := &MeshInstance{}
+	meshinstance := &MeshInstance{
+		InstallVersion: version,
+	}
 	err := h.config.MeshInstance(meshinstance)
 	if err != nil {
 		return status, ErrMeshConfig(err)
@@ -49,15 +51,23 @@ func (h *handler) installKuma(del bool) (string, error) {
 }
 
 // installSampleApp installs and creates a sample bookinfo application up and running
-func (h *handler) installSampleApp() (string, error) {
+func (h *handler) installSampleApp(name string) (string, error) {
 	return "deployed", nil
 }
 
 // installMesh installs the mesh in the cluster or the target location
-func (m *MeshInstance) installKumactl() error {
+func (m *MeshInstance) installKumactl(del string) error {
+
 	Executable, err := exec.LookPath("./scripts/kuma/installer.sh")
 	if err != nil {
 		return err
+	}
+
+	if len(del) > 2 {
+		Executable, err := exec.LookPath("./scripts/kuma/delete.sh")
+		if err != nil {
+			return err
+		}
 	}
 
 	cmd := &exec.Cmd{
