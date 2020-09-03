@@ -5,7 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/kumarabd/gokit/logger"
+	"github.com/layer5io/gokit/logger"
+	"github.com/layer5io/gokit/utils"
 	"github.com/layer5io/meshery-kuma/api/grpc"
 	"github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/internal/tracing"
@@ -13,43 +14,49 @@ import (
 )
 
 var (
+	serviceName    = "kuma-adaptor"
 	configProvider = "local"
+	kubeConfigPath = fmt.Sprintf("%s/.kube/config", utils.GetHome())
 )
 
+// main is the entrypoint of the adaptor
 func main() {
 
-	// Initialize application specific configs and dependencies
-	// App and request config
-	cfg, err := config.New(configProvider)
-	if err != nil {
-		fmt.Println("Config Init Failed", err.Error())
-		os.Exit(1)
-	}
-	service := &grpc.Service{}
-	_ = cfg.Server(&service)
-
 	// Initialize Logger instance
-	log, err := logger.New(service.Name)
+	log, err := logger.New(serviceName)
 	if err != nil {
 		fmt.Println("Logger Init Failed", err.Error())
 		os.Exit(1)
 	}
 
-	// Initialize Tracing instance
-	traceProvider, err := tracing.New(service.Name, service.TraceURL)
+	// Initialize application specific configs and dependencies
+	// App and request config
+	cfg, err := config.New(configProvider)
 	if err != nil {
-		fmt.Println("Tracing Init Failed", err.Error())
+		log.Err("Config Init Failed", err.Error())
+		os.Exit(1)
+	}
+	service := &grpc.Service{}
+	_ = cfg.Server(&service)
+	cfg.SetKey("kube-config-path", kubeConfigPath)
+
+	// Initialize Tracing instance
+	tracer, err := tracing.New(service.Name, service.TraceURL)
+	if err != nil {
+		log.Err("Tracing Init Failed", err.Error())
 		os.Exit(1)
 	}
 
 	// Initialize Handler intance
 	handler := kuma.New(cfg, log)
+	handler = kuma.AddLogger(log, handler)
 	service.Handler = handler
+	service.Channel = make(chan interface{}, 100)
 	service.StartedAt = time.Now()
 
 	// Server Initialization
-	log.Info("Adaptor Started")
-	err = grpc.Start(service, traceProvider)
+	log.Info(fmt.Sprintf("Adaptor Started at: %s", service.Port))
+	err = grpc.Start(service, tracer)
 	if err != nil {
 		log.Err("Adaptor crashed!!", err.Error())
 		os.Exit(1)

@@ -1,5 +1,6 @@
 package config
 
+// Handler is the handler interface for config
 type Handler interface {
 
 	// SetKey sets a key value in the config
