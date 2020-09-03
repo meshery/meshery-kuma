@@ -12,7 +12,6 @@ import (
 	"github.com/layer5io/gokit/logger"
 	"github.com/layer5io/gokit/models"
 	"github.com/layer5io/meshery-kuma/internal/config"
-	"gopkg.in/yaml.v2"
 )
 
 // Handler provides the methods supported by the adapter
