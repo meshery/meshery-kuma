@@ -58,7 +58,7 @@ func main() {
 	log.Info(fmt.Sprintf("Adaptor Started at: %s", service.Port))
 	err = grpc.Start(service, tracer)
 	if err != nil {
-		log.Err("Adaptor crashed!!", err.Error())
+		log.Err("adapter crashed!!", err.Error())
 		os.Exit(1)
 	}
 }

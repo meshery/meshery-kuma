@@ -1,6 +1,6 @@
 package kuma
 
-// Spec holds the specifications for kuma adaptor
+// Spec holds the specifications for kuma adapter
 type Spec struct {
 	Name    string `json:"name"`
 	Status  string `json:"status"`

@@ -4,7 +4,7 @@ var (
 
 	// server holds server configuration
 	server = map[string]string{
-		"name":    "kuma-adaptor",
+		"name":    "kuma-adapter",
 		"port":    "10007",
 		"version": "v1.0.0",
 	}
