@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/kumarabd/gokit/utils"
+	"github.com/layer5io/gokit/utils"
 )
 
 // Local instance for configuration
@@ -33,7 +33,7 @@ func (l *Local) Server(result interface{}) error {
 	d := `{
 		"name":    "kuma-adaptor",
 		"port":    "10007",
-		"traceurl": "http://localhost:14268/api/traces",
+		"traceurl": " ",
 		"version": "v1.0.0"
 	}`
 	return utils.Unmarshal(d, result)
@@ -42,7 +42,7 @@ func (l *Local) Server(result interface{}) error {
 // MeshSpec provides mesh specific configuration
 func (l *Local) MeshSpec(result interface{}) error {
 	d := `{
-		"name":    "kuma",
+		"name":    "Kuma",
 		"status":  "not installed",
 		"version": "none"
 	}`
@@ -55,14 +55,13 @@ func (l *Local) MeshInstance(result interface{}) error {
 		"installmode": "flat",
 		"installplatform": "kubernetes",
 		"installzone": " ",
-		"installversion": "0.7.0",
 		"mgmtaddr": "0.0.0.0:8000",
 		"kumaaddr": "5681"
 	}`
 	return utils.Unmarshal(d, result)
 }
 
-// Mesh provides mesh specific configuration
+// Operations provides operations in the mesh
 func (l *Local) Operations(result interface{}) error {
 	d, err := utils.Marshal(operations)
 	if err != nil {

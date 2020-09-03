@@ -3,13 +3,15 @@ package config
 import (
 	"fmt"
 
-	"github.com/kumarabd/gokit/errors"
+	"github.com/layer5io/gokit/errors"
 )
 
 var (
-	ErrEmptyConfig = errors.New("700", "Config not initialized")
+	// ErrEmptyConfig is the error object for empty config
+	ErrEmptyConfig = errors.New(errors.ErrEmptyConfig, "Config not initialized")
 )
 
+// ErrViper is the error object for viper
 func ErrViper(err error) error {
-	return errors.New("701", fmt.Sprintf("Viper initialization failed with error: %s", err.Error()))
+	return errors.New(errors.ErrViper, fmt.Sprintf("Viper initialization failed with error: %s", err.Error()))
 }

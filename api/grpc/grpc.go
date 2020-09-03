@@ -25,6 +25,7 @@ type Service struct {
 	StartedAt time.Time `json:"startedat,string"`
 	TraceURL  string    `json:"traceurl"`
 	Handler   kuma.Handler
+	Channel   chan interface{}
 }
 
 // panicHandler is the handler function to handle panic errors
@@ -33,7 +34,7 @@ func panicHandler(r interface{}) error {
 	return ErrPanic(r)
 }
 
-// StartServer starts grpc server
+// Start starts grpc server
 func Start(s *Service, tr tracing.Handler) error {
 
 	address := fmt.Sprintf(":%s", s.Port)

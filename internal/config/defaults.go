@@ -1,10 +1,5 @@
 package config
 
-import (
-	"fmt"
-	"os/user"
-)
-
 var (
 
 	// server holds server configuration
@@ -24,29 +19,45 @@ var (
 
 	// operations holds the supported operations inside mesh
 	operations = map[string]interface{}{
-		INSTALL_KUMA: map[string]interface{}{
-			"type": "INSTALL",
+		InstallKumav071: map[string]interface{}{
+			"type": "0",
 			"properties": map[string]string{
-				"description": "Kuma installation",
+				"description": "Kuma service mesh (0.7.1)",
+				"version":     "0.7.1",
+			},
+		},
+		InstallKumav070: map[string]interface{}{
+			"type": "0",
+			"properties": map[string]string{
+				"description": "Kuma service mesh (0.7.0)",
+				"version":     "0.7.0",
+			},
+		},
+		InstallKumav060: map[string]interface{}{
+			"type": "0",
+			"properties": map[string]string{
+				"description": "Kuma service mesh (0.6.0)",
+				"version":     "0.6.0",
+			},
+		},
+		InstallSampleBookInfo: map[string]interface{}{
+			"type": "1",
+			"properties": map[string]string{
+				"description": "BookInfo",
 				"version":     "latest",
 			},
 		},
-		INSTALL_SAMPLE: map[string]interface{}{
-			"type": "INSTALL",
+		ValidateSmiConformance: map[string]interface{}{
+			"type": "3",
 			"properties": map[string]string{
-				"description": "Sample application installation",
+				"description": "SMI conformance test",
 				"version":     "latest",
 			},
 		},
 	}
 
 	// Viper configuration
-	filepath = fmt.Sprintf("%s/.kuma", GetHome())
+	filepath = "/root/.kuma"
 	filename = "config.yml"
 	filetype = "yaml"
 )
-
-func GetHome() string {
-	usr, _ := user.Current()
-	return usr.HomeDir
-}

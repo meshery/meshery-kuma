@@ -9,17 +9,20 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
+// KeyValue is the key value datastructure for store
 type KeyValue struct {
 	Key   string
 	Value string
 }
 
+// Handler is the handler interface for tracing
 type Handler interface {
 	Tracer(name string) interface{}
 	Span(ctx context.Context)
 	AddEvent(name string, attrs ...*KeyValue)
 }
 
+// handler is the handler object for tracing
 type handler struct {
 	provider apitrace.Provider
 	context  context.Context
@@ -28,6 +31,11 @@ type handler struct {
 
 // New initiates the tracing provider for a given service
 func New(service string, endpoint string) (Handler, error) {
+
+	if len(endpoint) < 2 {
+		return nil, nil
+	}
+
 	provider, flush, err := jaeger.NewExportPipeline(
 		jaeger.WithCollectorEndpoint(endpoint),
 		jaeger.WithProcess(jaeger.Process{
