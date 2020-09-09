@@ -59,7 +59,7 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 		}(h, e)
 	case cfg.ValidateSmiConformance:
 		go func(hh *handler, ee *Event) {
-			err := hh.smiTest(ee.Operationid)
+			err := hh.validateSMIConformance(ee.Operationid)
 			if err != nil {
 				return
 			}

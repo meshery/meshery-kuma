@@ -33,7 +33,7 @@ func (h *handler) installKuma(del bool, version string) (string, error) {
 	}
 
 	h.log.Info("Installing Kuma")
-	err = meshinstance.installKumactl(del)
+	err = meshinstance.installUsingKumactl(del)
 	if err != nil {
 		h.log.Err("Kuma installation failed", ErrInstallMesh(err).Error())
 		return status, ErrInstallMesh(err)
@@ -51,11 +51,12 @@ func (h *handler) installKuma(del bool, version string) (string, error) {
 
 // installSampleApp installs and creates a sample bookinfo application up and running
 func (h *handler) installSampleApp(name string) (string, error) {
+	// Needs implementation
 	return "deployed", nil
 }
 
 // installMesh installs the mesh in the cluster or the target location
-func (m *MeshInstance) installKumactl(del bool) error {
+func (m *MeshInstance) installUsingKumactl(del bool) error {
 
 	Executable, err := exec.LookPath("./scripts/kuma/installer.sh")
 	if err != nil {
@@ -67,6 +68,7 @@ func (m *MeshInstance) installKumactl(del bool) error {
 		if err != nil {
 			return err
 		}
+		return nil
 	}
 
 	cmd := &exec.Cmd{

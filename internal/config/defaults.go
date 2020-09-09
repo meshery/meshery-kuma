@@ -22,35 +22,35 @@ var (
 		InstallKumav071: map[string]interface{}{
 			"type": "0",
 			"properties": map[string]string{
-				"description": "Kuma service mesh (0.7.1)",
+				"description": "Install Kuma service mesh (0.7.1)",
 				"version":     "0.7.1",
 			},
 		},
 		InstallKumav070: map[string]interface{}{
 			"type": "0",
 			"properties": map[string]string{
-				"description": "Kuma service mesh (0.7.0)",
+				"description": "Install Kuma service mesh (0.7.0)",
 				"version":     "0.7.0",
 			},
 		},
 		InstallKumav060: map[string]interface{}{
 			"type": "0",
 			"properties": map[string]string{
-				"description": "Kuma service mesh (0.6.0)",
+				"description": "Install Kuma service mesh (0.6.0)",
 				"version":     "0.6.0",
 			},
 		},
 		InstallSampleBookInfo: map[string]interface{}{
 			"type": "1",
 			"properties": map[string]string{
-				"description": "BookInfo",
+				"description": "Install BookInfo Application",
 				"version":     "latest",
 			},
 		},
 		ValidateSmiConformance: map[string]interface{}{
 			"type": "3",
 			"properties": map[string]string{
-				"description": "SMI conformance test",
+				"description": "Validate SMI conformance",
 				"version":     "latest",
 			},
 		},
