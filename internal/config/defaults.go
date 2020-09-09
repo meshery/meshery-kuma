@@ -1,9 +1,5 @@
 package config
 
-import (
-	"os/user"
-)
-
 var (
 
 	// server holds server configuration
@@ -23,24 +19,38 @@ var (
 
 	// operations holds the supported operations inside mesh
 	operations = map[string]interface{}{
-		InstallKuma: map[string]interface{}{
+		InstallKumav071: map[string]interface{}{
 			"type": "0",
 			"properties": map[string]string{
-				"description": "Install kuma service mesh",
-				"version":     "latest",
+				"description": "Install Kuma service mesh (0.7.1)",
+				"version":     "0.7.1",
 			},
 		},
-		InstallSample: map[string]interface{}{
+		InstallKumav070: map[string]interface{}{
+			"type": "0",
+			"properties": map[string]string{
+				"description": "Install Kuma service mesh (0.7.0)",
+				"version":     "0.7.0",
+			},
+		},
+		InstallKumav060: map[string]interface{}{
+			"type": "0",
+			"properties": map[string]string{
+				"description": "Install Kuma service mesh (0.6.0)",
+				"version":     "0.6.0",
+			},
+		},
+		InstallSampleBookInfo: map[string]interface{}{
 			"type": "1",
 			"properties": map[string]string{
-				"description": "Install sample application",
+				"description": "Install BookInfo Application",
 				"version":     "latest",
 			},
 		},
-		RunSmiConformance: map[string]interface{}{
+		ValidateSmiConformance: map[string]interface{}{
 			"type": "3",
 			"properties": map[string]string{
-				"description": "Run SMI conformance test",
+				"description": "Validate SMI conformance",
 				"version":     "latest",
 			},
 		},
@@ -51,9 +61,3 @@ var (
 	filename = "config.yml"
 	filetype = "yaml"
 )
-
-// GetHome returns the home path
-func GetHome() string {
-	usr, _ := user.Current()
-	return usr.HomeDir
-}

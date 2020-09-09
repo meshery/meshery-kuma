@@ -2,10 +2,9 @@ package kuma
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
-	"os/user"
 
+	"gopkg.in/yaml.v2"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -13,7 +12,6 @@ import (
 	"github.com/layer5io/gokit/logger"
 	"github.com/layer5io/gokit/models"
 	"github.com/layer5io/meshery-kuma/internal/config"
-	"gopkg.in/yaml.v2"
 )
 
 // Handler provides the methods supported by the adapter
@@ -33,7 +31,9 @@ type handler struct {
 	log     logger.Handler
 	channel *chan interface{}
 
-	kubeClient *kubernetes.Clientset
+	kubeClient     *kubernetes.Clientset
+	kubeConfigPath string
+	smiChart       string
 }
 
 // New initializes email handler.
@@ -48,8 +48,9 @@ func New(c config.Handler, l logger.Handler) Handler {
 func (h *handler) CreateInstance(kubeconfig []byte, contextName string, ch *chan interface{}) error {
 
 	h.channel = ch
+	h.kubeConfigPath = h.config.GetKey("kube-config-path")
 
-	config, err := clientConfig(kubeconfig, contextName)
+	config, err := h.clientConfig(kubeconfig, contextName)
 	if err != nil {
 		return ErrClientConfig(err)
 	}
@@ -66,7 +67,7 @@ func (h *handler) CreateInstance(kubeconfig []byte, contextName string, ch *chan
 }
 
 // configClient creates a config client
-func clientConfig(kubeconfig []byte, contextName string) (*rest.Config, error) {
+func (h *handler) clientConfig(kubeconfig []byte, contextName string) (*rest.Config, error) {
 	if len(kubeconfig) > 0 {
 		ccfg, err := clientcmd.Load(kubeconfig)
 		if err != nil {
@@ -75,7 +76,7 @@ func clientConfig(kubeconfig []byte, contextName string) (*rest.Config, error) {
 		if contextName != "" {
 			ccfg.CurrentContext = contextName
 		}
-		err = writeKubeconfig(kubeconfig, contextName)
+		err = writeKubeconfig(kubeconfig, contextName, h.kubeConfigPath)
 		if err != nil {
 			return nil, err
 		}
@@ -85,7 +86,7 @@ func clientConfig(kubeconfig []byte, contextName string) (*rest.Config, error) {
 }
 
 // writeKubeconfig creates kubeconfig in local container
-func writeKubeconfig(kubeconfig []byte, contextName string) error {
+func writeKubeconfig(kubeconfig []byte, contextName string, path string) error {
 
 	yamlConfig := models.Kubeconfig{}
 	err := yaml.Unmarshal(kubeconfig, &yamlConfig)
@@ -100,12 +101,7 @@ func writeKubeconfig(kubeconfig []byte, contextName string) error {
 		return err
 	}
 
-	user, err := user.Current()
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile(fmt.Sprintf("%s/.kube/config", user.HomeDir), d, 0600)
+	err = ioutil.WriteFile(path, d, 0600)
 	if err != nil {
 		return err
 	}

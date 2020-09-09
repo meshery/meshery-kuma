@@ -1,5 +1,9 @@
 package kuma
 
+import (
+	"github.com/layer5io/gokit/errors"
+)
+
 type Event struct {
 	Operationid string `json:"operationid,omitempty"`
 	EType       int32  `json:"type,string,omitempty"`
@@ -9,7 +13,7 @@ type Event struct {
 
 // StreamErr handles the error stream requests
 func (h *handler) StreamErr(e *Event, err error) {
-	h.log.Err("Sending error event", err.Error())
+	h.log.Err(errors.GetCode(err), err.Error())
 	e.EType = 2
 	*h.channel <- e
 }
