@@ -9,7 +9,7 @@ import (
 	"github.com/layer5io/gokit/smi"
 )
 
-func (h *handler) validateSMIConformance(id string) error {
+func (h *handler) validateSMIConformance(id string, version string) error {
 
 	e := &Event{
 		Operationid: id,
@@ -21,7 +21,7 @@ func (h *handler) validateSMIConformance(id string) error {
 		"kuma.io/gateway": "enabled",
 	}
 
-	test, err := smi.New(context.TODO(), strings.ToLower(h.GetName()), h.kubeClient)
+	test, err := smi.New(context.TODO(), id, version, strings.ToLower(h.GetName()), h.kubeClient)
 	if err != nil {
 		e.Summary = "Error while creating smi-conformance tool"
 		e.Details = err.Error()
