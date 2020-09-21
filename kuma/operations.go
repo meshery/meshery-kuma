@@ -41,6 +41,7 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 				hh.StreamErr(e, err)
 				return
 			}
+			h.config.SetKey(cfg.RunningMeshVersion, operations[op].Properties["version"])
 			ee.Summary = fmt.Sprintf("Kuma service mesh %s successfully", status)
 			ee.Details = fmt.Sprintf("The Kuma service mesh is now %s.", status)
 			hh.StreamInfo(e)
@@ -59,7 +60,7 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 		}(h, e)
 	case cfg.ValidateSmiConformance:
 		go func(hh *handler, ee *Event) {
-			err := hh.validateSMIConformance(ee.Operationid)
+			err := hh.validateSMIConformance(ee.Operationid, h.config.GetKey(cfg.RunningMeshVersion))
 			if err != nil {
 				return
 			}
