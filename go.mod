@@ -7,7 +7,7 @@ replace github.com/kudobuilder/kuttl => github.com/layer5io/kuttl v0.4.1-0.20200
 require (
 	github.com/golang/protobuf v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
-	github.com/layer5io/gokit v0.1.5
+	github.com/layer5io/gokit v0.1.6
 	github.com/spf13/viper v1.7.0
 	go.opentelemetry.io/otel v0.10.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.10.0
