@@ -160,9 +160,7 @@ func (test *SmiTest) installConformanceTool() error {
 	}
 
 	actionConfig := &action.Configuration{}
-	if err := actionConfig.Init(kube.GetConfig(test.kubeConfigPath, "", namespace), namespace, os.Getenv("HELM_DRIVER"), func(format string, v ...interface{}) {
-		fmt.Sprintf(format, v)
-	}); err != nil {
+	if err := actionConfig.Init(kube.GetConfig(test.kubeConfigPath, "", namespace), namespace, os.Getenv("HELM_DRIVER"), nil); err != nil {
 		return err
 	}
 
