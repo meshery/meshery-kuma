@@ -60,7 +60,7 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: ${{ secrets.GO_VERSION }}
-      - run: GOPROXY=direct GOSUMDB=off GO111MODULE=on go vet -mod=vendor -tags draft ./...
+      - run: GOPROXY=direct GOSUMDB=off GO111MODULE=on go vet -tags draft ./...
   sec_check:
     name: Security check
     runs-on: ubuntu-latest
@@ -97,7 +97,7 @@ jobs:
          echo "current-context:" ${CURRENTCONTEXT}   
          export KUBECONFIG="${HOME}/.kube/config"
          echo "environment-kubeconfig:" ${KUBECONFIG}
-         GOPROXY=direct GOSUMDB=off GO111MODULE=on go test -mod=vendor ./...
+         GOPROXY=direct GOSUMDB=off GO111MODULE=on go test ./...
   build:
     name: Build check
     runs-on: ubuntu-latest
@@ -111,7 +111,7 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: ${{ secrets.GO_VERSION }}
-      - run: GOPROXY=direct GOSUMDB=off GO111MODULE=on go build -mod=vendor .
+      - run: GOPROXY=direct GOSUMDB=off GO111MODULE=on go build .
   docker:
     name: Docker build and push
     runs-on: ubuntu-latest
