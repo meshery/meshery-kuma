@@ -38,6 +38,9 @@ func (h *handler) installKuma(del bool, version string) (string, error) {
 		h.log.Err("Kuma installation failed", ErrInstallMesh(err).Error())
 		return status, ErrInstallMesh(err)
 	}
+	if del {
+		return "removed", nil
+	}
 
 	h.log.Info("Port forwarding")
 	err = meshinstance.portForward()
@@ -68,7 +71,6 @@ func (m *MeshInstance) installUsingKumactl(del bool) error {
 		if err != nil {
 			return err
 		}
-		return nil
 	}
 
 	cmd := &exec.Cmd{
