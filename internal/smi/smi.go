@@ -233,7 +233,6 @@ func (test *SmiTest) runConformanceTest(response *Response) error {
 	if err != nil {
 		return err
 	}
-	defer cClient.Close()
 
 	result, err := cClient.CClient.RunTest(context.TODO(), &conformance.Request{
 		Annotations: test.annotations,
@@ -263,6 +262,11 @@ func (test *SmiTest) runConformanceTest(response *Response) error {
 	}
 
 	response.MoreDetails = details
+
+	err = cClient.Close()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
