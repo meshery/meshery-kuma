@@ -8,11 +8,8 @@ import (
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 
-	apitrace "go.opentelemetry.io/otel/api/trace"
-	"go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"google.golang.org/grpc"
 
-	"github.com/layer5io/meshery-kuma/internal/tracing"
 	"github.com/layer5io/meshery-kuma/kuma"
 	"github.com/layer5io/meshery-kuma/meshes"
 )
@@ -28,6 +25,9 @@ type Service struct {
 	Channel   chan interface{}
 }
 
+// Options holds the dependency optional objects for the server.
+type Options struct{}
+
 // panicHandler is the handler function to handle panic errors
 func panicHandler(r interface{}) error {
 	fmt.Println("600 Error")
@@ -35,7 +35,7 @@ func panicHandler(r interface{}) error {
 }
 
 // Start starts grpc server
-func Start(s *Service, tr tracing.Handler) error {
+func Start(s *Service, options ...Options) error {
 
 	address := fmt.Sprintf(":%s", s.Port)
 	listener, err := net.Listen("tcp", address)
@@ -48,11 +48,11 @@ func Start(s *Service, tr tracing.Handler) error {
 			grpc_recovery.WithRecoveryHandler(panicHandler),
 		),
 	)
-	if tr != nil {
-		middlewares = middleware.ChainUnaryServer(
-			grpctrace.UnaryServerInterceptor(tr.Tracer(s.Name).(apitrace.Tracer)),
-		)
-	}
+	// if tr != nil {
+	// 	middlewares = middleware.ChainUnaryServer(
+	// 		grpctrace.UnaryServerInterceptor(tr.Tracer(s.Name).(apitrace.Tracer)),
+	// 	)
+	// }
 
 	server := grpc.NewServer(
 		grpc.UnaryInterceptor(middlewares),

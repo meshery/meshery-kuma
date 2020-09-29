@@ -1,5 +1,11 @@
 package config
 
+import (
+	"fmt"
+
+	"github.com/layer5io/gokit/utils"
+)
+
 var (
 
 	// server holds server configuration
@@ -57,7 +63,7 @@ var (
 	}
 
 	// Viper configuration
-	filepath = "/root/.kuma"
-	filename = "config.yml"
+	filepath = fmt.Sprintf("%s/.meshery/kuma/", utils.GetHome())
+	filename = "config"
 	filetype = "yaml"
 )

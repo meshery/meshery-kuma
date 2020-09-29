@@ -27,8 +27,8 @@ func (l *Local) SetKey(key string, value string) {
 }
 
 // GetKey gets a key value from local store
-func (l *Local) GetKey(key string) string {
-	return l.store[key]
+func (l *Local) GetKey(key string) (string, error) {
+	return l.store[key], nil
 }
 
 // Server provides server specific configuration

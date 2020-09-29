@@ -47,8 +47,12 @@ func New(c config.Handler, l logger.Handler) Handler {
 // newClient creates a new client
 func (h *handler) CreateInstance(kubeconfig []byte, contextName string, ch *chan interface{}) error {
 
+	var err error
 	h.channel = ch
-	h.kubeConfigPath = h.config.GetKey("kube-config-path")
+	h.kubeConfigPath, err = h.config.GetKey("kube-config-path")
+	if err != nil {
+		return ErrClientConfig(err)
+	}
 
 	config, err := h.clientConfig(kubeconfig, contextName)
 	if err != nil {

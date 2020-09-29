@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/layer5io/gokit/smi"
+	"github.com/layer5io/meshery-kuma/internal/smi"
 )
 
 func (h *handler) validateSMIConformance(id string, version string) error {

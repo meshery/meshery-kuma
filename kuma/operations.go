@@ -60,7 +60,12 @@ func (h *handler) ApplyOperation(ctx context.Context, op string, id string, del 
 		}(h, e)
 	case cfg.ValidateSmiConformance:
 		go func(hh *handler, ee *Event) {
-			err := hh.validateSMIConformance(ee.Operationid, h.config.GetKey(cfg.RunningMeshVersion))
+			version, err := h.config.GetKey(cfg.RunningMeshVersion)
+			if err != nil {
+				return
+			}
+
+			err = hh.validateSMIConformance(ee.Operationid, version)
 			if err != nil {
 				return
 			}
