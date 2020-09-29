@@ -15,7 +15,7 @@ import (
 
 var (
 	serviceName    = "kuma-adaptor"
-	configProvider = "local"
+	configProvider = "viper"
 	kubeConfigPath = fmt.Sprintf("%s/.kube/config", utils.GetHome())
 )
 

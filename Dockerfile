@@ -14,7 +14,8 @@ RUN curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.18.0/
 
 RUN mkdir ${HOME}/.kuma/ && \
 	mkdir /home/scripts/ && \
-	mkdir -p /root/.kube/
+	mkdir -p /root/.kube/ && \
+	mkdir -p /root/.meshery/kuma
 
 COPY --from=bd /go/src/github.com/layer5io/meshery-kuma/meshery-kuma /home/
 COPY ${PWD}/scripts /home/scripts

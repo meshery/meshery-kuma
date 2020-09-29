@@ -7,7 +7,7 @@ type Handler interface {
 	SetKey(key string, value string)
 
 	// GetKey gets a key value from the config
-	GetKey(key string) string
+	GetKey(key string) (string, error)
 
 	// Server provides the server specific configuration
 	Server(result interface{}) error
