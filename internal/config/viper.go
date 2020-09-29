@@ -21,7 +21,10 @@ func NewViper() (Handler, error) {
 
 	v.SetDefault("server", server)
 	v.SetDefault("mesh", mesh)
-	v.WriteConfig()
+	err := v.WriteConfig()
+	if err != nil {
+		return nil, ErrViper(err)
+	}
 
 	return &Viper{
 		instance: v,
