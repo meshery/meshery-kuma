@@ -499,8 +499,6 @@ github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 h1:SOEGU9fKiNWd/HOJuq
 github.com/lann/builder v0.0.0-20180802200727-47ae307949d0/go.mod h1:dXGbAdH5GtBTC4WfIxhKZfyBF/HBFgRZSWwZ9g/He9o=
 github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 h1:P6pPBnrTSX3DEVR4fDembhRWSsG5rVo6hYhAB/ADZrk=
 github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0/go.mod h1:vmVJ0l/dxyfGW6FmdpVm2joNMFikkuWg0EoCKLGUMNw=
-github.com/layer5io/gokit v0.1.15 h1:LlKvIa0seafCHNnmrz089sNl3DXV0WMP5aiRLAttBJU=
-github.com/layer5io/gokit v0.1.15/go.mod h1:AGOtt6fbKqg1Q1a9xY7cicF10s1MZJCzBiHg6PCRQMM=
 github.com/layer5io/gokit v0.1.16 h1:EHwYsDi7jBKXIZI4Fes9yMPiTDo+5IyXIwAC9nw5JH4=
 github.com/layer5io/gokit v0.1.16/go.mod h1:teEDjx0chMsXpV1ZvIkGM3Q7qi+aCstzan/OWoZgmvU=
 github.com/layer5io/kuttl v0.4.1-0.20200806180306-b7e46afd657f/go.mod h1:UmrVd7x+bNVKrpmKgTtfRiTKHZeNPcMjQproJ0vGwhE=
