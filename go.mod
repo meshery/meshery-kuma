@@ -21,8 +21,6 @@ require (
 	google.golang.org/grpc v1.33.1
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
-	helm.sh/helm/v3 v3.3.4
-	k8s.io/api v0.18.8
-	k8s.io/apimachinery v0.18.8
+	helm.sh/helm/v3 v3.3.4 // indirect
 	k8s.io/client-go v0.18.8
 )
