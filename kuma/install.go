@@ -61,13 +61,13 @@ func (h *handler) installSampleApp(name string) (string, error) {
 // installMesh installs the mesh in the cluster or the target location
 func (m *MeshInstance) installUsingKumactl(del bool) error {
 
-	Executable, err := exec.LookPath("./scripts/kuma/installer.sh")
+	Executable, err := exec.LookPath("./scripts/installer.sh")
 	if err != nil {
 		return err
 	}
 
 	if del {
-		Executable, err = exec.LookPath("./scripts/kuma/delete.sh")
+		Executable, err = exec.LookPath("./scripts/delete.sh")
 		if err != nil {
 			return err
 		}

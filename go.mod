@@ -11,8 +11,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
-	github.com/layer5io/gokit v0.1.12
-	github.com/layer5io/learn-layer5/smi-conformance v0.0.0-20200916172547-79cf11334bd7
+	github.com/layer5io/gokit v0.1.16
 	github.com/spf13/viper v1.7.0
 	go.opencensus.io v0.22.3 // indirect
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
@@ -22,9 +21,5 @@ require (
 	google.golang.org/grpc v1.31.0
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
-	helm.sh/helm/v3 v3.3.1
-	k8s.io/api v0.18.8
-	k8s.io/apimachinery v0.18.8
 	k8s.io/client-go v0.18.8
-	rsc.io/letsencrypt v0.0.3 // indirect
 )

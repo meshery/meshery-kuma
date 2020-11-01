@@ -71,7 +71,7 @@ else
   exit 1
 fi
 
-if ! VERSION=$KUMA_VERSION MODE=$KUMA_MODE PLATFORM=$KUMA_PLATFORM ZONE=$KUMA_ZONE ./scripts/kuma/deploy.sh; then
+if ! VERSION=$KUMA_VERSION MODE=$KUMA_MODE PLATFORM=$KUMA_PLATFORM ZONE=$KUMA_ZONE ./scripts/deploy.sh; then
 	printf "ERROR\tUnable to deploy\n"
 	exit 1
 fi
