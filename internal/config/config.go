@@ -1,34 +1,31 @@
 package config
 
-// Handler is the handler interface for config
-type Handler interface {
+import (
+	"github.com/layer5io/meshery-adapter-library/config"
+	configprovider "github.com/layer5io/meshery-adapter-library/config/provider"
+)
 
-	// SetKey sets a key value in the config
-	SetKey(key string, value string)
+// New creates a new config instance
+func New(provider string, environment string) (config.Handler, error) {
 
-	// GetKey gets a key value from the config
-	GetKey(key string) string
+	// Default config
+	opts = config.DefaultOpts
 
-	// Server provides the server specific configuration
-	Server(result interface{}) error
-
-	// MeshSpec provides the mesh specific configuration
-	MeshSpec(result interface{}) error
-
-	// MeshInstance provides the mesh specific configuration
-	MeshInstance(result interface{}) error
-
-	// Operations provides the list of operations available
-	Operations(result interface{}) error
-}
-
-// New returns the interface of the config handler
-func New(name string) (Handler, error) {
-	switch name {
-	case "local":
-		return NewLocal()
-	case "viper":
-		return NewViper()
+	// Config environment
+	switch environment {
+	case Production:
+		opts = ProductionConfig
+	case Development:
+		opts = developmentConfig
 	}
+
+	// Config provider
+	switch provider {
+	case configprovider.Viper:
+		return configprovider.NewViper(opts)
+	case configprovider.InMem:
+		return configprovider.NewInMem(opts)
+	}
+
 	return nil, ErrEmptyConfig
 }

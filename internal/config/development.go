@@ -1,24 +1,41 @@
 package config
 
-var (
+import (
+	"github.com/layer5io/meshery-adapter-library/config"
+	"github.com/layer5io/meshery-adapter-library/status"
+)
 
-	// server holds server configuration
-	server = map[string]string{
+const (
+	Development = "development"
+)
+
+var (
+	DevelopmentConfig = config.Options{
+		ServerConfig:   developmentServerConfig,
+		MeshSpec:       developmentMeshSpec,
+		MeshInstance:   developmentMeshInstance,
+		ProviderConfig: developmentProviderConfig,
+		Operations:     developmentOperations,
+	}
+
+	developmentServerConfig = map[string]string{
 		"name":    "kuma-adapter",
 		"port":    "10007",
 		"version": "v1.0.0",
 	}
 
-	// mesh holds mesh configuration
-	mesh = map[string]string{
+	developmentMeshSpec = map[string]string{
 		"name":     "kuma",
-		"status":   "not installed",
-		"traceurl": "http://localhost:14268/api/traces",
-		"version":  "0.6.0",
+		"status":   status.NotInstalled,
+		"traceurl": "none",
+		"version":  "none",
 	}
 
-	// operations holds the supported operations inside mesh
-	operations = map[string]interface{}{
+	developmentMeshInstance = map[string]string{}
+
+	developmentProviderConfig = map[string]string{}
+
+	developmentOperations = map[string]interface{}{
 		InstallKumav071: map[string]interface{}{
 			"type": "0",
 			"properties": map[string]string{

@@ -8,14 +8,14 @@ import (
 	"github.com/layer5io/gokit/logger"
 	// "github.com/layer5io/gokit/tracing"
 	"github.com/layer5io/gokit/utils"
-	"github.com/layer5io/meshery-kuma/api/grpc"
+	"github.com/layer5io/meshery-adapter-library/api/grpc"
 	"github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/kuma"
 )
 
 var (
 	serviceName    = "kuma-adaptor"
-	configProvider = "local"
+	configProvider = "viper"
 	kubeConfigPath = fmt.Sprintf("%s/.kube/config", utils.GetHome())
 )
 
