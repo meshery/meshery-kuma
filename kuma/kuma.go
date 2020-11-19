@@ -48,14 +48,14 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	case internalconfig.KumaOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			version := string(operations[opReq.OperationName].Versions[0])
-			if st, err := hh.installKuma(opReq.IsDeleteOperation, version); err != nil {
-				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", st)
+			if stat, err := hh.installKuma(opReq.IsDeleteOperation, version); err != nil {
+				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", stat)
 				e.Details = err.Error()
 				hh.StreamErr(e, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("Kuma service mesh %s successfully", st)
-			ee.Details = fmt.Sprintf("The Kuma service mesh is now %s.", st)
+			ee.Summary = fmt.Sprintf("Kuma service mesh %s successfully", stat)
+			ee.Details = fmt.Sprintf("The Kuma service mesh is now %s.", stat)
 			hh.StreamInfo(e)
 		}(kuma, e)
 	case common.SmiConformanceOperation:

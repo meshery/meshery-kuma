@@ -9,7 +9,6 @@ import (
 	mesherykube "github.com/layer5io/meshkit/utils/kubernetes"
 )
 
-// CreateInstance installs and creates a mesh environment up and running
 func (kuma *Kuma) installKuma(del bool, version string) (string, error) {
 	st := status.Installing
 
@@ -40,7 +39,6 @@ func (kuma *Kuma) installKuma(del bool, version string) (string, error) {
 	return status.Installed, nil
 }
 
-// installMesh installs the mesh in the cluster or the target location
 func (kuma *Kuma) fetchManifest() (string, error) {
 
 	var (
