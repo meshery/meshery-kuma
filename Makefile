@@ -1,11 +1,10 @@
-protoc-setup:
-	cd meshes
-	wget https://raw.githubusercontent.com/layer5io/meshery/master/meshes/meshops.proto
+check:
+	golangci-lint run
 
-proto:	
-	protoc -I meshes/ meshes/meshops.proto --go_out=plugins=grpc:./meshes/
+check-clean-cache:
+	golangci-lint cache clean
 
-docker:
+docker: check
 	docker build -t layer5/meshery-kuma .
 
 docker-run:
@@ -15,5 +14,5 @@ docker-run:
 	-e DEBUG=true \
 	layer5/meshery-kuma
 
-run:
+run: check
 	DEBUG=true go run main.go

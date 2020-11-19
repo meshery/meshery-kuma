@@ -8,18 +8,8 @@ replace (
 )
 
 require (
-	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
-	github.com/golang/protobuf v1.4.2
-	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0 // indirect
-	github.com/layer5io/gokit v0.1.16
-	github.com/layer5io/meshery-adapter-library v0.1.0-beta
-	golang.org/x/net v0.0.0-20200707034311-ab3426394381
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	google.golang.org/grpc v1.33.1
-	google.golang.org/protobuf v1.25.0 // indirect
-	gopkg.in/yaml.v2 v2.3.0
+	github.com/layer5io/meshery-adapter-library v0.1.4
+	github.com/layer5io/meshkit v0.1.24
+	google.golang.org/grpc v1.33.1 // indirect
 	helm.sh/helm/v3 v3.3.4 // indirect
-	k8s.io/api v0.18.8 // indirect
-	k8s.io/apimachinery v0.18.8 // indirect
-	k8s.io/client-go v0.18.8
 )
