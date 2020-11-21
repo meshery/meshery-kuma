@@ -13,13 +13,14 @@ var (
 	ErrClientConfigCode  = "kuma_test_code"
 	ErrClientSetCode     = "kuma_test_code"
 	ErrStreamEventCode   = "kuma_test_code"
+	ErrSampleAppCode     = "kuma_test_code"
 
 	ErrOpInvalid = errors.NewDefault(errors.ErrOpInvalid, "Invalid operation")
 )
 
 // ErrInstallMesh is the error for install mesh
 func ErrInstallKuma(err error) error {
-	return errors.NewDefault(ErrInstallKumaCode, fmt.Sprintf("Error installing kuma: %s", err.Error()))
+	return errors.NewDefault(ErrInstallKumaCode, fmt.Sprintf("Error with kuma operation: %s", err.Error()))
 }
 
 // ErrMeshConfig is the error for mesh config
@@ -45,4 +46,9 @@ func ErrClientSet(err error) error {
 // ErrStreamEvent is the error for streaming event
 func ErrStreamEvent(err error) error {
 	return errors.NewDefault(ErrStreamEventCode, fmt.Sprintf("Error streaming event: %s", err.Error()))
+}
+
+// ErrSampleApp is the error for streaming event
+func ErrSampleApp(err error) error {
+	return errors.NewDefault(ErrSampleAppCode, fmt.Sprintf("Error with sample app operation: %s", err.Error()))
 }

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"path"
 
@@ -18,10 +17,6 @@ const (
 
 var (
 	configRootPath = path.Join(utils.GetHome(), ".meshery")
-
-	kubeconfigFilename = "kubeconfig"
-	kubeconfigFiletype = "yaml"
-	KubeconfigPath     = path.Join(configRootPath, fmt.Sprintf("%s.%s", kubeconfigFilename, kubeconfigFiletype))
 )
 
 // New creates a new config instance

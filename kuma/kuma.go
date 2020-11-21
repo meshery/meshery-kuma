@@ -36,19 +36,18 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 		return err
 	}
 
-	st := status.Deploying
-
 	e := &adapter.Event{
 		Operationid: opReq.OperationID,
 		Summary:     status.Deploying,
-		Details:     status.None,
+		Details:     "Operation is not supported",
 	}
 
 	switch opReq.OperationName {
 	case internalconfig.KumaOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			version := string(operations[opReq.OperationName].Versions[0])
-			if stat, err := hh.installKuma(opReq.IsDeleteOperation, version); err != nil {
+			stat, err := hh.installKuma(opReq.IsDeleteOperation, version)
+			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", stat)
 				e.Details = err.Error()
 				hh.StreamErr(e, err)
@@ -58,15 +57,36 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			ee.Details = fmt.Sprintf("The Kuma service mesh is now %s.", stat)
 			hh.StreamInfo(e)
 		}(kuma, e)
+	case common.BookInfoOperation, common.HTTPBinOperation, common.ImageHubOperation, common.EmojiVotoOperation:
+		go func(hh *Kuma, ee *adapter.Event) {
+			appName := operations[opReq.OperationName].AdditionalProperties[common.ServiceName]
+			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, operations[opReq.OperationName].Templates)
+			if err != nil {
+				e.Summary = fmt.Sprintf("Error while %s %s application", stat, appName)
+				e.Details = err.Error()
+				hh.StreamErr(e, err)
+				return
+			}
+			ee.Summary = fmt.Sprintf("%s application %s successfully", appName, stat)
+			ee.Details = fmt.Sprintf("The %s application is now %s.", appName, stat)
+			hh.StreamInfo(e)
+		}(kuma, e)
 	case common.SmiConformanceOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
+			name := operations[opReq.OperationName].Description
 			err := hh.ValidateSMIConformance(&adapter.SmiTestOptions{
 				Ctx:  context.TODO(),
 				OpID: ee.Operationid,
 			})
 			if err != nil {
+				e.Summary = fmt.Sprintf("Error while %s %s test", status.Running, name)
+				e.Details = err.Error()
+				hh.StreamErr(e, err)
 				return
 			}
+			ee.Summary = fmt.Sprintf("%s test %s successfully", name, status.Completed)
+			ee.Details = ""
+			hh.StreamInfo(e)
 		}(kuma, e)
 	default:
 		kuma.StreamErr(e, ErrOpInvalid)
