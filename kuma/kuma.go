@@ -30,7 +30,7 @@ func New(c adapterconfig.Handler, l logger.Handler, kc adapterconfig.Handler) ad
 // ApplyOperation applies the operation on kuma
 func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationRequest) error {
 
-	operations := make(adapter.Operations, 0)
+	operations := adapter.Operations{}
 	err := kuma.Config.GetObject(adapter.OperationsKey, &operations)
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	case internalconfig.KumaOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			version := string(operations[opReq.OperationName].Versions[0])
-			stat, err := hh.installKuma(opReq.IsDeleteOperation, version)
+			stat, err := hh.installKuma(opReq.IsDeleteOperation, opReq.Namespace, version)
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", stat)
 				e.Details = err.Error()
@@ -60,7 +60,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	case common.BookInfoOperation, common.HTTPBinOperation, common.ImageHubOperation, common.EmojiVotoOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			appName := operations[opReq.OperationName].AdditionalProperties[common.ServiceName]
-			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, operations[opReq.OperationName].Templates)
+			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, opReq.Namespace, operations[opReq.OperationName].Templates)
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s %s application", stat, appName)
 				e.Details = err.Error()

@@ -20,9 +20,7 @@ func getOperations(dev adapter.Operations) adapter.Operations {
 			"0.7.0",
 			"0.6.0",
 		},
-		Templates: []adapter.Template{
-			"templates/kuma.yaml",
-		},
+		Templates: adapter.NoneTemplate,
 		AdditionalProperties: map[string]string{
 			ServiceName: KumaOperation,
 		},

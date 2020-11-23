@@ -6,7 +6,7 @@ import (
 	"github.com/layer5io/meshkit/utils"
 )
 
-func (kuma *Kuma) installSampleApp(del bool, templates []adapter.Template) (string, error) {
+func (kuma *Kuma) installSampleApp(del bool, namespace string, templates []adapter.Template) (string, error) {
 	st := status.Installing
 
 	if del {
@@ -19,7 +19,7 @@ func (kuma *Kuma) installSampleApp(del bool, templates []adapter.Template) (stri
 			return st, ErrSampleApp(err)
 		}
 
-		err = kuma.applyManifest([]byte(contents))
+		err = kuma.applyManifest(del, namespace, []byte(contents))
 		if err != nil {
 			return st, ErrSampleApp(err)
 		}

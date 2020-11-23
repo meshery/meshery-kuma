@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/layer5io/meshkit/logger"
+	"github.com/layer5io/meshkit/utils"
+
 	// "github.com/layer5io/meshkit/tracing"
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/api/grpc"
@@ -16,6 +18,8 @@ import (
 
 var (
 	serviceName = "kuma-adaptor"
+	environment = "development"
+	provider    = configprovider.ViperKey
 )
 
 // main is the entrypoint of the adaptor
@@ -32,7 +36,7 @@ func main() {
 
 	// Initialize application specific configs and dependencies
 	// App and request config
-	cfg, err := config.New(configprovider.ViperKey)
+	cfg, err := config.New(provider, environment)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
@@ -45,18 +49,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	kubeconfigHandler, err := config.NewKubeconfigBuilder(configprovider.ViperKey)
+	kubeconfigHandler, err := config.NewKubeconfigBuilder(configprovider.ViperKey, environment)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
 	}
-
-	// // Initialize Tracing instance
-	// tracer, err := tracing.New(service.Name, service.TraceURL)
-	// if err != nil {
-	// 	log.Err("Tracing Init Failed", err.Error())
-	// 	os.Exit(1)
-	// }
 
 	// Initialize Handler intance
 	handler := kuma.New(cfg, log, kubeconfigHandler)
@@ -72,5 +69,19 @@ func main() {
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
+	}
+}
+
+func init() {
+	err := os.MkdirAll(fmt.Sprintf("%s/.meshery", utils.GetHome()), os.ModeDir)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(0)
+	}
+
+	err = kuma.GetKumactl("latest")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(0)
 	}
 }
