@@ -66,10 +66,10 @@ func untar(gzipStream io.Reader) error {
 			if err != nil {
 				return ErrUntar(err)
 			}
-			defer outFile.Close()
 			if _, err := io.Copy(outFile, tarReader); err != nil {
 				return ErrUntar(err)
 			}
+			return outFile.Close()
 		default:
 			return ErrUntarDefault
 		}
@@ -84,17 +84,19 @@ func moveBinary(sourcePath, destPath string) error {
 	}
 	outputFile, err := os.Create(destPath)
 	if err != nil {
-		inputFile.Close()
 		return ErrMoveBinary(err)
 	}
-	defer outputFile.Close()
 
 	err = outputFile.Chmod(0755)
 	if err != nil {
 		return ErrMoveBinary(err)
 	}
 	_, err = io.Copy(outputFile, inputFile)
-	inputFile.Close()
+	if err != nil {
+		return ErrMoveBinary(err)
+	}
+
+	err = inputFile.Close()
 	if err != nil {
 		return ErrMoveBinary(err)
 	}
@@ -103,5 +105,5 @@ func moveBinary(sourcePath, destPath string) error {
 	if err != nil {
 		return ErrMoveBinary(err)
 	}
-	return nil
+	return outputFile.Close()
 }
