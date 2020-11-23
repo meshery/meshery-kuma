@@ -17,7 +17,6 @@ func GetKumactl(version string) error {
 	arch := os.Getenv("GOARCH")
 
 	url := fmt.Sprintf("https://kong.bintray.com/kuma/kuma-%s-%s-%s.tar.gz", version, distro, arch)
-	fmt.Println(url)
 	response, err := http.Get(url)
 	if err != nil {
 		return ErrGetKumactl(err)
@@ -58,7 +57,8 @@ func untar(gzipStream io.Reader) error {
 
 		switch header.Typeflag {
 		case tar.TypeDir:
-			if err := os.Mkdir(header.Name, 0755); err != nil && !os.IsExist(err) {
+			err := os.Mkdir(header.Name, 0750)
+			if err != nil && !os.IsExist(err) {
 				return ErrUntar(err)
 			}
 		case tar.TypeReg:
