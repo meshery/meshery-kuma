@@ -15,13 +15,27 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/layer5io/meshkit/errors"
 )
 
 const (
-	ErrEmptyConfigCode = "11300"
+	ErrEmptyConfigCode           = "11300"
+	ErrGetLatestReleasesCode     = "kuma_test_code"
+	ErrGetLatestReleaseNamesCode = "kuma_test_code"
 )
 
 var (
 	ErrEmptyConfig = errors.NewDefault(ErrEmptyConfigCode, "Config is empty")
 )
+
+// ErrGetLatestReleases is the error for fetching linkerd releases
+func ErrGetLatestReleases(err error) error {
+	return errors.NewDefault(ErrGetLatestReleasesCode, fmt.Sprintf("unable to fetch release info: %s", err.Error()))
+}
+
+// ErrGetLatestReleaseNames is the error for fetching linkerd releases
+func ErrGetLatestReleaseNames(err error) error {
+	return errors.NewDefault(ErrGetLatestReleaseNamesCode, fmt.Sprintf("failed to extract release names: %s", err.Error()))
+}
