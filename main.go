@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path"
 	"time"
 
 	"github.com/layer5io/meshkit/logger"
@@ -73,13 +74,7 @@ func main() {
 }
 
 func init() {
-	err := os.MkdirAll(fmt.Sprintf("%s/.meshery", utils.GetHome()), os.ModeDir)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
-	}
-
-	err = kuma.GetKumactl("latest")
+	err := os.MkdirAll(path.Join(utils.GetHome(), ".meshery", "bin"), 0750)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)

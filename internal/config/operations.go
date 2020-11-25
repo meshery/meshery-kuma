@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/meshes"
 )
@@ -14,7 +12,6 @@ var (
 func getOperations(dev adapter.Operations) adapter.Operations {
 
 	versions, _ := getLatestReleaseNames(3)
-	fmt.Println(versions)
 
 	dev[KumaOperation] = &adapter.Operation{
 		Type:        int32(meshes.OpCategory_INSTALL),

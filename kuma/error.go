@@ -7,17 +7,19 @@ import (
 )
 
 var (
-	ErrInstallKumaCode   = "kuma_test_code"
-	ErrMeshConfigCode    = "kuma_test_code"
-	ErrFetchManifestCode = "kuma_test_code"
-	ErrClientConfigCode  = "kuma_test_code"
-	ErrClientSetCode     = "kuma_test_code"
-	ErrStreamEventCode   = "kuma_test_code"
-	ErrSampleAppCode     = "kuma_test_code"
-	ErrGetKumactlCode    = "kuma_test_code"
-	ErrUntarCode         = "kuma_test_code"
-	ErrUntarDefaultCode  = "kuma_test_code"
-	ErrMoveBinaryCode    = "kuma_test_code"
+	ErrInstallKumaCode    = "kuma_test_code"
+	ErrMeshConfigCode     = "kuma_test_code"
+	ErrFetchManifestCode  = "kuma_test_code"
+	ErrClientConfigCode   = "kuma_test_code"
+	ErrClientSetCode      = "kuma_test_code"
+	ErrStreamEventCode    = "kuma_test_code"
+	ErrSampleAppCode      = "kuma_test_code"
+	ErrGetKumactlCode     = "kuma_test_code"
+	ErrDownloadBinaryCode = "kuma_test_code"
+	ErrInstallBinaryCode  = "kuma_test_code"
+	ErrUntarCode          = "kuma_test_code"
+	ErrUntarDefaultCode   = "kuma_test_code"
+	ErrMoveBinaryCode     = "kuma_test_code"
 
 	ErrOpInvalid    = errors.NewDefault(errors.ErrOpInvalid, "Invalid operation")
 	ErrUntarDefault = errors.NewDefault(ErrUntarDefaultCode, "Error untaring operation default")
@@ -63,9 +65,19 @@ func ErrGetKumactl(err error) error {
 	return errors.NewDefault(ErrGetKumactlCode, fmt.Sprintf("Error getting kumactl commandline: %s", err.Error()))
 }
 
+// ErrDownloadBinary is the error for downloading binary
+func ErrDownloadBinary(err error) error {
+	return errors.NewDefault(ErrDownloadBinaryCode, fmt.Sprintf("Error downloadinf kumactl binary: %s", err.Error()))
+}
+
 // ErrUntar is the error for streaming event
 func ErrUntar(err error) error {
 	return errors.NewDefault(ErrUntarCode, fmt.Sprintf("Error untaring package: %s", err.Error()))
+}
+
+// ErrInstallBinary is the error for streaming event
+func ErrInstallBinary(err error) error {
+	return errors.NewDefault(ErrInstallBinaryCode, fmt.Sprintf("Error installing kumactl: %s", err.Error()))
 }
 
 // ErrMoveBinary is the error for streaming event
