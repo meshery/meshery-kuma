@@ -20,7 +20,7 @@ RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -ldflags="-w -
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
 FROM gcr.io/distroless/base
 WORKDIR /
-ENV GODISTRO="debian"
+ENV DISTRO="debian"
 ENV GOARCH="amd64"
 COPY --from=builder /build/meshery-kuma .
 ENTRYPOINT ["/meshery-kuma"]
