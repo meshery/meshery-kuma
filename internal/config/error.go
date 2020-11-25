@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	ErrEmptyConfigCode           = "11300"
+	ErrEmptyConfigCode           = "kuma_test_code"
 	ErrGetLatestReleasesCode     = "kuma_test_code"
 	ErrGetLatestReleaseNamesCode = "kuma_test_code"
 )
