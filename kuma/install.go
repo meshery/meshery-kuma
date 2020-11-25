@@ -1,6 +1,7 @@
 package kuma
 
 import (
+	"archive/tar"
 	"bytes"
 	"compress/gzip"
 	"fmt"
@@ -128,6 +129,29 @@ func (kuma *Kuma) getExecutable(release string) (string, error) {
 		return "", ErrGetKumactl(err)
 	}
 
+	// Move binary to the right location
+	err = os.Rename(path.Join(binPath, alternateBinaryName, "kuma-"+release, "bin", "kumactl"), path.Join(binPath, "kumactl"))
+	if err != nil {
+		return "", ErrGetKumactl(err)
+	}
+
+	// Cleanup
+	kuma.Log.Info("Cleaning up...")
+	if err = os.RemoveAll(path.Join(binPath, alternateBinaryName)); err != nil {
+		return "", ErrGetKumactl(err)
+	}
+
+	if err = os.Rename(path.Join(binPath, "kumactl"), path.Join(binPath, alternateBinaryName)); err != nil {
+		return "", ErrGetKumactl(err)
+	}
+
+	// Set permissions
+	// Permsission has to be +x to be able to run the binary
+	// #nosec
+	if err = os.Chmod(path.Join(binPath, alternateBinaryName), 0750); err != nil {
+		return "", ErrGetKumactl(err)
+	}
+
 	kuma.Log.Info("Done")
 	return path.Join(binPath, alternateBinaryName), nil
 }
@@ -161,40 +185,62 @@ func installBinary(location, platform string, res *http.Response) error {
 		}
 	}()
 
-	out, err := os.Create(location)
+	err := os.MkdirAll(location, 0750)
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if err := out.Close(); err != nil {
-			fmt.Println(err)
-		}
-	}()
 
 	switch platform {
 	case "darwin":
 		fallthrough
 	case "linux":
-		r, err := gzip.NewReader(res.Body)
+		uncompressedStream, err := gzip.NewReader(res.Body)
 		if err != nil {
 			return err
 		}
 
-		// Trust Kuma tar
-		// #nosec
-		_, err = io.Copy(out, r)
-		if err != nil {
-			return ErrInstallBinary(err)
-		}
+		tarReader := tar.NewReader(uncompressedStream)
 
-		if err = r.Close(); err != nil {
-			return ErrInstallBinary(err)
-		}
+		for {
+			header, err := tarReader.Next()
 
-		if err = out.Chmod(0750); err != nil {
-			return ErrInstallBinary(err)
+			if err == io.EOF {
+				break
+			}
+
+			if err != nil {
+				return ErrInstallBinary(err)
+			}
+
+			switch header.Typeflag {
+			case tar.TypeDir:
+				// File traversal is required to store the binary at the right place
+				// #nosec
+				if err := os.MkdirAll(path.Join(location, header.Name), 0750); err != nil {
+					return ErrInstallBinary(err)
+				}
+			case tar.TypeReg:
+				// File traversal is required to store the binary at the right place
+				// #nosec
+				outFile, err := os.Create(path.Join(location, header.Name))
+				if err != nil {
+					return ErrInstallBinary(err)
+				}
+				// Trust kuma tar
+				// #nosec
+				if _, err := io.Copy(outFile, tarReader); err != nil {
+					return ErrInstallBinary(err)
+				}
+				if err = outFile.Close(); err != nil {
+					return ErrInstallBinary(err)
+				}
+
+			default:
+				return ErrInstallBinary(err)
+			}
 		}
 	case "windows":
 	}
+
 	return nil
 }
