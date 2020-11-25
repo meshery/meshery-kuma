@@ -1,17 +1,27 @@
+// Copyright 2020 Layer5, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package config
 
 import (
-	"fmt"
+	"github.com/layer5io/meshkit/errors"
+)
 
-	"github.com/layer5io/gokit/errors"
+const (
+	ErrEmptyConfigCode = "11300"
 )
 
 var (
-	// ErrEmptyConfig is the error object for empty config
-	ErrEmptyConfig = errors.New(errors.ErrEmptyConfig, "Config not initialized")
+	ErrEmptyConfig = errors.NewDefault(ErrEmptyConfigCode, "Config is empty")
 )
-
-// ErrViper is the error object for viper
-func ErrViper(err error) error {
-	return errors.New(errors.ErrViper, fmt.Sprintf("Viper initialization failed with error: %s", err.Error()))
-}

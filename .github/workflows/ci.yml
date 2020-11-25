@@ -78,6 +78,8 @@ jobs:
   tests:
     #  needs: [lint, error_check, static_check, vet, sec_check]
      name: Tests
+     env:
+       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
      runs-on: ubuntu-latest
      steps:
      - name: Check out code

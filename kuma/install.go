@@ -1,104 +1,80 @@
 package kuma
 
 import (
-	"fmt"
-	"os"
+	"bytes"
 	"os/exec"
+
+	"github.com/layer5io/meshery-adapter-library/adapter"
+	"github.com/layer5io/meshery-adapter-library/status"
+	mesherykube "github.com/layer5io/meshkit/utils/kubernetes"
 )
 
-// MeshInstance holds the information of the instance of the mesh
-type MeshInstance struct {
-	InstallMode     string `json:"installmode,omitempty"`
-	InstallPlatform string `json:"installplatform,omitempty"`
-	InstallZone     string `json:"installzone,omitempty"`
-	InstallVersion  string `json:"installversion,omitempty"`
-	MgmtAddr        string `json:"mgmtaddr,omitempty"`
-	Kumaaddr        string `json:"kumaaddr,omitempty"`
-}
-
-// CreateInstance installs and creates a mesh environment up and running
-func (h *handler) installKuma(del bool, version string) (string, error) {
-	status := "installing"
+func (kuma *Kuma) installKuma(del bool, namespace string, version string) (string, error) {
+	st := status.Installing
 
 	if del {
-		status = "removing"
+		st = status.Removing
 	}
 
-	meshinstance := &MeshInstance{
-		InstallVersion: version,
-	}
-	err := h.config.MeshInstance(meshinstance)
+	err := kuma.Config.GetObject(adapter.MeshSpecKey, kuma)
 	if err != nil {
-		return status, ErrMeshConfig(err)
+		return st, ErrMeshConfig(err)
 	}
 
-	h.log.Info("Installing Kuma")
-	err = meshinstance.installUsingKumactl(del)
+	manifest, err := kuma.fetchManifest(version)
 	if err != nil {
-		h.log.Err("Kuma installation failed", ErrInstallMesh(err).Error())
-		return status, ErrInstallMesh(err)
-	}
-	if del {
-		return "removed", nil
+		kuma.Log.Error(ErrInstallKuma(err))
+		return st, ErrInstallKuma(err)
 	}
 
-	h.log.Info("Port forwarding")
-	err = meshinstance.portForward()
+	err = kuma.applyManifest(del, namespace, []byte(manifest))
 	if err != nil {
-		h.log.Err("Kuma portforwarding failed", ErrPortForward(err).Error())
-		return status, ErrPortForward(err)
-	}
-
-	return "deployed", nil
-}
-
-// installSampleApp installs and creates a sample bookinfo application up and running
-func (h *handler) installSampleApp(name string) (string, error) {
-	// Needs implementation
-	return "deployed", nil
-}
-
-// installMesh installs the mesh in the cluster or the target location
-func (m *MeshInstance) installUsingKumactl(del bool) error {
-
-	Executable, err := exec.LookPath("./scripts/kuma/installer.sh")
-	if err != nil {
-		return err
+		kuma.Log.Error(ErrInstallKuma(err))
+		return st, ErrInstallKuma(err)
 	}
 
 	if del {
-		Executable, err = exec.LookPath("./scripts/kuma/delete.sh")
-		if err != nil {
-			return err
+		return status.Removed, nil
+	}
+	return status.Installed, nil
+}
+
+func (kuma *Kuma) fetchManifest(version string) (string, error) {
+
+	var (
+		out bytes.Buffer
+		er  bytes.Buffer
+	)
+
+	Executable, err := exec.LookPath("./kumactl")
+	if err != nil {
+		e := GetKumactl(version)
+		if e != nil {
+			return "", ErrFetchManifest(e, e.Error())
 		}
 	}
 
-	cmd := &exec.Cmd{
-		Path:   Executable,
-		Args:   []string{Executable},
-		Stdout: os.Stdout,
-		Stderr: os.Stdout,
-	}
-	cmd.Env = append(os.Environ(),
-		fmt.Sprintf("KUMA_VERSION=%s", m.InstallVersion),
-		fmt.Sprintf("KUMA_MODE=%s", m.InstallMode),
-		fmt.Sprintf("KUMA_PLATFORM=%s", m.InstallPlatform),
-		fmt.Sprintf("KUMA_ZONE=%s", m.InstallZone),
-	)
-
-	err = cmd.Start()
+	command := exec.Command(Executable, "install", "control-plane")
+	command.Stdout = &out
+	command.Stderr = &er
+	err = command.Run()
 	if err != nil {
-		return err
-	}
-	err = cmd.Wait()
-	if err != nil {
-		return err
+		return "", ErrFetchManifest(err, er.String())
 	}
 
-	return nil
+	return out.String(), nil
 }
 
-func (m *MeshInstance) portForward() error {
-	// Needs implementation
+func (kuma *Kuma) applyManifest(del bool, namespace string, contents []byte) error {
+
+	err := kuma.MesheryKubeclient.ApplyManifest(contents, mesherykube.ApplyOptions{
+		Namespace: namespace,
+		Update:    true,
+		Delete:    del,
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

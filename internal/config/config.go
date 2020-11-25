@@ -1,34 +1,65 @@
 package config
 
-// Handler is the handler interface for config
-type Handler interface {
+import (
+	"path"
 
-	// SetKey sets a key value in the config
-	SetKey(key string, value string)
+	"github.com/layer5io/meshery-adapter-library/config"
+	configprovider "github.com/layer5io/meshery-adapter-library/config/provider"
+	"github.com/layer5io/meshkit/utils"
+)
 
-	// GetKey gets a key value from the config
-	GetKey(key string) string
+const (
+	KumaOperation = "kuma"
+	Development   = "development"
+	Production    = "production"
+)
 
-	// Server provides the server specific configuration
-	Server(result interface{}) error
+var (
+	configRootPath = path.Join(utils.GetHome(), ".meshery")
+)
 
-	// MeshSpec provides the mesh specific configuration
-	MeshSpec(result interface{}) error
+// New creates a new config instance
+func New(provider string, environment string) (config.Handler, error) {
 
-	// MeshInstance provides the mesh specific configuration
-	MeshInstance(result interface{}) error
+	opts := DevelopmentConfig
 
-	// Operations provides the list of operations available
-	Operations(result interface{}) error
+	// Config environment
+	switch environment {
+	case Production:
+		opts = ProductionConfig
+	case Development:
+		opts = DevelopmentConfig
+	}
+
+	// Config provider
+	switch provider {
+	case configprovider.ViperKey:
+		return configprovider.NewViper(opts)
+	case configprovider.InMemKey:
+		return configprovider.NewInMem(opts)
+	}
+
+	return nil, ErrEmptyConfig
 }
 
-// New returns the interface of the config handler
-func New(name string) (Handler, error) {
-	switch name {
-	case "local":
-		return NewLocal()
-	case "viper":
-		return NewViper()
+func NewKubeconfigBuilder(provider string, environment string) (config.Handler, error) {
+
+	opts := configprovider.Options{}
+
+	// Config environment
+	switch environment {
+	case Production:
+		opts.ProviderConfig = productionKubeConfig
+	case Development:
+		opts.ProviderConfig = developmentKubeConfig
+	}
+
+	// Config provider
+	switch provider {
+	case configprovider.ViperKey:
+		return configprovider.NewViper(opts)
+	case configprovider.InMemKey:
+		return configprovider.NewInMem(opts)
 	}
 	return nil, ErrEmptyConfig
 }
