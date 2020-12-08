@@ -79,4 +79,10 @@ func init() {
 		fmt.Println(err)
 		os.Exit(0)
 	}
+
+	err = os.Setenv("KUBECONFIG", fmt.Sprintf("%s/.meshery/kubeconfig.yaml", utils.GetHome()))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(0)
+	}
 }
