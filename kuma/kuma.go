@@ -88,6 +88,19 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			ee.Details = ""
 			hh.StreamInfo(e)
 		}(kuma, e)
+	case common.CustomOperation:
+		go func(hh *Kuma, ee *adapter.Event) {
+			stat, err := hh.applyCustomOperation(opReq.Namespace, opReq.CustomBody, opReq.IsDeleteOperation)
+			if err != nil {
+				e.Summary = fmt.Sprintf("Error while %s custom operation", stat)
+				e.Details = err.Error()
+				hh.StreamErr(e, err)
+				return
+			}
+			ee.Summary = fmt.Sprintf("Manifest %s successfully", status.Deployed)
+			ee.Details = ""
+			hh.StreamInfo(e)
+		}(kuma, e)
 	default:
 		kuma.StreamErr(e, ErrOpInvalid)
 	}
