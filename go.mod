@@ -9,7 +9,7 @@ replace (
 
 require (
 	github.com/layer5io/meshery-adapter-library v0.1.11
-	github.com/layer5io/meshkit v0.1.32
+	github.com/layer5io/meshkit v0.2.0
 	google.golang.org/grpc v1.33.1 // indirect
 	helm.sh/helm/v3 v3.3.4 // indirect
 )
