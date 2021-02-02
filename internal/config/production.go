@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/layer5io/meshery-adapter-library/common"
 	configprovider "github.com/layer5io/meshery-adapter-library/config/provider"
+	smp "github.com/layer5io/service-mesh-performance/spec"
 )
 
 var (
@@ -24,6 +25,7 @@ var (
 		"status":   "none",
 		"traceurl": "none",
 		"version":  "none",
+		"type":     smp.ServiceMesh_KUMA.Enum().String(),
 	}
 
 	productionProviderConfig = map[string]string{
