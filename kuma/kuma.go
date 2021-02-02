@@ -12,6 +12,11 @@ import (
 	"github.com/layer5io/meshkit/logger"
 )
 
+const (
+	// SMIManifest is the manifest.yaml file for smi conformance tool
+	SMIManifest = "https://raw.githubusercontent.com/layer5io/learn-layer5/master/smi-conformance/manifest.yml"
+)
+
 type Kuma struct {
 	adapter.Adapter // Type Embedded
 }
@@ -74,9 +79,13 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	case common.SmiConformanceOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			name := operations[opReq.OperationName].Description
-			err := hh.ValidateSMIConformance(&adapter.SmiTestOptions{
-				Ctx:  context.TODO(),
-				OpID: ee.Operationid,
+			_, err := hh.RunSMITest(adapter.SMITestOptions{
+				Ctx:         context.TODO(),
+				OperationID: ee.Operationid,
+				Manifest:    SMIManifest,
+				Namespace:   "meshery",
+				Labels:      make(map[string]string),
+				Annotations: make(map[string]string),
 			})
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s %s test", status.Running, name)
@@ -84,9 +93,6 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				hh.StreamErr(e, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("%s test %s successfully", name, status.Completed)
-			ee.Details = ""
-			hh.StreamInfo(e)
 		}(kuma, e)
 	case common.CustomOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
