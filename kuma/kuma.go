@@ -14,7 +14,8 @@ import (
 
 const (
 	// SMIManifest is the manifest.yaml file for smi conformance tool
-	SMIManifest = "https://raw.githubusercontent.com/layer5io/learn-layer5/master/smi-conformance/manifest.yml"
+	// SMIManifest = "https://raw.githubusercontent.com/layer5io/learn-layer5/master/smi-conformance/manifest.yml"
+	SMIManifest = "https://raw.githubusercontent.com/dhruv0000/learn-layer5/personalImage/smi-conformance/manifest.yml"
 )
 
 type Kuma struct {
@@ -85,7 +86,9 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				Manifest:    SMIManifest,
 				Namespace:   "meshery",
 				Labels:      make(map[string]string),
-				Annotations: make(map[string]string),
+				Annotations: map[string]string{
+					"kuma.io/sidecar-injection": "enabled",
+				},
 			})
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s %s test", status.Running, name)
