@@ -14,8 +14,7 @@ import (
 
 const (
 	// SMIManifest is the manifest.yaml file for smi conformance tool
-	// SMIManifest = "https://raw.githubusercontent.com/layer5io/learn-layer5/master/smi-conformance/manifest.yml"
-	SMIManifest = "https://raw.githubusercontent.com/dhruv0000/learn-layer5/personalImage/smi-conformance/manifest.yml"
+	SMIManifest = "https://raw.githubusercontent.com/layer5io/learn-layer5/master/smi-conformance/manifest.yml"
 )
 
 type Kuma struct {
