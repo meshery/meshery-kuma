@@ -7,22 +7,70 @@ import (
 )
 
 var (
-	ErrInstallKumaCode     = "kuma_test_code"
-	ErrMeshConfigCode      = "kuma_test_code"
-	ErrFetchManifestCode   = "kuma_test_code"
-	ErrClientConfigCode    = "kuma_test_code"
-	ErrClientSetCode       = "kuma_test_code"
-	ErrStreamEventCode     = "kuma_test_code"
-	ErrSampleAppCode       = "kuma_test_code"
-	ErrGetKumactlCode      = "kuma_test_code"
-	ErrDownloadBinaryCode  = "kuma_test_code"
-	ErrInstallBinaryCode   = "kuma_test_code"
-	ErrUntarCode           = "kuma_test_code"
-	ErrUntarDefaultCode    = "kuma_test_code"
-	ErrMoveBinaryCode      = "kuma_test_code"
+	// Error code for failed service mesh installation
+
+	// ErrInstallKumaCode represents the errors which are generated
+	// during kuma service mesh install process
+	ErrInstallKumaCode = "kuma_test_code"
+
+	// ErrMeshConfigCode represents the errors which are generated
+	// when an invalid mesh config is found
+	ErrMeshConfigCode = "kuma_test_code"
+
+	// ErrFetchManifestCode represents the errors which are generated
+	// during the process of fetching manifest
+	ErrFetchManifestCode = "kuma_test_code"
+
+	// ErrClientConfigCode represents the errors which are generated
+	// during the process of setting client config
+	ErrClientConfigCode = "kuma_test_code"
+
+	// ErrClientSetCode represents the errors which are generated
+	// during the process of setting clientset
+	ErrClientSetCode = "kuma_test_code"
+
+	// ErrStreamEventCode represents the errors which are generated
+	// during the process of streaming events
+	ErrStreamEventCode = "kuma_test_code"
+
+	// ErrSampleAppCode represents the errors which are generated
+	// during the process of installing sample app
+	ErrSampleAppCode = "kuma_test_code"
+
+	// ErrGetKumactlCode represents the errors which are generated
+	// during the process of using kumactl for installation
+	ErrGetKumactlCode = "kuma_test_code"
+
+	// ErrDownloadBinaryCode represents the errors which are generated
+	// during the process of downloading binary
+	ErrDownloadBinaryCode = "kuma_test_code"
+
+	// ErrInstallBinaryCode represents the errors which are generated
+	// during the process of installing binary
+	ErrInstallBinaryCode = "kuma_test_code"
+
+	// ErrUntarCode represents the errors which are generated
+	// during the process of untaring a compressed file
+	ErrUntarCode = "kuma_test_code"
+
+	// ErrUntarDefaultCode represents the errors which are generated
+	// during the process of untaring a compressed file
+	ErrUntarDefaultCode = "kuma_test_code"
+
+	// ErrMoveBinaryCode represents the errors which are generated
+	// during the process of moving binaries
+	ErrMoveBinaryCode = "kuma_test_code"
+
+	// ErrCustomOperationCode represents the errors which are generated
+	// during the process of handeling a custom process
 	ErrCustomOperationCode = "kuma_test_code"
 
-	ErrOpInvalid    = errors.NewDefault(errors.ErrOpInvalid, "Invalid operation")
+	// ErrOpInvalid represents the errors which are generated
+	// when an operation is invalid
+	ErrOpInvalid = errors.NewDefault(errors.ErrOpInvalid, "Invalid operation")
+
+	// ErrUntarDefault represents the errors which are generated
+	// during the process of untaring a compressed file
 	ErrUntarDefault = errors.NewDefault(ErrUntarDefaultCode, "Error untaring operation default")
 )
 

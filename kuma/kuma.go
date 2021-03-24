@@ -1,3 +1,4 @@
+// Package kuma - Common operations for the adapter
 package kuma
 
 import (
@@ -17,6 +18,7 @@ const (
 	SMIManifest = "https://raw.githubusercontent.com/layer5io/learn-layer5/master/smi-conformance/manifest.yml"
 )
 
+// Kuma represents the kuma adapter and embeds adapter.Adapter
 type Kuma struct {
 	adapter.Adapter // Type Embedded
 }
@@ -85,7 +87,9 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				Manifest:    SMIManifest,
 				Namespace:   "meshery",
 				Labels:      make(map[string]string),
-				Annotations: make(map[string]string),
+				Annotations: map[string]string{
+					"kuma.io/sidecar-injection": "enabled",
+				},
 			})
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s %s test", status.Running, name)
