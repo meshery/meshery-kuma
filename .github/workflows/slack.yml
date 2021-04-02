@@ -14,3 +14,4 @@ jobs:
       uses: pullreminders/slack-action@master
       with:
         args: '{\"channel\":\"CSK7N9TGX\",\"text\":\"Someone just starred Meshery Adapter for Kuma! (https://github.com/layer5io/meshery-kuma/stargazers) Total ⭐️: ${{env.STARS}}\"}'
+        
