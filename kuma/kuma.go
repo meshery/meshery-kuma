@@ -74,9 +74,15 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	case common.SmiConformanceOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			name := operations[opReq.OperationName].Description
-			err := hh.ValidateSMIConformance(&adapter.SmiTestOptions{
-				Ctx:  context.TODO(),
-				OpID: ee.Operationid,
+			_, err := hh.RunSMITest(adapter.SMITestOptions{
+				Ctx:         context.TODO(),
+				OperationID: ee.Operationid,
+				Manifest:    string(operations[opReq.OperationName].Templates[0]),
+				Namespace:   "meshery",
+				Labels: map[string]string{
+					"kuma.io/gateway": "enabled",
+				},
+				Annotations: make(map[string]string),
 			})
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s %s test", status.Running, name)
