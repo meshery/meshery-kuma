@@ -7,25 +7,74 @@ import (
 )
 
 var (
-	ErrInstallKumaCode    = "kuma_test_code"
-	ErrMeshConfigCode     = "kuma_test_code"
-	ErrFetchManifestCode  = "kuma_test_code"
-	ErrClientConfigCode   = "kuma_test_code"
-	ErrClientSetCode      = "kuma_test_code"
-	ErrStreamEventCode    = "kuma_test_code"
-	ErrSampleAppCode      = "kuma_test_code"
-	ErrGetKumactlCode     = "kuma_test_code"
-	ErrDownloadBinaryCode = "kuma_test_code"
-	ErrInstallBinaryCode  = "kuma_test_code"
-	ErrUntarCode          = "kuma_test_code"
-	ErrUntarDefaultCode   = "kuma_test_code"
-	ErrMoveBinaryCode     = "kuma_test_code"
+	// Error code for failed service mesh installation
 
-	ErrOpInvalid    = errors.NewDefault(errors.ErrOpInvalid, "Invalid operation")
+	// ErrInstallKumaCode represents the errors which are generated
+	// during kuma service mesh install process
+	ErrInstallKumaCode = "kuma_test_code"
+
+	// ErrMeshConfigCode represents the errors which are generated
+	// when an invalid mesh config is found
+	ErrMeshConfigCode = "kuma_test_code"
+
+	// ErrFetchManifestCode represents the errors which are generated
+	// during the process of fetching manifest
+	ErrFetchManifestCode = "kuma_test_code"
+
+	// ErrClientConfigCode represents the errors which are generated
+	// during the process of setting client config
+	ErrClientConfigCode = "kuma_test_code"
+
+	// ErrClientSetCode represents the errors which are generated
+	// during the process of setting clientset
+	ErrClientSetCode = "kuma_test_code"
+
+	// ErrStreamEventCode represents the errors which are generated
+	// during the process of streaming events
+	ErrStreamEventCode = "kuma_test_code"
+
+	// ErrSampleAppCode represents the errors which are generated
+	// during the process of installing sample app
+	ErrSampleAppCode = "kuma_test_code"
+
+	// ErrGetKumactlCode represents the errors which are generated
+	// during the process of using kumactl for installation
+	ErrGetKumactlCode = "kuma_test_code"
+
+	// ErrDownloadBinaryCode represents the errors which are generated
+	// during the process of downloading binary
+	ErrDownloadBinaryCode = "kuma_test_code"
+
+	// ErrInstallBinaryCode represents the errors which are generated
+	// during the process of installing binary
+	ErrInstallBinaryCode = "kuma_test_code"
+
+	// ErrUntarCode represents the errors which are generated
+	// during the process of untaring a compressed file
+	ErrUntarCode = "kuma_test_code"
+
+	// ErrUntarDefaultCode represents the errors which are generated
+	// during the process of untaring a compressed file
+	ErrUntarDefaultCode = "kuma_test_code"
+
+	// ErrMoveBinaryCode represents the errors which are generated
+	// during the process of moving binaries
+	ErrMoveBinaryCode = "kuma_test_code"
+
+	// ErrCustomOperationCode represents the errors which are generated
+	// during the process of handeling a custom process
+	ErrCustomOperationCode = "kuma_test_code"
+
+	// ErrOpInvalid represents the errors which are generated
+	// when an operation is invalid
+	ErrOpInvalid = errors.NewDefault(errors.ErrOpInvalid, "Invalid operation")
+
+	// ErrUntarDefault represents the errors which are generated
+	// during the process of untaring a compressed file
 	ErrUntarDefault = errors.NewDefault(ErrUntarDefaultCode, "Error untaring operation default")
 )
 
-// ErrInstallMesh is the error for install mesh
+// ErrInstallKuma is the error for install mesh
 func ErrInstallKuma(err error) error {
 	return errors.NewDefault(ErrInstallKumaCode, fmt.Sprintf("Error with kuma operation: %s", err.Error()))
 }
@@ -35,7 +84,8 @@ func ErrMeshConfig(err error) error {
 	return errors.NewDefault(ErrMeshConfigCode, fmt.Sprintf("Error configuration mesh: %s", err.Error()))
 }
 
-// ErrPortForward is the error for mesh port forward
+// ErrFetchManifest is the error occured during the process
+// fetching manifest
 func ErrFetchManifest(err error, des string) error {
 	return errors.NewDefault(ErrFetchManifestCode, fmt.Sprintf("Error fetching mesh manifest: %s", des))
 }
@@ -45,7 +95,7 @@ func ErrClientConfig(err error) error {
 	return errors.NewDefault(ErrClientConfigCode, fmt.Sprintf("Error setting client config: %s", err.Error()))
 }
 
-// ErrPortForward is the error for setting clientset
+// ErrClientSet is the error for setting clientset
 func ErrClientSet(err error) error {
 	return errors.NewDefault(ErrClientSetCode, fmt.Sprintf("Error setting clientset: %s", err.Error()))
 }
@@ -83,4 +133,10 @@ func ErrInstallBinary(err error) error {
 // ErrMoveBinary is the error for streaming event
 func ErrMoveBinary(err error) error {
 	return errors.NewDefault(ErrMoveBinaryCode, fmt.Sprintf("Error with moving binary kumactl: %s", err.Error()))
+}
+
+// ErrCustomOperation is the error occured during the process of
+// applying custom operation
+func ErrCustomOperation(err error) error {
+	return errors.NewDefault(ErrCustomOperationCode, fmt.Sprintf("Error applying custom operation: %s", err.Error()))
 }

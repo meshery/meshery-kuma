@@ -1,3 +1,4 @@
+// Package kuma - Common operations for the adapter
 package kuma
 
 import (
@@ -12,6 +13,12 @@ import (
 	"github.com/layer5io/meshkit/logger"
 )
 
+const (
+	// SMIManifest is the manifest.yaml file for smi conformance tool
+	SMIManifest = "https://raw.githubusercontent.com/layer5io/learn-layer5/master/smi-conformance/manifest.yml"
+)
+
+// Kuma represents the kuma adapter and embeds adapter.Adapter
 type Kuma struct {
 	adapter.Adapter // Type Embedded
 }
@@ -90,7 +97,17 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				hh.StreamErr(e, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("%s test %s successfully", name, status.Completed)
+		}(kuma, e)
+	case common.CustomOperation:
+		go func(hh *Kuma, ee *adapter.Event) {
+			stat, err := hh.applyCustomOperation(opReq.Namespace, opReq.CustomBody, opReq.IsDeleteOperation)
+			if err != nil {
+				e.Summary = fmt.Sprintf("Error while %s custom operation", stat)
+				e.Details = err.Error()
+				hh.StreamErr(e, err)
+				return
+			}
+			ee.Summary = fmt.Sprintf("Manifest %s successfully", status.Deployed)
 			ee.Details = ""
 			hh.StreamInfo(e)
 		}(kuma, e)
