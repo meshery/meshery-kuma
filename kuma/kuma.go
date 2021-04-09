@@ -84,12 +84,12 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			_, err := hh.RunSMITest(adapter.SMITestOptions{
 				Ctx:         context.TODO(),
 				OperationID: ee.Operationid,
-				Manifest:    SMIManifest,
+				Manifest:    string(operations[opReq.OperationName].Templates[0]),
 				Namespace:   "meshery",
-				Labels:      make(map[string]string),
-				Annotations: map[string]string{
-					"kuma.io/sidecar-injection": "enabled",
+				Labels: map[string]string{
+					"kuma.io/gateway": "enabled",
 				},
+				Annotations: make(map[string]string),
 			})
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s %s test", status.Running, name)

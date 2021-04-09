@@ -26,10 +26,6 @@ const (
 	ErrGetLatestReleaseNamesCode = "kuma_test_code"
 )
 
-var (
-	ErrEmptyConfig = errors.NewDefault(ErrEmptyConfigCode, "Config is empty")
-)
-
 // ErrGetLatestReleases is the error for fetching linkerd releases
 func ErrGetLatestReleases(err error) error {
 	return errors.NewDefault(ErrGetLatestReleasesCode, fmt.Sprintf("unable to fetch release info: %s", err.Error()))

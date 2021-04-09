@@ -19,8 +19,8 @@ import (
 
 var (
 	serviceName = "kuma-adaptor"
-	environment = "development"
-	provider    = configprovider.ViperKey
+	version     = "none"
+	gitsha      = "none"
 )
 
 // main is the entrypoint of the adaptor
@@ -37,7 +37,7 @@ func main() {
 
 	// Initialize application specific configs and dependencies
 	// App and request config
-	cfg, err := config.New(provider, environment)
+	cfg, err := config.New(configprovider.ViperKey)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
@@ -50,7 +50,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	kubeconfigHandler, err := config.NewKubeconfigBuilder(configprovider.ViperKey, environment)
+	kubeconfigHandler, err := config.NewKubeconfigBuilder(configprovider.ViperKey)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
@@ -63,6 +63,8 @@ func main() {
 	service.Handler = handler
 	service.Channel = make(chan interface{}, 10)
 	service.StartedAt = time.Now()
+	service.Version = version
+	service.GitSHA = gitsha
 
 	// Server Initialization
 	log.Info("Adaptor Listening at port: ", service.Port)
