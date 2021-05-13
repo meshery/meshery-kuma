@@ -157,7 +157,7 @@ func (kuma *Kuma) getExecutable(release string) (string, error) {
 }
 
 func downloadBinary(platform, arch, release string) (*http.Response, error) {
-	var url = fmt.Sprintf("https://kong.bintray.com/kuma/kuma-%s-%s-%s.tar.gz", release, platform, arch)
+	var url = fmt.Sprintf("https://download.konghq.com/mesh-alpine/kuma-%s-%s-%s.tar.gz", release, platform, arch)
 
 	// We need variable url hence
 	// #nosec
