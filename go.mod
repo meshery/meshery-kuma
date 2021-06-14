@@ -11,6 +11,6 @@ replace (
 
 require (
 	github.com/layer5io/meshery-adapter-library v0.1.17
-	github.com/layer5io/meshkit v0.2.10
+	github.com/layer5io/meshkit v0.2.12
 	github.com/layer5io/service-mesh-performance v0.3.3
 )
