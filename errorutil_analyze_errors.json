@@ -1,0 +1,536 @@
+{
+  "entries": [
+    {
+      "name": "ErrGetLatestReleasesCode",
+      "old_code": "1000",
+      "code": "1000",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "internal/config/error.go"
+    },
+    {
+      "name": "ErrGetLatestReleaseNamesCode",
+      "old_code": "1001",
+      "code": "1001",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "internal/config/error.go"
+    },
+    {
+      "name": "ErrOpInvalidCode",
+      "old_code": "1002",
+      "code": "1002",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrInstallKumaCode",
+      "old_code": "1003",
+      "code": "1003",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrMeshConfigCode",
+      "old_code": "1004",
+      "code": "1004",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrFetchManifestCode",
+      "old_code": "1005",
+      "code": "1005",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrClientConfigCode",
+      "old_code": "1006",
+      "code": "1006",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrClientSetCode",
+      "old_code": "1007",
+      "code": "1007",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrStreamEventCode",
+      "old_code": "1008",
+      "code": "1008",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrSampleAppCode",
+      "old_code": "1009",
+      "code": "1009",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrGetKumactlCode",
+      "old_code": "1010",
+      "code": "1010",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrDownloadBinaryCode",
+      "old_code": "1011",
+      "code": "1011",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrInstallBinaryCode",
+      "old_code": "1012",
+      "code": "1012",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrUntarCode",
+      "old_code": "1013",
+      "code": "1013",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrUntarDefaultCode",
+      "old_code": "1014",
+      "code": "1014",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrMoveBinaryCode",
+      "old_code": "1015",
+      "code": "1015",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrCustomOperationCode",
+      "old_code": "1016",
+      "code": "1016",
+      "code_is_literal": true,
+      "code_is_int": true,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrOpInvalid",
+      "old_code": "",
+      "code": "",
+      "code_is_literal": false,
+      "code_is_int": false,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrUntarDefault",
+      "old_code": "",
+      "code": "",
+      "code_is_literal": false,
+      "code_is_int": false,
+      "path": "kuma/error.go"
+    }
+  ],
+  "literal_codes": {
+    "1000": [
+      {
+        "name": "ErrGetLatestReleasesCode",
+        "old_code": "1000",
+        "code": "1000",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "internal/config/error.go"
+      }
+    ],
+    "1001": [
+      {
+        "name": "ErrGetLatestReleaseNamesCode",
+        "old_code": "1001",
+        "code": "1001",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "internal/config/error.go"
+      }
+    ],
+    "1002": [
+      {
+        "name": "ErrOpInvalidCode",
+        "old_code": "1002",
+        "code": "1002",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1003": [
+      {
+        "name": "ErrInstallKumaCode",
+        "old_code": "1003",
+        "code": "1003",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1004": [
+      {
+        "name": "ErrMeshConfigCode",
+        "old_code": "1004",
+        "code": "1004",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1005": [
+      {
+        "name": "ErrFetchManifestCode",
+        "old_code": "1005",
+        "code": "1005",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1006": [
+      {
+        "name": "ErrClientConfigCode",
+        "old_code": "1006",
+        "code": "1006",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1007": [
+      {
+        "name": "ErrClientSetCode",
+        "old_code": "1007",
+        "code": "1007",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1008": [
+      {
+        "name": "ErrStreamEventCode",
+        "old_code": "1008",
+        "code": "1008",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1009": [
+      {
+        "name": "ErrSampleAppCode",
+        "old_code": "1009",
+        "code": "1009",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1010": [
+      {
+        "name": "ErrGetKumactlCode",
+        "old_code": "1010",
+        "code": "1010",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1011": [
+      {
+        "name": "ErrDownloadBinaryCode",
+        "old_code": "1011",
+        "code": "1011",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1012": [
+      {
+        "name": "ErrInstallBinaryCode",
+        "old_code": "1012",
+        "code": "1012",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1013": [
+      {
+        "name": "ErrUntarCode",
+        "old_code": "1013",
+        "code": "1013",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1014": [
+      {
+        "name": "ErrUntarDefaultCode",
+        "old_code": "1014",
+        "code": "1014",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1015": [
+      {
+        "name": "ErrMoveBinaryCode",
+        "old_code": "1015",
+        "code": "1015",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ],
+    "1016": [
+      {
+        "name": "ErrCustomOperationCode",
+        "old_code": "1016",
+        "code": "1016",
+        "code_is_literal": true,
+        "code_is_int": true,
+        "path": "kuma/error.go"
+      }
+    ]
+  },
+  "call_expr_codes": [
+    {
+      "name": "ErrOpInvalid",
+      "old_code": "",
+      "code": "",
+      "code_is_literal": false,
+      "code_is_int": false,
+      "path": "kuma/error.go"
+    },
+    {
+      "name": "ErrUntarDefault",
+      "old_code": "",
+      "code": "",
+      "code_is_literal": false,
+      "code_is_int": false,
+      "path": "kuma/error.go"
+    }
+  ],
+  "deprecated_new_default": null,
+  "errors_raw": {
+    "ErrClientConfigCode": [
+      {
+        "name": "ErrClientConfigCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while setting client config",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrClientSetCode": [
+      {
+        "name": "ErrClientSetCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while setting clientset",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrCustomOperationCode": [
+      {
+        "name": "ErrCustomOperationCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while applying custom opearaion",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrDownloadBinaryCode": [
+      {
+        "name": "ErrDownloadBinaryCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while downloading kumactl binary",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrFetchManifestCode": [
+      {
+        "name": "ErrFetchManifestCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while fetching the mainfest",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrGetKumactlCode": [
+      {
+        "name": "ErrGetKumactlCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error getting kumactl comamndline",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrGetLatestReleaseNamesCode": [
+      {
+        "name": "ErrGetLatestReleaseNamesCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "failed to extract release names",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrGetLatestReleasesCode": [
+      {
+        "name": "ErrGetLatestReleasesCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "unable to fetch release info",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrInstallBinaryCode": [
+      {
+        "name": "ErrInstallBinaryCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error installing kumactl",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrInstallKumaCode": [
+      {
+        "name": "ErrInstallKumaCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while installing Kuma",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrMeshConfigCode": [
+      {
+        "name": "ErrMeshConfigCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while configuring the mesh",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrMoveBinaryCode": [
+      {
+        "name": "ErrMoveBinaryCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while moving the kumactl binary",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrOpInvalidCode": [
+      {
+        "name": "ErrOpInvalidCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "Invalid operation detected by the Adaptor",
+        "short_description": "Invalid operation",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrSampleAppCode": [
+      {
+        "name": "ErrSampleAppCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while applying sample app mainifest",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrStreamEventCode": [
+      {
+        "name": "ErrStreamEventCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while streaming events",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrUntarCode": [
+      {
+        "name": "ErrUntarCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "",
+        "short_description": "Error occured while untaring a pakage",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ],
+    "ErrUntarDefaultCode": [
+      {
+        "name": "ErrUntarDefaultCode",
+        "code": "",
+        "severity": "Alert",
+        "long_description": "Error occured in the process of untaring a compressed file",
+        "short_description": "Error untaring opeartion default",
+        "probable_cause": "",
+        "suggested_remediation": ""
+      }
+    ]
+  }
+}

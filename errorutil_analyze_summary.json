@@ -1,0 +1,30 @@
+{
+  "min_code": 1000,
+  "max_code": 1016,
+  "duplicate_codes": {},
+  "duplicate_names": [],
+  "call_expr_codes": [
+    "ErrOpInvalid",
+    "ErrUntarDefault"
+  ],
+  "int_codes": [
+    1002,
+    1006,
+    1007,
+    1010,
+    1005,
+    1008,
+    1014,
+    1000,
+    1001,
+    1003,
+    1012,
+    1013,
+    1004,
+    1009,
+    1011,
+    1015,
+    1016
+  ],
+  "deprecated_new_default": null
+}

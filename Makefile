@@ -16,3 +16,6 @@ docker-run:
 
 run: check
 	DEBUG=true go run main.go
+
+errorutil:
+	go run -mod=mod github.com/layer5io/meshkit/cmd/errorutil -d . update
