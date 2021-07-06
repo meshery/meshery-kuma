@@ -15,23 +15,20 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/layer5io/meshkit/errors"
 )
 
 const (
-	ErrEmptyConfigCode           = "kuma_test_code"
-	ErrGetLatestReleasesCode     = "kuma_test_code"
-	ErrGetLatestReleaseNamesCode = "kuma_test_code"
+	ErrGetLatestReleasesCode     = "1000"
+	ErrGetLatestReleaseNamesCode = "1001"
 )
 
 // ErrGetLatestReleases is the error for fetching linkerd releases
 func ErrGetLatestReleases(err error) error {
-	return errors.NewDefault(ErrGetLatestReleasesCode, fmt.Sprintf("unable to fetch release info: %s", err.Error()))
+	return errors.New(ErrGetLatestReleasesCode, errors.Alert, []string{"unable to fetch release info"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrGetLatestReleaseNames is the error for fetching linkerd releases
 func ErrGetLatestReleaseNames(err error) error {
-	return errors.NewDefault(ErrGetLatestReleaseNamesCode, fmt.Sprintf("failed to extract release names: %s", err.Error()))
+	return errors.New(ErrGetLatestReleaseNamesCode, errors.Alert, []string{"failed to extract release names"}, []string{err.Error()}, []string{}, []string{})
 }

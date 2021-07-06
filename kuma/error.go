@@ -1,142 +1,144 @@
 package kuma
 
 import (
-	"fmt"
-
 	"github.com/layer5io/meshkit/errors"
 )
 
 var (
 	// Error code for failed service mesh installation
 
+	// ErrOpInvalidCode represents the errors which are generated
+	// when an invalid operation is invoked
+	ErrOpInvalidCode = "1002"
+
 	// ErrInstallKumaCode represents the errors which are generated
 	// during kuma service mesh install process
-	ErrInstallKumaCode = "kuma_test_code"
+	ErrInstallKumaCode = "1003"
 
 	// ErrMeshConfigCode represents the errors which are generated
 	// when an invalid mesh config is found
-	ErrMeshConfigCode = "kuma_test_code"
+	ErrMeshConfigCode = "1004"
 
 	// ErrFetchManifestCode represents the errors which are generated
 	// during the process of fetching manifest
-	ErrFetchManifestCode = "kuma_test_code"
+	ErrFetchManifestCode = "1005"
 
 	// ErrClientConfigCode represents the errors which are generated
 	// during the process of setting client config
-	ErrClientConfigCode = "kuma_test_code"
+	ErrClientConfigCode = "1006"
 
 	// ErrClientSetCode represents the errors which are generated
 	// during the process of setting clientset
-	ErrClientSetCode = "kuma_test_code"
+	ErrClientSetCode = "1007"
 
 	// ErrStreamEventCode represents the errors which are generated
 	// during the process of streaming events
-	ErrStreamEventCode = "kuma_test_code"
+	ErrStreamEventCode = "1008"
 
 	// ErrSampleAppCode represents the errors which are generated
 	// during the process of installing sample app
-	ErrSampleAppCode = "kuma_test_code"
+	ErrSampleAppCode = "1009"
 
 	// ErrGetKumactlCode represents the errors which are generated
 	// during the process of using kumactl for installation
-	ErrGetKumactlCode = "kuma_test_code"
+	ErrGetKumactlCode = "1010"
 
 	// ErrDownloadBinaryCode represents the errors which are generated
 	// during the process of downloading binary
-	ErrDownloadBinaryCode = "kuma_test_code"
+	ErrDownloadBinaryCode = "1011"
 
 	// ErrInstallBinaryCode represents the errors which are generated
 	// during the process of installing binary
-	ErrInstallBinaryCode = "kuma_test_code"
+	ErrInstallBinaryCode = "1012"
 
 	// ErrUntarCode represents the errors which are generated
 	// during the process of untaring a compressed file
-	ErrUntarCode = "kuma_test_code"
+	ErrUntarCode = "1013"
 
 	// ErrUntarDefaultCode represents the errors which are generated
 	// during the process of untaring a compressed file
-	ErrUntarDefaultCode = "kuma_test_code"
+	ErrUntarDefaultCode = "1014"
 
 	// ErrMoveBinaryCode represents the errors which are generated
 	// during the process of moving binaries
-	ErrMoveBinaryCode = "kuma_test_code"
+	ErrMoveBinaryCode = "1015"
 
 	// ErrCustomOperationCode represents the errors which are generated
 	// during the process of handeling a custom process
-	ErrCustomOperationCode = "kuma_test_code"
+	ErrCustomOperationCode = "1016"
 
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
-	ErrOpInvalid = errors.NewDefault(errors.ErrOpInvalid, "Invalid operation")
+	ErrOpInvalid = errors.New(ErrOpInvalidCode, errors.Alert, []string{"Invalid operation"}, []string{"Invalid operation detected by the Adaptor"}, []string{}, []string{})
 
 	// ErrUntarDefault represents the errors which are generated
 	// during the process of untaring a compressed file
-	ErrUntarDefault = errors.NewDefault(ErrUntarDefaultCode, "Error untaring operation default")
+	ErrUntarDefault = errors.New(ErrUntarDefaultCode, errors.Alert, []string{"Error untaring opeartion default"}, []string{"Error occured in the process of untaring a compressed file"}, []string{}, []string{})
 )
 
 // ErrInstallKuma is the error for install mesh
 func ErrInstallKuma(err error) error {
-	return errors.NewDefault(ErrInstallKumaCode, fmt.Sprintf("Error with kuma operation: %s", err.Error()))
+	return errors.New(ErrInstallKumaCode, errors.Alert, []string{"Error occured while installing Kuma"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrMeshConfig is the error for mesh config
 func ErrMeshConfig(err error) error {
-	return errors.NewDefault(ErrMeshConfigCode, fmt.Sprintf("Error configuration mesh: %s", err.Error()))
+	return errors.New(ErrMeshConfigCode, errors.Alert, []string{"Error occured while configuring the mesh"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrFetchManifest is the error occured during the process
 // fetching manifest
 func ErrFetchManifest(err error, des string) error {
-	return errors.NewDefault(ErrFetchManifestCode, fmt.Sprintf("Error fetching mesh manifest: %s", des))
+	return errors.New(ErrFetchManifestCode, errors.Alert, []string{"Error occured while fetching the mainfest", des}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrClientConfig is the error for setting client config
 func ErrClientConfig(err error) error {
-	return errors.NewDefault(ErrClientConfigCode, fmt.Sprintf("Error setting client config: %s", err.Error()))
+	return errors.New(ErrClientConfigCode, errors.Alert, []string{"Error occured while setting client config"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrClientSet is the error for setting clientset
 func ErrClientSet(err error) error {
-	return errors.NewDefault(ErrClientSetCode, fmt.Sprintf("Error setting clientset: %s", err.Error()))
+	return errors.New(ErrClientSetCode, errors.Alert, []string{"Error occured while setting clientset"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrStreamEvent is the error for streaming event
 func ErrStreamEvent(err error) error {
-	return errors.NewDefault(ErrStreamEventCode, fmt.Sprintf("Error streaming event: %s", err.Error()))
+	return errors.New(ErrStreamEventCode, errors.Alert, []string{"Error occured while streaming events"}, []string{err.Error()}, []string{}, []string{})
 }
 
-// ErrSampleApp is the error for streaming event
-func ErrSampleApp(err error) error {
-	return errors.NewDefault(ErrSampleAppCode, fmt.Sprintf("Error with sample app operation: %s", err.Error()))
+// ErrSampleApp is the error for applying/deleting Sample App
+func ErrSampleApp(err error, status string) error {
+	return errors.New(ErrSampleAppCode, errors.Alert, []string{"Error occured while applying sample app mainifest"}, []string{"Error occured while " + status + " Sample App", err.Error()}, []string{}, []string{})
 }
 
-// ErrGetKumactl is the error for streaming event
+// ErrGetKumactl is the error for getting `kumactl`
 func ErrGetKumactl(err error) error {
-	return errors.NewDefault(ErrGetKumactlCode, fmt.Sprintf("Error getting kumactl commandline: %s", err.Error()))
+	return errors.New(ErrGetKumactlCode, errors.Alert, []string{"Error getting kumactl comamndline"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrDownloadBinary is the error for downloading binary
 func ErrDownloadBinary(err error) error {
-	return errors.NewDefault(ErrDownloadBinaryCode, fmt.Sprintf("Error downloadinf kumactl binary: %s", err.Error()))
+	return errors.New(ErrDownloadBinaryCode, errors.Alert, []string{"Error occured while downloading kumactl binary"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrUntar is the error for streaming event
 func ErrUntar(err error) error {
-	return errors.NewDefault(ErrUntarCode, fmt.Sprintf("Error untaring package: %s", err.Error()))
+	return errors.New(ErrUntarCode, errors.Alert, []string{"Error occured while untaring a pakage"}, []string{err.Error()}, []string{}, []string{})
 }
 
-// ErrInstallBinary is the error for streaming event
+// ErrInstallBinary is the error for installing binary
 func ErrInstallBinary(err error) error {
-	return errors.NewDefault(ErrInstallBinaryCode, fmt.Sprintf("Error installing kumactl: %s", err.Error()))
+	return errors.New(ErrInstallBinaryCode, errors.Alert, []string{"Error installing kumactl"}, []string{err.Error()}, []string{}, []string{})
 }
 
-// ErrMoveBinary is the error for streaming event
+// ErrMoveBinary is the error for moving binary
 func ErrMoveBinary(err error) error {
-	return errors.NewDefault(ErrMoveBinaryCode, fmt.Sprintf("Error with moving binary kumactl: %s", err.Error()))
+	return errors.New(ErrMoveBinaryCode, errors.Alert, []string{"Error occured while moving the kumactl binary"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrCustomOperation is the error occured during the process of
 // applying custom operation
 func ErrCustomOperation(err error) error {
-	return errors.NewDefault(ErrCustomOperationCode, fmt.Sprintf("Error applying custom operation: %s", err.Error()))
+	return errors.New(ErrCustomOperationCode, errors.Alert, []string{"Error occured while applying custom opearaion"}, []string{err.Error()}, []string{}, []string{})
 }
