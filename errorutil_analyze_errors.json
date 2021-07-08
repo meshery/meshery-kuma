@@ -417,7 +417,7 @@
         "code": "",
         "severity": "Alert",
         "long_description": "",
-        "short_description": "failed to extract release names",
+        "short_description": "Failed to extract release names",
         "probable_cause": "",
         "suggested_remediation": ""
       }
@@ -428,7 +428,7 @@
         "code": "",
         "severity": "Alert",
         "long_description": "",
-        "short_description": "unable to fetch release info",
+        "short_description": "Unable to fetch release info",
         "probable_cause": "",
         "suggested_remediation": ""
       }
