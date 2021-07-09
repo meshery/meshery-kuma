@@ -1,0 +1,159 @@
+{
+  "component_name": "meshery-kuma",
+  "component_type": "adapter",
+  "errors": {
+    "1000": {
+      "name": "ErrGetLatestReleasesCode",
+      "code": "1000",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Unable to fetch release info",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1001": {
+      "name": "ErrGetLatestReleaseNamesCode",
+      "code": "1001",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Failed to extract release names",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1002": {
+      "name": "ErrOpInvalidCode",
+      "code": "1002",
+      "severity": "Alert",
+      "long_description": "Invalid operation detected by the Adaptor",
+      "short_description": "Invalid operation",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1003": {
+      "name": "ErrInstallKumaCode",
+      "code": "1003",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while installing Kuma",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1004": {
+      "name": "ErrMeshConfigCode",
+      "code": "1004",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while configuring the mesh",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1005": {
+      "name": "ErrFetchManifestCode",
+      "code": "1005",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while fetching the mainfest",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1006": {
+      "name": "ErrClientConfigCode",
+      "code": "1006",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while setting client config",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1007": {
+      "name": "ErrClientSetCode",
+      "code": "1007",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while setting clientset",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1008": {
+      "name": "ErrStreamEventCode",
+      "code": "1008",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while streaming events",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1009": {
+      "name": "ErrSampleAppCode",
+      "code": "1009",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while applying sample app mainifest",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1010": {
+      "name": "ErrGetKumactlCode",
+      "code": "1010",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error getting kumactl comamndline",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1011": {
+      "name": "ErrDownloadBinaryCode",
+      "code": "1011",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while downloading kumactl binary",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1012": {
+      "name": "ErrInstallBinaryCode",
+      "code": "1012",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error installing kumactl",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1013": {
+      "name": "ErrUntarCode",
+      "code": "1013",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while untaring a pakage",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1014": {
+      "name": "ErrUntarDefaultCode",
+      "code": "1014",
+      "severity": "Alert",
+      "long_description": "Error occured in the process of untaring a compressed file",
+      "short_description": "Error untaring opeartion default",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1015": {
+      "name": "ErrMoveBinaryCode",
+      "code": "1015",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while moving the kumactl binary",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    },
+    "1016": {
+      "name": "ErrCustomOperationCode",
+      "code": "1016",
+      "severity": "Alert",
+      "long_description": "",
+      "short_description": "Error occured while applying custom opearaion",
+      "probable_cause": "",
+      "suggested_remediation": ""
+    }
+  }
+}

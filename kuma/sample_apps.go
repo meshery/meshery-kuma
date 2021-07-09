@@ -15,7 +15,7 @@ func (kuma *Kuma) installSampleApp(del bool, namespace string, templates []adapt
 	for _, template := range templates {
 		err := kuma.applyManifest(del, namespace, []byte(template.String()))
 		if err != nil {
-			return st, ErrSampleApp(err)
+			return st, ErrSampleApp(err, st)
 		}
 	}
 
