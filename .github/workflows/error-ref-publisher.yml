@@ -60,6 +60,6 @@ jobs:
             echo "No changes to commit"
             exit
           fi
-          git add ./docs/_data/errorref/meshkit_errors_export.json
+          git add ./docs/_data/errorref/kuma_errors_export.json
           git commit -m "[Docs] Error Code Reference: Updated codes for MeshKit library" --signoff
           git push origin master
