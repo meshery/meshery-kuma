@@ -9,7 +9,7 @@ on:
 jobs:
   Update-error-codes:
     name: Error codes utility
-    if: github.repository == 'layer5io/meshkit'
+    if: github.repository == 'meshery/meshery-kuma'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
