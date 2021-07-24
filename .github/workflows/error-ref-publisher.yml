@@ -61,5 +61,5 @@ jobs:
             exit
           fi
           git add ./docs/_data/errorref/kuma_errors_export.json
-          git commit -m "[Docs] Error Code Reference: Updated codes for MeshKit library" --signoff
+          git commit -m "[Docs] Error Code Reference: Updated codes for Kuma adapter" --signoff
           git push origin master
