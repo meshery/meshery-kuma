@@ -69,21 +69,21 @@ var (
 
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
-	ErrOpInvalid = errors.New(ErrOpInvalidCode, errors.Alert, []string{"Invalid operation"}, []string{"Invalid operation detected by the Adaptor"}, []string{}, []string{})
+	ErrOpInvalid = errors.New(ErrOpInvalidCode, errors.Alert, []string{"Invalid operation"}, []string{"Istio adapter recived an invalid operation from the meshey server"}, []string{"The operation is not supported by the adapter", "Invalid operation name"}, []string{"Check if the operation name is valid and supported by the adapter"})
 
 	// ErrUntarDefault represents the errors which are generated
 	// during the process of untaring a compressed file
-	ErrUntarDefault = errors.New(ErrUntarDefaultCode, errors.Alert, []string{"Error untaring opeartion default"}, []string{"Error occured in the process of untaring a compressed file"}, []string{}, []string{})
+	ErrUntarDefault = errors.New(ErrUntarDefaultCode, errors.Alert, []string{"Error untaring opeartion default"}, []string{"Error occured in the process of untaring a compressed file"}, []string{"The compressed file might be corrupted"}, []string{"Clear the cache and retry the operation"})
 )
 
 // ErrInstallKuma is the error for install mesh
 func ErrInstallKuma(err error) error {
-	return errors.New(ErrInstallKumaCode, errors.Alert, []string{"Error occured while installing Kuma"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrInstallKumaCode, errors.Alert, []string{"Error with kuma operation"}, []string{"Error occured while installing kuma mesh through kumactl", err.Error()}, []string{}, []string{})
 }
 
 // ErrMeshConfig is the error for mesh config
 func ErrMeshConfig(err error) error {
-	return errors.New(ErrMeshConfigCode, errors.Alert, []string{"Error occured while configuring the mesh"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrMeshConfigCode, errors.Alert, []string{"Error configuration mesh"}, []string{err.Error(), "Error getting MeshSpecKey config from in-memory configuration"}, []string{}, []string{"Reconnect the adaptor to the meshkit server"})
 }
 
 // ErrFetchManifest is the error occured during the process
@@ -109,36 +109,36 @@ func ErrStreamEvent(err error) error {
 
 // ErrSampleApp is the error for applying/deleting Sample App
 func ErrSampleApp(err error, status string) error {
-	return errors.New(ErrSampleAppCode, errors.Alert, []string{"Error occured while applying sample app mainifest"}, []string{"Error occured while " + status + " Sample App", err.Error()}, []string{}, []string{})
+	return errors.New(ErrSampleAppCode, errors.Alert, []string{"Error with sample app operation"}, []string{err.Error(), "Error occured while trying to install a sample application using manifests"}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reconnect your adapter to meshery server to refresh the kubeclient"})
 }
 
 // ErrGetKumactl is the error for getting `kumactl`
 func ErrGetKumactl(err error) error {
-	return errors.New(ErrGetKumactlCode, errors.Alert, []string{"Error getting kumactl comamndline"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrGetKumactlCode, errors.Alert, []string{"Error getting kumactl comamndline"}, []string{"Error occured while downloading`kumactl` and moving it to .meshery/bin]", err.Error()}, []string{"https://download.konghq.com/mesh-alpine/kuma-<release>-<platform>-<arch>.tar.gz might be deprecated"}, []string{})
 }
 
 // ErrDownloadBinary is the error for downloading binary
 func ErrDownloadBinary(err error) error {
-	return errors.New(ErrDownloadBinaryCode, errors.Alert, []string{"Error occured while downloading kumactl binary"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrDownloadBinaryCode, errors.Alert, []string{"Error downloading kuma binary"}, []string{err.Error(), "Error occured while download kuma binary from its release url"}, []string{"Checkout https://download.konghq.com/mesh-alpine/kuma-<release>-<platform>-<arch>.tar.gz for more details"}, []string{})
 }
 
 // ErrUntar is the error for streaming event
 func ErrUntar(err error) error {
-	return errors.New(ErrUntarCode, errors.Alert, []string{"Error occured while untaring a pakage"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrUntarCode, errors.Alert, []string{"Error while extracting file"}, []string{err.Error()}, []string{"The gzip might be corrupt"}, []string{"Retry the operation"})
 }
 
 // ErrInstallBinary is the error for installing binary
 func ErrInstallBinary(err error) error {
-	return errors.New(ErrInstallBinaryCode, errors.Alert, []string{"Error installing kumactl"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrInstallBinaryCode, errors.Alert, []string{"Error installing kumactl"}, []string{"Error occured while installing kuma mesh through kumactl", err.Error()}, []string{}, []string{})
 }
 
 // ErrMoveBinary is the error for moving binary
 func ErrMoveBinary(err error) error {
-	return errors.New(ErrMoveBinaryCode, errors.Alert, []string{"Error occured while moving the kumactl binary"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrMoveBinaryCode, errors.Alert, []string{"Error occured while moving the kumactl binary"}, []string{err.Error()}, []string{"Meshery adapter might not have write access"}, []string{})
 }
 
 // ErrCustomOperation is the error occured during the process of
 // applying custom operation
 func ErrCustomOperation(err error) error {
-	return errors.New(ErrCustomOperationCode, errors.Alert, []string{"Error occured while applying custom opearaion"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrCustomOperationCode, errors.Alert, []string{"Error with custom operation"}, []string{"Error occured while applying custom manifest to the cluster", err.Error()}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reupload the kubconfig in the Meshery Server and reconnect the adapter"})
 }
