@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       NEW_KUMA_VERSION: ${{ steps.glrt.outputs.release }}
-      CURRENT_KUMA_VERSION: ${{ env.CURRENT_OSM_VERSION }}
+      CURRENT_KUMA_VERSION: ${{ env.CURRENT_KUMA_VERSION }}
     steps:
       - name: Get latest release tag
         id: glrt
