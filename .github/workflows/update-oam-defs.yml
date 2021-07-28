@@ -15,7 +15,7 @@ jobs:
         id: glrt
         uses: pozetroninc/github-action-get-latest-release@master
         with:
-          repository:  kumahq/kuma 
+          repository: kumahq/kuma 
           excludes: prerelease, draft
       - name: Check out code
         uses: actions/checkout@master
