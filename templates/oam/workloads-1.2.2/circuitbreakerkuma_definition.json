@@ -1,0 +1,12 @@
+{
+  "apiVersion": "core.oam.dev/v1alpha1",
+  "kind": "WorkloadDefinition",
+  "metadata": {
+    "name": "CircuitBreakerKUMA"
+  },
+  "spec": {
+    "definitionRef": {
+      "name": "circuitbreakerkuma.meshery.layer5.io"
+    }
+  }
+}

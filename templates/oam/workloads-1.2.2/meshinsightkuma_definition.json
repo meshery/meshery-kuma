@@ -1,0 +1,12 @@
+{
+  "apiVersion": "core.oam.dev/v1alpha1",
+  "kind": "WorkloadDefinition",
+  "metadata": {
+    "name": "MeshInsightKUMA"
+  },
+  "spec": {
+    "definitionRef": {
+      "name": "meshinsightkuma.meshery.layer5.io"
+    }
+  }
+}

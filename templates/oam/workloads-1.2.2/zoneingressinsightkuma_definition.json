@@ -1,0 +1,12 @@
+{
+  "apiVersion": "core.oam.dev/v1alpha1",
+  "kind": "WorkloadDefinition",
+  "metadata": {
+    "name": "ZoneIngressInsightKUMA"
+  },
+  "spec": {
+    "definitionRef": {
+      "name": "zoneingressinsightkuma.meshery.layer5.io"
+    }
+  }
+}
