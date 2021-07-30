@@ -6,7 +6,7 @@
   },
   "spec": {
     "definitionRef": {
-      "name": "dataplanekuma.meshery.layer5.io"
+      "name": "dataplane.kuma.meshery.layer5.io"
     }
   }
 }

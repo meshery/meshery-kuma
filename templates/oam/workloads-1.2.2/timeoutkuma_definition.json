@@ -6,7 +6,7 @@
   },
   "spec": {
     "definitionRef": {
-      "name": "timeoutkuma.meshery.layer5.io"
+      "name": "timeout.kuma.meshery.layer5.io"
     }
   }
 }

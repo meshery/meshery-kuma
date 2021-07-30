@@ -6,7 +6,7 @@
   },
   "spec": {
     "definitionRef": {
-      "name": "circuitbreakerkuma.meshery.layer5.io"
+      "name": "circuitbreaker.kuma.meshery.layer5.io"
     }
   }
 }

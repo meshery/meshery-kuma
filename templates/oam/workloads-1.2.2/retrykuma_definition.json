@@ -6,7 +6,7 @@
   },
   "spec": {
     "definitionRef": {
-      "name": "retrykuma.meshery.layer5.io"
+      "name": "retry.kuma.meshery.layer5.io"
     }
   }
 }

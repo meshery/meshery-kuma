@@ -6,7 +6,7 @@
   },
   "spec": {
     "definitionRef": {
-      "name": "faultinjectionkuma.meshery.layer5.io"
+      "name": "faultinjection.kuma.meshery.layer5.io"
     }
   }
 }

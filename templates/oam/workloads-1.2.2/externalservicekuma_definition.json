@@ -6,7 +6,7 @@
   },
   "spec": {
     "definitionRef": {
-      "name": "externalservicekuma.meshery.layer5.io"
+      "name": "externalservice.kuma.meshery.layer5.io"
     }
   }
 }

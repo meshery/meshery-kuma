@@ -6,7 +6,7 @@
   },
   "spec": {
     "definitionRef": {
-      "name": "zoneingresskuma.meshery.layer5.io"
+      "name": "zoneingress.kuma.meshery.layer5.io"
     }
   }
 }

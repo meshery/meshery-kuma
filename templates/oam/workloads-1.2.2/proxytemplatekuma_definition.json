@@ -6,7 +6,7 @@
   },
   "spec": {
     "definitionRef": {
-      "name": "proxytemplatekuma.meshery.layer5.io"
+      "name": "proxytemplate.kuma.meshery.layer5.io"
     }
   }
 }
