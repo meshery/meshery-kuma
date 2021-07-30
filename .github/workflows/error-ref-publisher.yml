@@ -2,7 +2,7 @@ name: Meshkit Error Codes Utility Runner
 on:
   push:
     branches:
-      - 'update-oam-defs'
+      - 'master'
     paths:
       - '**.go'
 
