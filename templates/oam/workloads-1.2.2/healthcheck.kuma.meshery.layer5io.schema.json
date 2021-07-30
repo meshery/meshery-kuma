@@ -1,0 +1,7 @@
+{
+  "x-kubernetes-preserve-unknown-fields": true,
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "version": "1.2.2",
+  "title": "HealthCheckKUMA"
+}
