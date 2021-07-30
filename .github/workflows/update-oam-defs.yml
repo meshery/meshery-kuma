@@ -74,7 +74,7 @@ jobs:
       - name: Cleanup
         run: |
           rm -rf util kuma-*
-      - name: Update OSM version in .env
+      - name: Update KUMA version in .env
         run: |
           echo "CURRENT_KUMA_VERSION=$NEW_KUMA_VERSION" > .github/.env
       - name: Commit changes
