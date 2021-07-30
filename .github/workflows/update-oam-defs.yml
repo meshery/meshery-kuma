@@ -65,9 +65,9 @@ jobs:
           for t in ${crds[@]}; do
             nameUpper=`echo $t  | tr -d '"'`
             nameLower=`echo $t  | tr -d '"' | tr '[:upper:]' '[:lower:]'`
-            definitionRef=$(printf %skuma.meshery.layer5.io $nameLower)
+            definitionRef=$(printf %s.kuma.meshery.layer5.io $nameLower)
             name=`echo $t | tr -d '"' | tr '[:upper:]' '[:lower:]'`
-            definitionRef=$(printf %skuma.meshery.layer5.io $name)
+            definitionRef=$(printf %s.kuma.meshery.layer5.io $name)
             ./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition" && @.spec.names.kind=='$t')]..openAPIV3Schema.properties.spec' --o-filter "$[]" -o json | jq '.[] | .version = "'$NEW_KUMA_VERSION'" | .title = "'$(printf %sKUMA $nameUpper)'"' > ../templates/oam/workloads-$NEW_KUMA_VERSION/$(printf %skuma.meshery.layer5io.schema.json $nameLower)
             echo $template | jq ' ."metadata"."name" = "'$(printf %sKUMA $nameUpper)'" | ."spec"."definitionRef"."name"="'$definitionRef'"' > ../templates/oam/workloads-$NEW_KUMA_VERSION/$(printf %skuma_definition.json $nameLower)
           done
