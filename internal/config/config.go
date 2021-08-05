@@ -2,10 +2,12 @@ package config
 
 import (
 	"path"
+	"strings"
 
 	"github.com/layer5io/meshery-adapter-library/config"
 	configprovider "github.com/layer5io/meshery-adapter-library/config/provider"
 	"github.com/layer5io/meshkit/utils"
+	smp "github.com/layer5io/service-mesh-performance/spec"
 )
 
 const (
@@ -15,7 +17,8 @@ const (
 )
 
 var (
-	configRootPath = path.Join(utils.GetHome(), ".meshery")
+	configRootPath    = path.Join(utils.GetHome(), ".meshery")
+	KumaMeshOperation = strings.ToLower(smp.ServiceMesh_KUMA.Enum().String())
 )
 
 // New creates a new config instance
