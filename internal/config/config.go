@@ -11,14 +11,13 @@ import (
 )
 
 const (
-	KumaOperation = "kuma"
-	Development   = "development"
-	Production    = "production"
+	Development = "development"
+	Production  = "production"
 )
 
 var (
-	configRootPath    = path.Join(utils.GetHome(), ".meshery")
-	KumaMeshOperation = strings.ToLower(smp.ServiceMesh_KUMA.Enum().String())
+	configRootPath = path.Join(utils.GetHome(), ".meshery")
+	KumaOperation  = strings.ToLower(smp.ServiceMesh_KUMA.Enum().String())
 )
 
 // New creates a new config instance
