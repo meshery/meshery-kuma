@@ -5,7 +5,7 @@ on:
       - "oam-defs"
 jobs:
   check_kuma_version:
-    name: Check Kuma Version
+    name: Check Kuma Versio
     runs-on: ubuntu-latest
     outputs:
       NEW_KUMA_VERSION: ${{ steps.glrt.outputs.release }}
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@master
+        uses: actions/checkout@master 
         with:
           fetch-depth: 1
           token: ${{ secrets.GH_ACCESS_TOKEN }}
