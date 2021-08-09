@@ -63,10 +63,10 @@ jobs:
           make linux
       - name: Generate Workload definitions
         run: |
-          dirPath=../templates/oam/workloads/workloads-$NEW_OSM_VERSION
+          dirPath=../templates/oam/workloads/workloads-$NEW_KUMA_VERSION
           cd util
           mkdir -p $dirPath
-          meshName=osm
+          meshName=kuma
           smpMeshName=KUMA
           template='{"apiVersion":"core.oam.dev/v1alpha1","kind":"WorkloadDefinition","metadata":{"@type":"pattern.meshery.io/mesh/workload","meshVersion":"'$NEW_KUMA_VERSION'","meshName":"'$smpMeshName'","k8sAPIVersion":null,"k8sKind":""}}}'
           crds=$(./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition")]' -o json --o-filter '$..["spec"]["names"]["kind"]' | jq '.[]')
