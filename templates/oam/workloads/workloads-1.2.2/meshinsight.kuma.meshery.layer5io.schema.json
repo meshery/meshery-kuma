@@ -1,0 +1,17 @@
+{
+  "description": "MeshInsight is the Schema for the meshes insights API",
+  "properties": {
+    "mesh": {
+      "type": "string"
+    },
+    "spec": {
+      "x-kubernetes-preserve-unknown-fields": true,
+      "type": "object"
+    }
+  },
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "version": "1.2.2",
+  "object-type": "MeshInsight",
+  "service-mesh": "kuma"
+}

@@ -1,0 +1,19 @@
+{
+  "apiVersion": "core.oam.dev/v1alpha1",
+  "kind": "WorkloadDefinition",
+  "metadata": {
+    "name": "TrafficPermission.KUMA"
+  },
+  "spec": {
+    "definitionRef": {
+      "name": "trafficpermission.kuma.meshery.layer5.io"
+    },
+    "metadata": {
+      "@type": "pattern.meshery.io/mesh/workload",
+      "meshVersion": "1.2.2",
+      "meshName": "KUMA",
+      "k8sAPIVersion": "kuma.io/v1alpha1",
+      "k8sKind": "TrafficPermission"
+    }
+  }
+}
