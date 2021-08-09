@@ -2,7 +2,7 @@ name: Meshery Kuma Pattern Components Generator
 on:
   push:
     branches:
-      - "oam-defs"
+      - "master"
 jobs:
   check_kuma_version:
     name: Check KUMA Version
