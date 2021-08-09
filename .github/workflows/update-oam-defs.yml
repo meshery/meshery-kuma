@@ -67,7 +67,7 @@ jobs:
           cd util
           mkdir -p $dirPath
           meshName=kuma
-          smpMeshName=OPEN_SERVICE_MESH
+          smpMeshName=KUMA
           template='{"apiVersion":"core.oam.dev/v1alpha1","kind":"WorkloadDefinition","metadata":{},"spec":{"definitionRef":{},"metadata":{"@type":"pattern.meshery.io/mesh/workload","meshVersion":"'$NEW_KUMA_VERSION'","meshName":"'$smpMeshName'","k8sAPIVersion":null,"k8sKind":""}}}'
           crds=$(./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition")]' -o json --o-filter '$..["spec"]["names"]["kind"]' | jq '.[]')
           for t in ${crds[@]}; do
