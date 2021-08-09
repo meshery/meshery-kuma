@@ -21,9 +21,14 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 1
-      - name: Get CURRENT_KUMA_VERSION from .env
+      - name: Check if manifests for latest release exist
         run: |
-          cat .github/.env > $GITHUB_ENV
+          if [ -d templates/oam/workloads/workloads-${{ steps.glrt.outputs.release }} ]
+          then
+           echo "EXISTS=true" > $GITHUB_ENV
+          else
+           export "EXISTS=false" > $GITHUB_ENV
+          fi
   generator:
     name: Generate and push OAM definitions
     needs: [check_kuma_version]
@@ -58,8 +63,11 @@ jobs:
           make linux
       - name: Generate Workload definitions
         run: |
-          mkdir -p ./templates/oam/workloads-$NEW_KUMA_VERSION
+          dirPath=../templates/oam/workloads/workloads-$NEW_OSM_VERSION
           cd util
+          mkdir -p $dirPath
+          meshName=osm
+          smpMeshName=KUMA
           template='{"apiVersion":"core.oam.dev/v1alpha1","kind":"WorkloadDefinition","metadata":{"@type":"pattern.meshery.io/mesh/workload","meshVersion":"'$NEW_KUMA_VERSION'","meshName":"'$smpMeshName'","k8sAPIVersion":null,"k8sKind":""}}}'
           crds=$(./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition")]' -o json --o-filter '$..["spec"]["names"]["kind"]' | jq '.[]')
           for t in ${crds[@]}; do
@@ -78,10 +86,7 @@ jobs:
           done
       - name: Cleanup
         run: |
-          rm -rf util kuma-*
-      - name: Update KUMA version in .env
-        run: |
-          echo "CURRENT_KUMA_VERSION=$NEW_KUMA_VERSION" > .github/.env
+          rm -rf util -*
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
