@@ -15,10 +15,13 @@ import (
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/status"
 	"github.com/layer5io/meshery-kuma/internal/config"
+	"github.com/layer5io/meshkit/utils/kubernetes"
 	mesherykube "github.com/layer5io/meshkit/utils/kubernetes"
 )
 
-func (kuma *Kuma) installKuma(del bool, namespace string, version string) (string, error) {
+// var downloadLocation = os.TempDir()
+
+func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, version string) (string, error) {
 	st := status.Installing
 
 	if del {
@@ -29,23 +32,52 @@ func (kuma *Kuma) installKuma(del bool, namespace string, version string) (strin
 	if err != nil {
 		return st, ErrMeshConfig(err)
 	}
+	if useManifest {
+		kuma.Log.Info("Installing kuma using manifests...")
+		manifest, err := kuma.fetchManifest(version)
+		if err != nil {
+			kuma.Log.Error(ErrInstallKuma(err))
+			return st, ErrInstallKuma(err)
+		}
 
-	manifest, err := kuma.fetchManifest(version)
-	if err != nil {
-		kuma.Log.Error(ErrInstallKuma(err))
-		return st, ErrInstallKuma(err)
+		err = kuma.applyManifest(del, namespace, []byte(manifest))
+		if err != nil {
+			kuma.Log.Error(ErrInstallKuma(err))
+			return st, ErrInstallKuma(err)
+		}
+
+		if del {
+			return status.Removed, nil
+		}
+		return status.Installed, nil
 	}
 
-	err = kuma.applyManifest(del, namespace, []byte(manifest))
+	err = kuma.applyHelmChart(del, version, namespace)
 	if err != nil {
-		kuma.Log.Error(ErrInstallKuma(err))
 		return st, ErrInstallKuma(err)
-	}
-
-	if del {
-		return status.Removed, nil
 	}
 	return status.Installed, nil
+}
+func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
+	kClient := kuma.MesheryKubeclient
+	if kClient == nil {
+		return ErrNilClient
+	}
+	kuma.Log.Info("Installing using helm charts...")
+	err := kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
+		ChartLocation: kubernetes.HelmChartLocation{
+			Repository: "https://kumahq.github.io/kuma",
+			Chart:      "kuma",
+			Version:    version,
+		},
+		Namespace:       "kuma-system",
+		Delete:          del,
+		CreateNamespace: true,
+	})
+	if err != nil {
+		return ErrApplyHelmChart(err)
+	}
+	return nil
 }
 
 func (kuma *Kuma) fetchManifest(version string) (string, error) {

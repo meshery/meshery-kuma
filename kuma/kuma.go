@@ -53,7 +53,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	case internalconfig.KumaOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			version := string(operations[opReq.OperationName].Versions[0])
-			stat, err := hh.installKuma(opReq.IsDeleteOperation, opReq.Namespace, version)
+			stat, err := hh.installKuma(opReq.IsDeleteOperation, false, opReq.Namespace, version)
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", stat)
 				e.Details = err.Error()

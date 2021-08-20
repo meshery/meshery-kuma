@@ -66,14 +66,23 @@ var (
 	// ErrCustomOperationCode represents the errors which are generated
 	// during the process of handeling a custom process
 	ErrCustomOperationCode = "1016"
-
+	// ErrNilClientCode represents the error code which is
+	// generated when kubernetes client is nil
+	ErrNilClientCode = "1017"
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
+	// ErrApplyHelmChartCode represents the error which are generated
+	// during the process of applying helm chart
+	ErrApplyHelmChartCode = "1018"
+
 	ErrOpInvalid = errors.New(ErrOpInvalidCode, errors.Alert, []string{"Invalid operation"}, []string{"Istio adapter recived an invalid operation from the meshey server"}, []string{"The operation is not supported by the adapter", "Invalid operation name"}, []string{"Check if the operation name is valid and supported by the adapter"})
 
 	// ErrUntarDefault represents the errors which are generated
 	// during the process of untaring a compressed file
 	ErrUntarDefault = errors.New(ErrUntarDefaultCode, errors.Alert, []string{"Error untaring opeartion default"}, []string{"Error occured in the process of untaring a compressed file"}, []string{"The compressed file might be corrupted"}, []string{"Clear the cache and retry the operation"})
+	// ErrNilClient represents the error which is
+	// generated when kubernetes client is nil
+	ErrNilClient = errors.New(ErrNilClientCode, errors.Alert, []string{"kubernetes client not initialized"}, []string{"Kubernetes client is nil"}, []string{"kubernetes client not initialized"}, []string{"Reconnect the adaptor to Meshery server"})
 )
 
 // ErrInstallKuma is the error for install mesh
@@ -141,4 +150,9 @@ func ErrMoveBinary(err error) error {
 // applying custom operation
 func ErrCustomOperation(err error) error {
 	return errors.New(ErrCustomOperationCode, errors.Alert, []string{"Error with custom operation"}, []string{"Error occured while applying custom manifest to the cluster", err.Error()}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reupload the kubconfig in the Meshery Server and reconnect the adapter"})
+}
+
+// ErrApplyHelmChart is the error for applying helm chart
+func ErrApplyHelmChart(err error) error {
+	return errors.New(ErrApplyHelmChartCode, errors.Alert, []string{"Error occured while applying Helm Chart"}, []string{err.Error()}, []string{}, []string{})
 }
