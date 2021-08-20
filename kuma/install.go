@@ -15,7 +15,6 @@ import (
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/status"
 	"github.com/layer5io/meshery-kuma/internal/config"
-	"github.com/layer5io/meshkit/utils/kubernetes"
 	mesherykube "github.com/layer5io/meshkit/utils/kubernetes"
 )
 
@@ -33,28 +32,32 @@ func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, vers
 		return st, ErrMeshConfig(err)
 	}
 	if useManifest {
-		kuma.Log.Info("Installing kuma using manifests...")
-		manifest, err := kuma.fetchManifest(version)
-		if err != nil {
-			kuma.Log.Error(ErrInstallKuma(err))
-			return st, ErrInstallKuma(err)
-		}
-
-		err = kuma.applyManifest(del, namespace, []byte(manifest))
-		if err != nil {
-			kuma.Log.Error(ErrInstallKuma(err))
-			return st, ErrInstallKuma(err)
-		}
-
-		if del {
-			return status.Removed, nil
-		}
-		return status.Installed, nil
+		return kuma.installUsingManifests(del, st, namespace, version)
 	}
 
 	err = kuma.applyHelmChart(del, version, namespace)
 	if err != nil {
+		kuma.Log.Info("Failed helm installation. Trying installing from manifests...")
+		return kuma.installUsingManifests(del, st, namespace, version)
+	}
+	return status.Installed, nil
+}
+func (kuma *Kuma) installUsingManifests(del bool, st string, namespace string, version string) (string, error) {
+	kuma.Log.Info("Installing kuma using manifests...")
+	manifest, err := kuma.fetchManifest(version)
+	if err != nil {
+		kuma.Log.Error(ErrInstallKuma(err))
 		return st, ErrInstallKuma(err)
+	}
+
+	err = kuma.applyManifest(del, namespace, []byte(manifest))
+	if err != nil {
+		kuma.Log.Error(ErrInstallKuma(err))
+		return st, ErrInstallKuma(err)
+	}
+
+	if del {
+		return status.Removed, nil
 	}
 	return status.Installed, nil
 }
@@ -65,7 +68,7 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
 	}
 	kuma.Log.Info("Installing using helm charts...")
 	err := kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
-		ChartLocation: kubernetes.HelmChartLocation{
+		ChartLocation: mesherykube.HelmChartLocation{
 			Repository: "https://kumahq.github.io/kuma",
 			Chart:      "kuma",
 			Version:    version,
