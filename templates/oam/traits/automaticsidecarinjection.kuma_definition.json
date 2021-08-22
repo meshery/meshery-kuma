@@ -7,7 +7,7 @@
     "spec": {
         "appliesToWorkloads": ["KumaMesh"],
         "definitionRef": {
-            "name": "automaticsidecarinjection.KUMA.meshery.layer5.io"
+            "name": "automaticsidecarinjection.Kuma.meshery.layer5.io"
         },
         "revisionEnabled": false
     }
