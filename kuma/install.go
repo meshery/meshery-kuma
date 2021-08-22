@@ -4,8 +4,11 @@ import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -35,7 +38,7 @@ func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, vers
 		return kuma.installUsingManifests(del, st, namespace, version)
 	}
 
-	err = kuma.applyHelmChart(del, version, namespace)
+	err = kuma.applyHelmChart(del, namespace)
 	if err != nil {
 		kuma.Log.Info("Failed helm installation. Trying installing from manifests...")
 		return kuma.installUsingManifests(del, st, namespace, version)
@@ -61,19 +64,20 @@ func (kuma *Kuma) installUsingManifests(del bool, st string, namespace string, v
 	}
 	return status.Installed, nil
 }
-func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
+func (kuma *Kuma) applyHelmChart(del bool, namespace string) error {
 	kClient := kuma.MesheryKubeclient
 	if kClient == nil {
 		return ErrNilClient
 	}
 	kuma.Log.Info("Installing using helm charts...")
+	version := getLatestKumaChartVersion()
+	url := "https://github.com/kumahq/charts/releases/download/" + version + "/" + version + ".tgz"
 	err := kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
 		ChartLocation: mesherykube.HelmChartLocation{
-			Repository: "https://kumahq.github.io/kuma",
-			Chart:      "kuma",
-			Version:    version,
+			Version: version,
 		},
-		Namespace:       "kuma-system",
+		URL:             url,
+		Namespace:       namespace,
 		Delete:          del,
 		CreateNamespace: true,
 	})
@@ -278,4 +282,27 @@ func installBinary(location, platform string, res *http.Response) error {
 	}
 
 	return nil
+}
+func getLatestKumaChartVersion() string {
+	type v struct {
+		Name string `json:"name"` //since we only want the name of latest stable tag release
+	}
+	var temp []v
+	res, err := http.Get("https://api.github.com/repos/kumahq/charts/tags")
+	def := "kuma-0.6.0" //default
+	if err != nil {
+		log.Fatal(err)
+		return def
+	}
+	bodyBytes, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+		return def
+	}
+	err = json.Unmarshal(bodyBytes, &temp)
+	if err != nil {
+		log.Fatal(err)
+		return def
+	}
+	return temp[0].Name
 }

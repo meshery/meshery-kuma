@@ -155,5 +155,5 @@ func ErrCustomOperation(err error) error {
 
 // ErrApplyHelmChart is the error for applying helm chart
 func ErrApplyHelmChart(err error) error {
-	return errors.New(ErrApplyHelmChartCode, errors.Alert, []string{"Error occured while applying Helm Chart"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrApplyHelmChartCode, errors.Alert, []string{"Error with helm chart operation"}, []string{"Error occured while applying Helm Chart"}, []string{err.Error()}, []string{"Invalid helm chart configuration"})
 }
