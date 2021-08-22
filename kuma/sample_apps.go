@@ -6,6 +6,7 @@ import (
 
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/status"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func (kuma *Kuma) installSampleApp(del bool, namespace string, templates []adapter.Template) (string, error) {
