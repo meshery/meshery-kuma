@@ -1,6 +1,9 @@
 package kuma
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/status"
 )
@@ -20,4 +23,45 @@ func (kuma *Kuma) installSampleApp(del bool, namespace string, templates []adapt
 	}
 
 	return status.Installed, nil
+}
+
+func (kuma *Kuma) sidecarInjection(namespace string, del bool) error {
+	kclient := kuma.KubeClient
+	if kclient == nil {
+		return ErrNilClient
+	}
+
+	// updating the label on the namespace
+	ns, err := kclient.CoreV1().Namespaces().Get(context.TODO(), namespace, metav1.GetOptions{})
+	if err != nil {
+		return err
+	}
+
+	if ns.ObjectMeta.Labels == nil {
+		ns.ObjectMeta.Labels = map[string]string{}
+	}
+	ns.ObjectMeta.Labels["openservicemesh.io/monitored-by"] = "kuma"
+
+	if del {
+		delete(ns.ObjectMeta.Labels, "openservicemesh.io/monitored-by")
+	}
+
+	// updating the annotations on the namespace
+	if ns.ObjectMeta.Annotations == nil {
+		ns.ObjectMeta.Annotations = map[string]string{}
+	}
+	ns.ObjectMeta.Annotations["openservicemesh.io/sidecar-injection"] = "enabled"
+
+	if del {
+		delete(ns.ObjectMeta.Annotations, "openservicemesh.io/sidecar-injection")
+	}
+
+	fmt.Println(ns.ObjectMeta)
+
+	_, err = kclient.CoreV1().Namespaces().Update(context.TODO(), ns, metav1.UpdateOptions{})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

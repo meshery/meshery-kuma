@@ -71,12 +71,13 @@ func (kuma *Kuma) HandleApplicationConfiguration(config v1alpha1.Configuration, 
 	}
 
 	return mergeMsgs(msgs), nil
+
 }
 
 func handleNamespaceLabel(kuma *Kuma, namespaces []string, isDel bool) error {
 	var errs []error
 	for _, ns := range namespaces {
-		if err := kuma.LoadNamespaceToMesh(ns, isDel); err != nil {
+		if err := kuma.sidecarInjection(ns, isDel); err != nil {
 			errs = append(errs, err)
 		}
 	}
@@ -90,7 +91,12 @@ func handleComponentKumaMesh(kuma *Kuma, comp v1alpha1.Component, isDel bool) (s
 	// because the configuration is already validated against the schema
 	version := comp.Spec.Settings["version"].(string)
 
-	return kuma.installKuma(isDel, version, comp.Namespace)
+	msg, err := kuma.installKuma(isDel, version, comp.Namespace)
+	if err != nil {
+		return fmt.Sprintf("%s: %s", comp.Name, msg), err
+	}
+
+	return fmt.Sprintf("%s: %s", comp.Name, msg), nil
 }
 
 func handleKumaCoreComponent(
