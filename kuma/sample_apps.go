@@ -41,20 +41,20 @@ func (kuma *Kuma) sidecarInjection(namespace string, del bool) error {
 	if ns.ObjectMeta.Labels == nil {
 		ns.ObjectMeta.Labels = map[string]string{}
 	}
-	ns.ObjectMeta.Labels["openservicemesh.io/monitored-by"] = "kuma"
+	ns.ObjectMeta.Labels["kuma.io/monitored-by"] = "kuma"
 
 	if del {
-		delete(ns.ObjectMeta.Labels, "openservicemesh.io/monitored-by")
+		delete(ns.ObjectMeta.Labels, "kuma.io/monitored-by")
 	}
 
 	// updating the annotations on the namespace
 	if ns.ObjectMeta.Annotations == nil {
 		ns.ObjectMeta.Annotations = map[string]string{}
 	}
-	ns.ObjectMeta.Annotations["openservicemesh.io/sidecar-injection"] = "enabled"
+	ns.ObjectMeta.Annotations["kuma.io/sidecar-injection"] = "enabled"
 
 	if del {
-		delete(ns.ObjectMeta.Annotations, "openservicemesh.io/sidecar-injection")
+		delete(ns.ObjectMeta.Annotations, "kuma.io/sidecar-injection")
 	}
 
 	fmt.Println(ns.ObjectMeta)

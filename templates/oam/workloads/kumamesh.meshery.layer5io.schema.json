@@ -1,5 +1,5 @@
 {
-    "$id": "http://meshery.layer5.io/definition/Workload/KUMAMesh",
+    "$id": "http://meshery.layer5.io/definition/Workload/KumaMesh",
     "$schema": "http://json-schema.org/draft-07/schema",
     "title": "KumaMesh",
     "type": "object",
