@@ -67,6 +67,30 @@ var (
 	// during the process of handeling a custom process
 	ErrCustomOperationCode = "1016"
 
+	// ErrInvalidOAMComponentTypeCode represents the error code which is
+	// generated when an invalid oam component is requested
+	ErrInvalidOAMComponentTypeCode = "replace1"
+
+	// ErrKumaCoreComponentFailCode represents the error code which is
+	// generated when an kuma core operations fails
+	ErrKumaCoreComponentFailCode = "replace2"
+
+	// ErrProcessOAMCode represents the error code which is
+	// generated when an OAM operations fails
+	ErrProcessOAMCode = "replace3"
+
+	// ErrParseKumaCoreComponentCode represents the error code which is
+	// generated when kuma core component manifest parsing fails
+	ErrParseKumaCoreComponentCode = "replace4"
+
+	// ErrParseOAMComponentCode represents the error code which is
+	// generated during the OAM component parsing
+	ErrParseOAMComponentCode = "replace5"
+
+	// ErrParseOAMConfigCode represents the error code which is
+	// generated during the OAM configuration parsing
+	ErrParseOAMConfigCode = "replace6"
+
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
 	ErrOpInvalid = errors.New(ErrOpInvalidCode, errors.Alert, []string{"Invalid operation"}, []string{"Istio adapter recived an invalid operation from the meshey server"}, []string{"The operation is not supported by the adapter", "Invalid operation name"}, []string{"Check if the operation name is valid and supported by the adapter"})
@@ -74,6 +98,14 @@ var (
 	// ErrUntarDefault represents the errors which are generated
 	// during the process of untaring a compressed file
 	ErrUntarDefault = errors.New(ErrUntarDefaultCode, errors.Alert, []string{"Error untaring opeartion default"}, []string{"Error occured in the process of untaring a compressed file"}, []string{"The compressed file might be corrupted"}, []string{"Clear the cache and retry the operation"})
+
+	// ErrParseOAMComponent represents the error which is
+	// generated during the OAM component parsing
+	ErrParseOAMComponent = errors.New(ErrParseOAMComponentCode, errors.Alert, []string{"error parsing the component"}, []string{"Error occured while prasing application component in the OAM request made"}, []string{"Invalid OAM component passed in OAM request"}, []string{"Check if your request has vaild OAM components"})
+
+	// ErrParseOAMConfig represents the error which is
+	// generated during the OAM configuration parsing
+	ErrParseOAMConfig = errors.New(ErrParseOAMConfigCode, errors.Alert, []string{"error parsing the configuration"}, []string{"Error occured while prasing component config in the OAM request made"}, []string{"Invalid OAM config passed in OAM request"}, []string{"Check if your request has vaild OAM config"})
 )
 
 // ErrInstallKuma is the error for install mesh
@@ -141,4 +173,24 @@ func ErrMoveBinary(err error) error {
 // applying custom operation
 func ErrCustomOperation(err error) error {
 	return errors.New(ErrCustomOperationCode, errors.Alert, []string{"Error with custom operation"}, []string{"Error occured while applying custom manifest to the cluster", err.Error()}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reupload the kubconfig in the Meshery Server and reconnect the adapter"})
+}
+
+// ErrParseKumaCoreComponent is the error when kuma core component manifest parsing fails
+func ErrParseKumaCoreComponent(err error) error {
+	return errors.New(ErrParseKumaCoreComponentCode, errors.Alert, []string{"kuma core component manifest parsing failing"}, []string{err.Error()}, []string{}, []string{})
+}
+
+// ErrInvalidOAMComponentType is the error when the OAM component name is not valid
+func ErrInvalidOAMComponentType(compName string) error {
+	return errors.New(ErrInvalidOAMComponentTypeCode, errors.Alert, []string{"invalid OAM component name: ", compName}, []string{}, []string{}, []string{})
+}
+
+// ErrKumaCoreComponentFail is the error when core kuma component processing fails
+func ErrKumaCoreComponentFail(err error) error {
+	return errors.New(ErrKumaCoreComponentFailCode, errors.Alert, []string{"error in kuma core component"}, []string{err.Error()}, []string{}, []string{})
+}
+
+// ErrProcessOAM is a generic error which is thrown when an OAM operations fails
+func ErrProcessOAM(err error) error {
+	return errors.New(ErrProcessOAMCode, errors.Alert, []string{"error performing OAM operations"}, []string{err.Error()}, []string{}, []string{})
 }
