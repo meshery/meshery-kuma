@@ -1,7 +1,7 @@
 {
-    "$id": "http://meshery.layer5.io/definition/Trait/automaticsidecarinjection.KUMA",
+    "$id": "http://meshery.layer5.io/definition/Trait/automaticsidecarinjection.Kuma",
     "$schema": "http://json-schema.org/draft-07/schema",
-    "title": "Automatic Sidecar Injection - KUMA",
+    "title": "Automatic Sidecar Injection - Kuma",
     "type": "object",
     "properties": {
         "namespaces": {
