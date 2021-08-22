@@ -2,7 +2,6 @@ package kuma
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/status"
@@ -47,8 +46,6 @@ func (kuma *Kuma) sidecarInjection(namespace string, del bool) error {
 	if del {
 		delete(ns.ObjectMeta.Annotations, "kuma.io/sidecar-injection")
 	}
-
-	fmt.Println(ns.ObjectMeta)
 
 	_, err = kclient.CoreV1().Namespaces().Update(context.TODO(), ns, metav1.UpdateOptions{})
 	if err != nil {
