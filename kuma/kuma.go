@@ -10,7 +10,9 @@ import (
 	adapterconfig "github.com/layer5io/meshery-adapter-library/config"
 	"github.com/layer5io/meshery-adapter-library/status"
 	internalconfig "github.com/layer5io/meshery-kuma/internal/config"
+	"github.com/layer5io/meshery-kuma/kuma/oam"
 	"github.com/layer5io/meshkit/logger"
+	"github.com/layer5io/meshkit/models/oam/core/v1alpha1"
 )
 
 const (
@@ -116,4 +118,54 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	}
 
 	return nil
+}
+
+// ProcessOAM will handles the grpc invocation for handling OAM objects
+func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest) (string, error) {
+	var comps []v1alpha1.Component
+	for _, acomp := range oamReq.OamComps {
+		comp, err := oam.ParseApplicationComponent(acomp)
+		if err != nil {
+			kuma.Log.Error(ErrParseOAMComponent)
+			continue
+		}
+
+		comps = append(comps, comp)
+	}
+
+	config, err := oam.ParseApplicationConfiguration(oamReq.OamConfig)
+	if err != nil {
+		kuma.Log.Error(ErrParseOAMConfig)
+	}
+
+	// If operation is delete then first HandleConfiguration and then handle the deployment
+	if oamReq.DeleteOp {
+		// Process configuration
+		msg2, err := kuma.HandleApplicationConfiguration(config, oamReq.DeleteOp)
+		if err != nil {
+			return msg2, ErrProcessOAM(err)
+		}
+
+		// Process components
+		msg1, err := kuma.HandleComponents(comps, oamReq.DeleteOp)
+		if err != nil {
+			return msg1 + "\n" + msg2, ErrProcessOAM(err)
+		}
+
+		return msg1 + "\n" + msg2, nil
+	}
+
+	// Process components
+	msg1, err := kuma.HandleComponents(comps, oamReq.DeleteOp)
+	if err != nil {
+		return msg1, ErrProcessOAM(err)
+	}
+
+	// Process configuration
+	msg2, err := kuma.HandleApplicationConfiguration(config, oamReq.DeleteOp)
+	if err != nil {
+		return msg1 + "\n" + msg2, ErrProcessOAM(err)
+	}
+
+	return msg1 + "\n" + msg2, nil
 }

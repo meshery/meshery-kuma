@@ -1,0 +1,14 @@
+{
+    "apiVersion": "core.oam.dev/v1alpha1",
+    "kind": "TraitDefinition",
+    "metadata": {
+        "name": "automaticSidecarInjection.Kuma"
+    },
+    "spec": {
+        "appliesToWorkloads": ["KumaMesh"],
+        "definitionRef": {
+            "name": "automaticsidecarinjection.Kuma.meshery.layer5.io"
+        },
+        "revisionEnabled": false
+    }
+}

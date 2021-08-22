@@ -22,5 +22,8 @@ FROM gcr.io/distroless/base
 WORKDIR /
 ENV DISTRO="debian"
 ENV GOARCH="amd64"
+ENV SERVICE_ADDR="meshery-kuma"
+ENV MESHERY_SERVER="http://meshery:9081"
+COPY templates/ ./templates
 COPY --from=builder /build/meshery-kuma .
 ENTRYPOINT ["/meshery-kuma"]
