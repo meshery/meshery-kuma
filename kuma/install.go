@@ -18,7 +18,10 @@ import (
 	mesherykube "github.com/layer5io/meshkit/utils/kubernetes"
 )
 
-// var downloadLocation = os.TempDir()
+const (
+	kumaRepository = "https://kumahq.github.io/charts"
+	kumaChartName  = "kuma"
+)
 
 func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, version string) (string, error) {
 	st := status.Installing
@@ -34,10 +37,12 @@ func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, vers
 	if useManifest {
 		return kuma.installUsingManifests(del, st, namespace, version)
 	}
-
+	kuma.Log.Info("Installing kuma using helm charts...")
 	err = kuma.applyHelmChart(del, version, namespace)
 	if err != nil {
-		kuma.Log.Info("Failed helm installation. Trying installing from manifests...")
+
+		kuma.Log.Info("Failed helm installation. ", err)
+		kuma.Log.Info("Trying installing from manifests...")
 		return kuma.installUsingManifests(del, st, namespace, version)
 	}
 	return status.Installed, nil
@@ -66,10 +71,19 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
 	if kClient == nil {
 		return ErrNilClient
 	}
-	err := kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
+	chartVersion, err := mesherykube.HelmAppVersionToChartVersion(
+		kumaRepository,
+		kumaChartName,
+		version,
+	)
+	if err != nil {
+		return ErrApplyHelmChart(err)
+	}
+	err = kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
 		ChartLocation: mesherykube.HelmChartLocation{
-			Repository: "https://kumahq.github.io/charts",
-			Chart:      "kuma",
+			Repository: kumaRepository,
+			Chart:      kumaChartName,
+			Version:    chartVersion,
 		},
 		Namespace:       namespace,
 		Delete:          del,
