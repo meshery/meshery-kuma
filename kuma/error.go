@@ -66,6 +66,7 @@ var (
 	// ErrCustomOperationCode represents the errors which are generated
 	// during the process of handeling a custom process
 	ErrCustomOperationCode = "1016"
+
 	// ErrNilClientCode represents the error code which is
 	// generated when kubernetes client is nil
 	ErrNilClientCode = "1017"
