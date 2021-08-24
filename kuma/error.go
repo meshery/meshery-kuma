@@ -67,6 +67,14 @@ var (
 	// during the process of handeling a custom process
 	ErrCustomOperationCode = "1016"
 
+	// ErrNilClientCode represents the error code which is
+	// generated when kubernetes client is nil
+	ErrNilClientCode = "1017"
+
+	// ErrApplyHelmChartCode represents the error which are generated
+	// during the process of applying helm chart
+	ErrApplyHelmChartCode = "1018"
+
 	// ErrInvalidOAMComponentTypeCode represents the error code which is
 	// generated when an invalid oam component is requested
 	ErrInvalidOAMComponentTypeCode = "replace1"
@@ -90,10 +98,6 @@ var (
 	// ErrParseOAMConfigCode represents the error code which is
 	// generated during the OAM configuration parsing
 	ErrParseOAMConfigCode = "replace6"
-
-	// ErrNilClientCode represents the error code which is
-	// generated when kubernetes client is nil
-	ErrNilClientCode = "replace7"
 
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
@@ -201,4 +205,10 @@ func ErrKumaCoreComponentFail(err error) error {
 // ErrProcessOAM is a generic error which is thrown when an OAM operations fails
 func ErrProcessOAM(err error) error {
 	return errors.New(ErrProcessOAMCode, errors.Alert, []string{"error performing OAM operations"}, []string{err.Error()}, []string{}, []string{})
+
+}
+
+// ErrApplyHelmChart is the error for applying helm chart
+func ErrApplyHelmChart(err error) error {
+	return errors.New(ErrApplyHelmChartCode, errors.Alert, []string{"Error with helm chart operation"}, []string{"Error occured while applying Helm Chart"}, []string{err.Error()}, []string{"Invalid helm chart configuration"})
 }
