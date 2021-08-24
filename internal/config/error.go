@@ -21,6 +21,11 @@ import (
 const (
 	ErrGetLatestReleasesCode     = "1000"
 	ErrGetLatestReleaseNamesCode = "1001"
+	ErrEmptyConfigCode           = "replace_me"
+)
+
+var (
+	ErrEmptyConfig = errors.New(ErrEmptyConfigCode, errors.Alert, []string{"Config is empty"}, []string{}, []string{}, []string{})
 )
 
 // ErrGetLatestReleases is the error for fetching linkerd releases
