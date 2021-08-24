@@ -7,10 +7,10 @@ import (
 
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/common"
-	adapterconfig "github.com/layer5io/meshery-adapter-library/config"
 	"github.com/layer5io/meshery-adapter-library/status"
 	internalconfig "github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/kuma/oam"
+	meshkitCfg "github.com/layer5io/meshkit/config"
 	"github.com/layer5io/meshkit/logger"
 	"github.com/layer5io/meshkit/models/oam/core/v1alpha1"
 )
@@ -26,7 +26,7 @@ type Kuma struct {
 }
 
 // New initializes kuma handler.
-func New(c adapterconfig.Handler, l logger.Handler, kc adapterconfig.Handler) adapter.Handler {
+func New(c meshkitCfg.Handler, l logger.Handler, kc meshkitCfg.Handler) adapter.Handler {
 	return &Kuma{
 		Adapter: adapter.Adapter{
 			Config:            c,

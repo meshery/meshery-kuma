@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/layer5io/meshery-adapter-library/config"
-	configprovider "github.com/layer5io/meshery-adapter-library/config/provider"
+	configprovider "github.com/layer5io/meshkit/config/provider"
 	"github.com/layer5io/meshkit/utils"
 	smp "github.com/layer5io/service-mesh-performance/spec"
 )
@@ -26,10 +26,9 @@ var (
 // New creates a new config instance
 func New(provider string) (config.Handler, error) {
 	opts := configprovider.Options{
-		ServerConfig:   ServerDefaults,
-		MeshSpec:       MeshSpecDefaults,
-		ProviderConfig: ProviderConfigDefaults,
-		Operations:     OperationsDefaults,
+		FilePath: configRootPath,
+		FileName: "kuma",
+		FileType: "yaml",
 	}
 
 	// Config provider
@@ -45,10 +44,11 @@ func New(provider string) (config.Handler, error) {
 
 func NewKubeconfigBuilder(provider string) (config.Handler, error) {
 
-	opts := configprovider.Options{}
-
-	// Config environment
-	opts.ProviderConfig = KubeConfigDefaults
+	opts := configprovider.Options{
+		FilePath: configRootPath,
+		FileType: "yaml",
+		FileName: "kubeconfig",
+	}
 
 	// Config provider
 	switch provider {
