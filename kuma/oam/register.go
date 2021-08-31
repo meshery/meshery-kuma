@@ -127,14 +127,14 @@ func load(basePath string) ([]schemaDefinitionPathSet, error) {
 }
 
 func RegisterWorkLoadsDynamically(runtime, host string) error {
-	av, cv, err := getLatestValidAppVersionAndChartVersion()
+	appversion, chartVersion, err := getLatestValidAppVersionAndChartVersion()
 	if err != nil {
 		return err
 	}
-	fmt.Println("version ", av)
+	fmt.Println("version ", appversion)
 	m := manifests.Config{
 		Name:        "Kuma",
-		MeshVersion: av,
+		MeshVersion: appversion,
 		Filter: manifests.CrdFilter{
 			RootFilter:    []string{"$[?(@.kind==\"CustomResourceDefinition\")]"},
 			NameFilter:    []string{"$..[\"spec\"][\"names\"][\"kind\"]"},
@@ -143,7 +143,7 @@ func RegisterWorkLoadsDynamically(runtime, host string) error {
 			SpecFilter:    []string{"$..openAPIV3Schema.properties.spec", " --o-filter", "$[]"},
 		},
 	}
-	url := "https://github.com/kumahq/charts/releases/download/kuma-" + cv + "/kuma-" + cv + ".tgz"
+	url := "https://github.com/kumahq/charts/releases/download/kuma-" + chartVersion + "/kuma-" + chartVersion + ".tgz"
 	comp, err := manifests.GetFromHelm(url, manifests.SERVICE_MESH, m)
 	if err != nil {
 		return err
