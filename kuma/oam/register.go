@@ -126,6 +126,7 @@ func load(basePath string) ([]schemaDefinitionPathSet, error) {
 	return res, nil
 }
 
+// Registering Workloads Dynamically
 func RegisterWorkLoadsDynamically(runtime, host string) error {
 	appversion, chartVersion, err := getLatestValidAppVersionAndChartVersion()
 	if err != nil {
