@@ -9,14 +9,17 @@ import (
 
 	"github.com/layer5io/meshkit/logger"
 	"github.com/layer5io/meshkit/utils"
+	"github.com/layer5io/meshkit/utils/manifests"
 
 	// "github.com/layer5io/meshkit/tracing"
 	"github.com/layer5io/meshery-adapter-library/adapter"
+	oamDynamic "github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/api/grpc"
 	configprovider "github.com/layer5io/meshery-adapter-library/config/provider"
 	"github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/kuma"
 	"github.com/layer5io/meshery-kuma/kuma/oam"
+	smp "github.com/layer5io/service-mesh-performance/spec"
 )
 
 var (
@@ -68,7 +71,7 @@ func main() {
 	service.Version = version
 	service.GitSHA = gitsha
 
-	go registerCapabilities(service.Port, log)        //Registering static capabilities
+	// go registerCapabilities(service.Port, log)        //Registering static capabilities
 	go registerDynamicCapabilities(service.Port, log) //Registering latest capabilities periodically
 
 	// Server Initialization
@@ -141,10 +144,27 @@ func registerDynamicCapabilities(port string, log logger.Handler) {
 	}
 
 }
+
 func registerWorkloads(port string, log logger.Handler) {
 	log.Info("Registering latest workload components")
 	// Register workloads
-	if err := oam.RegisterWorkLoadsDynamically(mesheryServerAddress(), serviceAddress()+":"+port); err != nil {
+	if err := oamDynamic.RegisterWorkLoadsDynamically(mesheryServerAddress(), serviceAddress()+":"+port, &oamDynamic.DynamicComponentsConfig{
+		TimeoutInMinutes: 10,
+		URL:              "https://github.com/kumahq/charts/releases/download/kuma-0.1.0/kuma-0.1.0.tgz",
+		GenerationMethod: oamDynamic.HelmCHARTS,
+		Config: manifests.Config{
+			Name:        smp.ServiceMesh_Type_name[int32(smp.ServiceMesh_KUMA)],
+			MeshVersion: "0.7.0",
+			Filter: manifests.CrdFilter{
+				RootFilter:    []string{"$[?(@.kind==\"CustomResourceDefinition\")]"},
+				NameFilter:    []string{"$..[\"spec\"][\"names\"][\"kind\"]"},
+				VersionFilter: []string{"$..spec.versions[0]", " --o-filter", "$[0]"},
+				GroupFilter:   []string{"$..spec", " --o-filter", "$[]"},
+				SpecFilter:    []string{"$..openAPIV3Schema.properties.spec", " --o-filter", "$[]"},
+			},
+		},
+		Operation: config.KumaOperation,
+	}); err != nil {
 		log.Info(err.Error())
 		return
 	}
