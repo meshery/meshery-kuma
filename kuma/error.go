@@ -119,7 +119,7 @@ var (
 	// generated when kubernetes client is nil
 	ErrNilClient = errors.New(ErrNilClientCode, errors.Alert, []string{"kubernetes client not initialized"}, []string{"Kubernetes client is nil"}, []string{"kubernetes client not initialized"}, []string{"Reconnect the adaptor to Meshery server"})
 
-	// ErrGetLatestRelease represents the error which is
+	// ErrGetLatestReleaseCode represents the error which is
 	// generated when the latest stable version could not
 	// be fetched during runtime component registeration
 	ErrGetLatestReleaseCode = "1019"
@@ -218,7 +218,7 @@ func ErrApplyHelmChart(err error) error {
 	return errors.New(ErrApplyHelmChartCode, errors.Alert, []string{"Error with helm chart operation"}, []string{"Error occured while applying Helm Chart"}, []string{err.Error()}, []string{"Invalid helm chart configuration"})
 }
 
-// ErrGetLatestRelease
+// ErrGetLatestRelease is the error for get latest versions
 func ErrGetLatestRelease(err error) error {
 	return errors.New(ErrGetLatestReleaseCode, errors.Alert, []string{"Could not get latest version"}, []string{err.Error()}, []string{"Latest version could not be found at the specified url"}, []string{})
 }
