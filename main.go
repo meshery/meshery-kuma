@@ -13,13 +13,11 @@ import (
 
 	// "github.com/layer5io/meshkit/tracing"
 	"github.com/layer5io/meshery-adapter-library/adapter"
-	oamDynamic "github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/api/grpc"
-	configprovider "github.com/layer5io/meshery-adapter-library/config/provider"
 	"github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/kuma"
 	"github.com/layer5io/meshery-kuma/kuma/oam"
-	smp "github.com/layer5io/service-mesh-performance/spec"
+	configprovider "github.com/layer5io/meshkit/config/provider"
 )
 
 var (

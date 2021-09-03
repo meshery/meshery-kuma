@@ -2,8 +2,8 @@ package config
 
 import (
 	"github.com/layer5io/meshery-adapter-library/common"
-	configprovider "github.com/layer5io/meshery-adapter-library/config/provider"
 	"github.com/layer5io/meshery-adapter-library/status"
+	configprovider "github.com/layer5io/meshkit/config/provider"
 	smp "github.com/layer5io/service-mesh-performance/spec"
 )
 
