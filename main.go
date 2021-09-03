@@ -18,6 +18,9 @@ import (
 	"github.com/layer5io/meshery-kuma/kuma"
 	"github.com/layer5io/meshery-kuma/kuma/oam"
 	configprovider "github.com/layer5io/meshkit/config/provider"
+	"github.com/layer5io/meshkit/utils/kubernetes"
+	smp "github.com/layer5io/service-mesh-performance/spec"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -144,15 +147,20 @@ func registerDynamicCapabilities(port string, log logger.Handler) {
 }
 
 func registerWorkloads(port string, log logger.Handler) {
+	appVersion, chartVersion, err := getLatestValidAppVersionAndChartVersion()
+	if err != nil {
+		fmt.Println("Could not get latest version")
+		return
+	}
 	log.Info("Registering latest workload components")
 	// Register workloads
-	if err := oamDynamic.RegisterWorkLoadsDynamically(mesheryServerAddress(), serviceAddress()+":"+port, &oamDynamic.DynamicComponentsConfig{
+	if err := adapter.RegisterWorkLoadsDynamically(mesheryServerAddress(), serviceAddress()+":"+port, &adapter.DynamicComponentsConfig{
 		TimeoutInMinutes: 10,
-		URL:              "https://github.com/kumahq/charts/releases/download/kuma-0.1.0/kuma-0.1.0.tgz",
-		GenerationMethod: oamDynamic.HelmCHARTS,
+		URL:              "https://github.com/kumahq/charts/releases/download/kuma-" + chartVersion + "/kuma-" + chartVersion + ".tgz",
+		GenerationMethod: adapter.HelmCHARTS,
 		Config: manifests.Config{
 			Name:        smp.ServiceMesh_Type_name[int32(smp.ServiceMesh_KUMA)],
-			MeshVersion: "0.7.0",
+			MeshVersion: appVersion,
 			Filter: manifests.CrdFilter{
 				RootFilter:    []string{"$[?(@.kind==\"CustomResourceDefinition\")]"},
 				NameFilter:    []string{"$..[\"spec\"][\"names\"][\"kind\"]"},
@@ -167,4 +175,18 @@ func registerWorkloads(port string, log logger.Handler) {
 		return
 	}
 	log.Info("Latest workload components successfully registered.")
+}
+func getLatestValidAppVersionAndChartVersion() (string, string, error) {
+	release, err := config.GetLatestReleases(10)
+	if err != nil {
+		return "", "", errors.Wrap(err, "Could not get latest stable release")
+	}
+	//loops through latest 10 app versions untill it finds one which is available in helm chart's index.yaml
+	for _, rel := range release {
+		if chartVersion, err := kubernetes.HelmAppVersionToChartVersion("https://kumahq.github.io/charts", "kuma", rel.TagName); err == nil {
+			return rel.TagName, chartVersion, nil
+		}
+
+	}
+	return "", "", errors.New("Could not find latest stable release")
 }
