@@ -20,7 +20,6 @@ import (
 	configprovider "github.com/layer5io/meshkit/config/provider"
 	"github.com/layer5io/meshkit/utils/kubernetes"
 	smp "github.com/layer5io/service-mesh-performance/spec"
-	"github.com/pkg/errors"
 )
 
 var (
@@ -179,7 +178,7 @@ func registerWorkloads(port string, log logger.Handler) {
 func getLatestValidAppVersionAndChartVersion() (string, string, error) {
 	release, err := config.GetLatestReleases(10)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Could not get latest stable release")
+		return "", "", kuma.ErrGetLatestRelease(err)
 	}
 	//loops through latest 10 app versions untill it finds one which is available in helm chart's index.yaml
 	for _, rel := range release {
@@ -188,5 +187,5 @@ func getLatestValidAppVersionAndChartVersion() (string, string, error) {
 		}
 
 	}
-	return "", "", errors.New("Could not find latest stable release")
+	return "", "", kuma.ErrGetLatestRelease(err)
 }
