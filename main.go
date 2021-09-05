@@ -9,6 +9,7 @@ import (
 
 	"github.com/layer5io/meshkit/logger"
 	"github.com/layer5io/meshkit/utils"
+	"github.com/layer5io/meshkit/utils/manifests"
 
 	// "github.com/layer5io/meshkit/tracing"
 	"github.com/layer5io/meshery-adapter-library/adapter"
@@ -17,6 +18,8 @@ import (
 	"github.com/layer5io/meshery-kuma/kuma"
 	"github.com/layer5io/meshery-kuma/kuma/oam"
 	configprovider "github.com/layer5io/meshkit/config/provider"
+	"github.com/layer5io/meshkit/utils/kubernetes"
+	smp "github.com/layer5io/service-mesh-performance/spec"
 )
 
 var (
@@ -68,7 +71,8 @@ func main() {
 	service.Version = version
 	service.GitSHA = gitsha
 
-	go registerCapabilities(service.Port, log)
+	go registerCapabilities(service.Port, log)        //Registering static capabilities
+	go registerDynamicCapabilities(service.Port, log) //Registering latest capabilities periodically
 
 	// Server Initialization
 	log.Info("Adaptor Listening at port: ", service.Port)
@@ -127,4 +131,61 @@ func registerCapabilities(port string, log logger.Handler) {
 	if err := oam.RegisterTraits(mesheryServerAddress(), serviceAddress()+":"+port); err != nil {
 		log.Info(err.Error())
 	}
+}
+
+func registerDynamicCapabilities(port string, log logger.Handler) {
+	registerWorkloads(port, log)
+	//Start the ticker
+	const reRegisterAfter = 24
+	ticker := time.NewTicker(reRegisterAfter * time.Hour)
+	for {
+		<-ticker.C
+		registerWorkloads(port, log)
+	}
+
+}
+
+func registerWorkloads(port string, log logger.Handler) {
+	appVersion, chartVersion, err := getLatestValidAppVersionAndChartVersion()
+	if err != nil {
+		log.Info("Could not get latest version")
+		return
+	}
+	log.Info("Registering latest workload components")
+	// Register workloads
+	if err := adapter.RegisterWorkLoadsDynamically(mesheryServerAddress(), serviceAddress()+":"+port, &adapter.DynamicComponentsConfig{
+		TimeoutInMinutes: 10,
+		URL:              "https://github.com/kumahq/charts/releases/download/kuma-" + chartVersion + "/kuma-" + chartVersion + ".tgz",
+		GenerationMethod: adapter.HelmCHARTS,
+		Config: manifests.Config{
+			Name:        smp.ServiceMesh_Type_name[int32(smp.ServiceMesh_KUMA)],
+			MeshVersion: appVersion,
+			Filter: manifests.CrdFilter{
+				RootFilter:    []string{"$[?(@.kind==\"CustomResourceDefinition\")]"},
+				NameFilter:    []string{"$..[\"spec\"][\"names\"][\"kind\"]"},
+				VersionFilter: []string{"$..spec.versions[0]", " --o-filter", "$[0]"},
+				GroupFilter:   []string{"$..spec", " --o-filter", "$[]"},
+				SpecFilter:    []string{"$..openAPIV3Schema.properties.spec", " --o-filter", "$[]"},
+			},
+		},
+		Operation: config.KumaOperation,
+	}); err != nil {
+		log.Info(err.Error())
+		return
+	}
+	log.Info("Latest workload components successfully registered.")
+}
+func getLatestValidAppVersionAndChartVersion() (string, string, error) {
+	release, err := config.GetLatestReleases(100)
+	if err != nil {
+		return "", "", kuma.ErrGetLatestRelease(err)
+	}
+	//loops through latest 10 app versions untill it finds one which is available in helm chart's index.yaml
+	for _, rel := range release {
+		if chartVersion, err := kubernetes.HelmAppVersionToChartVersion("https://kumahq.github.io/charts", "kuma", rel.TagName); err == nil {
+			return rel.TagName, chartVersion, nil
+		}
+
+	}
+	return "", "", kuma.ErrGetLatestRelease(err)
 }
