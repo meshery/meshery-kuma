@@ -148,7 +148,7 @@ func registerDynamicCapabilities(port string, log logger.Handler) {
 func registerWorkloads(port string, log logger.Handler) {
 	appVersion, chartVersion, err := getLatestValidAppVersionAndChartVersion()
 	if err != nil {
-		fmt.Println("Could not get latest version")
+		log.Info("Could not get latest version")
 		return
 	}
 	log.Info("Registering latest workload components")
@@ -176,7 +176,7 @@ func registerWorkloads(port string, log logger.Handler) {
 	log.Info("Latest workload components successfully registered.")
 }
 func getLatestValidAppVersionAndChartVersion() (string, string, error) {
-	release, err := config.GetLatestReleases(10)
+	release, err := config.GetLatestReleases(100)
 	if err != nil {
 		return "", "", kuma.ErrGetLatestRelease(err)
 	}
