@@ -77,27 +77,27 @@ var (
 
 	// ErrInvalidOAMComponentTypeCode represents the error code which is
 	// generated when an invalid oam component is requested
-	ErrInvalidOAMComponentTypeCode = "replace1"
+	ErrInvalidOAMComponentTypeCode = "1021"
 
 	// ErrKumaCoreComponentFailCode represents the error code which is
 	// generated when an kuma core operations fails
-	ErrKumaCoreComponentFailCode = "replace2"
+	ErrKumaCoreComponentFailCode = "1022"
 
 	// ErrProcessOAMCode represents the error code which is
 	// generated when an OAM operations fails
-	ErrProcessOAMCode = "replace3"
+	ErrProcessOAMCode = "1023"
 
 	// ErrParseKumaCoreComponentCode represents the error code which is
 	// generated when kuma core component manifest parsing fails
-	ErrParseKumaCoreComponentCode = "replace4"
+	ErrParseKumaCoreComponentCode = "1024"
 
 	// ErrParseOAMComponentCode represents the error code which is
 	// generated during the OAM component parsing
-	ErrParseOAMComponentCode = "replace5"
+	ErrParseOAMComponentCode = "1025"
 
 	// ErrParseOAMConfigCode represents the error code which is
 	// generated during the OAM configuration parsing
-	ErrParseOAMConfigCode = "replace6"
+	ErrParseOAMConfigCode = "1026"
 
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
