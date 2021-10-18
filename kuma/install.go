@@ -79,6 +79,12 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
 	if err != nil {
 		return ErrApplyHelmChart(err)
 	}
+	var act mesherykube.HelmChartAction
+	if del {
+		act = mesherykube.UNINSTALL
+	} else {
+		act = mesherykube.INSTALL
+	}
 	err = kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
 		ChartLocation: mesherykube.HelmChartLocation{
 			Repository: kumaRepository,
@@ -86,7 +92,7 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
 			Version:    chartVersion,
 		},
 		Namespace:       namespace,
-		Delete:          del,
+		Action:          act,
 		CreateNamespace: true,
 	})
 	if err != nil {
