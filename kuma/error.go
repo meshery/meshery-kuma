@@ -99,6 +99,9 @@ var (
 	// generated during the OAM configuration parsing
 	ErrParseOAMConfigCode = "1026"
 
+	//ErrLoadNamespaceCode occur during the process of applying namespace
+	ErrLoadNamespaceCode = "replace"
+
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
 	ErrOpInvalid = errors.New(ErrOpInvalidCode, errors.Alert, []string{"Invalid operation"}, []string{"Istio adapter recived an invalid operation from the meshey server"}, []string{"The operation is not supported by the adapter", "Invalid operation name"}, []string{"Check if the operation name is valid and supported by the adapter"})
@@ -221,4 +224,10 @@ func ErrApplyHelmChart(err error) error {
 // ErrGetLatestRelease is the error for get latest versions
 func ErrGetLatestRelease(err error) error {
 	return errors.New(ErrGetLatestReleaseCode, errors.Alert, []string{"Could not get latest version"}, []string{err.Error()}, []string{"Latest version could not be found at the specified url"}, []string{})
+}
+
+// ErrLoadNamespace is the occurend while applying namespace
+func ErrLoadNamespace(err error, s string ) error{
+	return errors.New(ErrLoadNamespaceCode, errors.Alert, []string{"Error occured while applying namespace "}, []string{err.Error()}, []string{"Trying to access a namespace which is not available"}, []string{"Verify presence of namespace. Confirm Meshery ServiceAccount permissions"})
+
 }

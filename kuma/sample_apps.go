@@ -34,7 +34,7 @@ func (kuma *Kuma) sidecarInjection(namespace string, del bool) error {
 	// updating the label on the namespace
 	ns, err := kclient.CoreV1().Namespaces().Get(context.TODO(), namespace, metav1.GetOptions{})
 	if err != nil {
-		return err
+		return ErrLoadNamespace(err, namespace)
 	}
 
 	// updating the annotations on the namespace
@@ -52,5 +52,5 @@ func (kuma *Kuma) sidecarInjection(namespace string, del bool) error {
 		return err
 	}
 
-	return nil
+	return ErrLoadNamespace(err, namespace)
 }
