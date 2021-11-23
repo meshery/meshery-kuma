@@ -49,8 +49,8 @@ func (kuma *Kuma) sidecarInjection(namespace string, del bool) error {
 
 	_, err = kclient.CoreV1().Namespaces().Update(context.TODO(), ns, metav1.UpdateOptions{})
 	if err != nil {
-		return err
+		return ErrLoadNamespace(err, namespace)
 	}
 
-	return ErrLoadNamespace(err, namespace)
+	return nil
 }
