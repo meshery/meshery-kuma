@@ -91,7 +91,7 @@ func handleComponentKumaMesh(kuma *Kuma, comp v1alpha1.Component, isDel bool) (s
 	// because the configuration is already validated against the schema
 	version := comp.Spec.Settings["version"].(string)
 
-	msg, err := kuma.installKuma(isDel, false, version, comp.Namespace)
+	msg, err := kuma.installKuma(isDel, false, comp.Namespace, version)
 	if err != nil {
 		return fmt.Sprintf("%s: %s", comp.Name, msg), err
 	}
