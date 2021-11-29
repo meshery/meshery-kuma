@@ -1,0 +1,17 @@
+{
+  "description": "ZoneIngress is the Schema for the zone ingress API",
+  "properties": {
+    "mesh": {
+      "type": "string"
+    },
+    "spec": {
+      "x-kubernetes-preserve-unknown-fields": true,
+      "type": "object"
+    }
+  },
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "version": "1.4.0",
+  "object-type": "ZoneIngress",
+  "service-mesh": "kuma"
+}
