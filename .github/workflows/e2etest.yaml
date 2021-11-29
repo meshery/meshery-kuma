@@ -1,0 +1,47 @@
+name: Test Kuma Adapter
+
+on:
+  push:
+    branches:
+      - "*"
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - "*"
+jobs:
+  SetPatterfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Get latest release tag
+        id: gettag
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          repository: kumahq/kuma
+          excludes: prerelease, draft
+      - name: Change service mesh version in patternfile
+        run: | 
+           
+           yq e -i '.services.kuma.settings.version="${{ steps.gettag.outputs.release }}"' ./.github/install/deploy.yaml 
+           cat ./.github/install/deploy.yaml
+      - name: Uploading file
+        uses: actions/upload-artifact@v2
+        with:
+          name: patternfile
+          path: ./.github/install/deploy.yaml 
+
+  TestKuma:
+    needs: SetPatterfile
+    uses: meshery/meshery/.github/workflows/testadapters.yaml@master
+    with:
+      expected_pods: kuma-control-plane
+      expected_pods_namespaces: kuma
+      deployment_url: https://raw.githubusercontent.com/meshery/meshery/master/install/deployment_yamls/k8s/meshery-kuma-deployment.yaml
+      service_url: https://raw.githubusercontent.com/meshery/meshery/master/install/deployment_yamls/k8s/meshery-kuma-service.yaml
+      adapter_name: kuma
+      patternfile_name: deploy.yaml
+      provider: Local
+    secrets:
+      token: ${{ secrets.PROVIDER_TOKEN }} 
