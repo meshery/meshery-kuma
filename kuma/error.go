@@ -100,7 +100,7 @@ var (
 	ErrParseOAMConfigCode = "1026"
 
 	//ErrLoadNamespaceCode occur during the process of applying namespace
-	ErrLoadNamespaceCode = "replace"
+	ErrLoadNamespaceCode = "1028"
 
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
@@ -227,7 +227,7 @@ func ErrGetLatestRelease(err error) error {
 }
 
 // ErrLoadNamespace is the occurend while applying namespace
-func ErrLoadNamespace(err error, s string ) error{
+func ErrLoadNamespace(err error, s string) error {
 	return errors.New(ErrLoadNamespaceCode, errors.Alert, []string{"Error occured while applying namespace "}, []string{err.Error()}, []string{"Trying to access a namespace which is not available"}, []string{"Verify presence of namespace. Confirm Meshery ServiceAccount permissions"})
 
 }
