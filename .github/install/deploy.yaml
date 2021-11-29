@@ -1,0 +1,7 @@
+name: Kuma
+services:
+  kuma:
+    type: KumaMesh
+    namespace: kuma
+    settings:
+      version: #will be inserted dynamically
