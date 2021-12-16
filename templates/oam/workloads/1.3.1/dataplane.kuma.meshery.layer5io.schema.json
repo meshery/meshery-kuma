@@ -1,0 +1,15 @@
+{
+  "description": "Dataplane is the Schema for the dataplanes API",
+  "properties": {
+    "mesh": {
+      "type": "string"
+    },
+    "spec": {
+      "x-kubernetes-preserve-unknown-fields": true,
+      "type": "object"
+    }
+  },
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Dataplane"
+}

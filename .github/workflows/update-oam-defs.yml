@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 1
       - name: Check if manifests for latest release exist
         run: |
-          if [ -d templates/oam/workloads/workloads-${{ steps.glrt.outputs.release }} ]
+          if [ -d templates/oam/workloads/${{ steps.glrt.outputs.release }} ]
           then
            echo "EXISTS=true" > $GITHUB_ENV
           else
@@ -63,7 +63,7 @@ jobs:
           make linux
       - name: Generate Workload definitions
         run: |
-          dirPath=../templates/oam/workloads/workloads-$NEW_KUMA_VERSION
+          dirPath=../templates/oam/workloads/$NEW_KUMA_VERSION
           cd util
           mkdir -p $dirPath
           meshName=kuma
@@ -77,11 +77,7 @@ jobs:
             apiVersion=$(./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition" && @.spec.names.kind=='$t')]..spec.versions[0]' --o-filter "$[].name" -o json | jq '.[]' | tr -d '"')
             apiGroup=$(./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition" && @.spec.names.kind=='$t')]..spec' --o-filter "$[].group" -o json | jq '.[]' | tr -d '"')
             ./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition" && @.spec.names.kind=='$t')]..openAPIV3Schema' --o-filter "$[]" -o json |\
-            jq '
-            .[]
-            | .version = "'$NEW_KUMA_VERSION'"
-            | ."object-type" = "'$nameUpper'"
-            | ."service-mesh" = "'$meshName'" ' > $dirPath/$nameLower.kuma.meshery.layer5io.schema.json
+            jq '.[] | ."title" = "'$t'"' > $dirPath/$nameLower.kuma.meshery.layer5io.schema.json
             echo $template |\
             jq '
             ."metadata"."name" = "'$(printf %s.KUMA $nameUpper)'"
