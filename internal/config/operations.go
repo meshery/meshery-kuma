@@ -13,7 +13,7 @@ var (
 func getOperations(dev adapter.Operations) adapter.Operations {
 
 	var adapterVersions []adapter.Version
-	versions, _ := utils.GetLatestReleaseTagsSorted("istio", "istio")
+	versions, _ := utils.GetLatestReleaseTagsSorted("kumahq", "kuma")
 	for _, v := range versions {
 		adapterVersions = append(adapterVersions, adapter.Version(v))
 	}
