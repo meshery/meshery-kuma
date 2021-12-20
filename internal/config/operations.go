@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/meshes"
+	"github.com/layer5io/meshkit/utils"
 )
 
 var (
@@ -11,12 +12,15 @@ var (
 
 func getOperations(dev adapter.Operations) adapter.Operations {
 
-	versions, _ := getLatestReleaseNames(3)
-
+	var adapterVersions []adapter.Version
+	versions, _ := utils.GetLatestReleaseTagsSorted("istio", "istio")
+	for _, v := range versions {
+		adapterVersions = append(adapterVersions, adapter.Version(v))
+	}
 	dev[KumaOperation] = &adapter.Operation{
 		Type:        int32(meshes.OpCategory_INSTALL),
 		Description: "Kuma Service Mesh",
-		Versions:    versions,
+		Versions:    adapterVersions,
 		Templates:   adapter.NoneTemplate,
 		AdditionalProperties: map[string]string{
 			ServiceName: KumaOperation,

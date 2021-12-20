@@ -151,7 +151,7 @@ func registerWorkloads(port string, log logger.Handler) {
 		log.Info("Could not get latest version")
 		return
 	}
-	log.Info("Registering latest workload components")
+	log.Info("Registering latest workload components for version ", appVersion)
 	// Register workloads
 	if err := adapter.RegisterWorkLoadsDynamically(mesheryServerAddress(), serviceAddress()+":"+port, &adapter.DynamicComponentsConfig{
 		TimeoutInMinutes: 10,
@@ -180,14 +180,14 @@ func registerWorkloads(port string, log logger.Handler) {
 	log.Info("Latest workload components successfully registered.")
 }
 func getLatestValidAppVersionAndChartVersion() (string, string, error) {
-	release, err := config.GetLatestReleases(100)
+	release, err := utils.GetLatestReleaseTagsSorted("kumahq", "kuma")
 	if err != nil {
 		return "", "", kuma.ErrGetLatestRelease(err)
 	}
 	//loops through latest 10 app versions untill it finds one which is available in helm chart's index.yaml
-	for _, rel := range release {
-		if chartVersion, err := kubernetes.HelmAppVersionToChartVersion("https://kumahq.github.io/charts", "kuma", rel.TagName); err == nil {
-			return rel.TagName, chartVersion, nil
+	for i := range release {
+		if chartVersion, err := kubernetes.HelmAppVersionToChartVersion("https://kumahq.github.io/charts", "kuma", release[len(release)-i-1]); err == nil {
+			return release[len(release)-i-1], chartVersion, nil
 		}
 
 	}
