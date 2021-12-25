@@ -12,7 +12,7 @@ on:
   release:
     types: [published]
 jobs:
-  SetPatterfile:
+  SetPatternfile:
     runs-on: ubuntu-latest
     outputs:
       sm_version: ${{ steps.gettag.outputs.release }}
@@ -45,7 +45,7 @@ jobs:
           path: ./.github/install/deploy.yaml 
 
   TestKuma:
-    needs: SetPatterfile
+    needs: SetPatternfile
     uses: meshery/meshery/.github/workflows/testadapters.yaml@master
     with:
       expected_pods: kuma-control-plane
