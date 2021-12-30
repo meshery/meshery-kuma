@@ -68,7 +68,7 @@ var (
 	ErrCustomOperationCode = "1016"
 
 	// ErrNilClientCode represents the error code which is
-	// generated when kubernetes client is nil
+	// generated when Kubernetes client is nil
 	ErrNilClientCode = "1017"
 
 	// ErrApplyHelmChartCode represents the error which are generated
@@ -119,8 +119,8 @@ var (
 	ErrParseOAMConfig = errors.New(ErrParseOAMConfigCode, errors.Alert, []string{"error parsing the configuration"}, []string{"Error occured while prasing component config in the OAM request made"}, []string{"Invalid OAM config passed in OAM request"}, []string{"Check if your request has vaild OAM config"})
 
 	// ErrNilClient represents the error which is
-	// generated when kubernetes client is nil
-	ErrNilClient = errors.New(ErrNilClientCode, errors.Alert, []string{"kubernetes client not initialized"}, []string{"Kubernetes client is nil"}, []string{"kubernetes client not initialized"}, []string{"Reconnect the adaptor to Meshery server"})
+	// generated when Kubernetes client is nil
+	ErrNilClient = errors.New(ErrNilClientCode, errors.Alert, []string{"Kubernetes client not initialized"}, []string{"Kubernetes client is nil"}, []string{"Kubernetes client not initialized"}, []string{"Reconnect the adapter to Meshery Server"})
 
 	// ErrGetLatestReleaseCode represents the error which is
 	// generated when the latest stable version could not
@@ -135,7 +135,7 @@ func ErrInstallKuma(err error) error {
 
 // ErrMeshConfig is the error for mesh config
 func ErrMeshConfig(err error) error {
-	return errors.New(ErrMeshConfigCode, errors.Alert, []string{"Error configuration mesh"}, []string{err.Error(), "Error getting MeshSpecKey config from in-memory configuration"}, []string{}, []string{"Reconnect the adaptor to the meshkit server"})
+	return errors.New(ErrMeshConfigCode, errors.Alert, []string{"Error configuration mesh"}, []string{err.Error(), "Error getting MeshSpecKey config from in-memory configuration"}, []string{}, []string{"Reconnect the adapter to the Meshery Server"})
 }
 
 // ErrFetchManifest is the error occured during the process
@@ -161,7 +161,7 @@ func ErrStreamEvent(err error) error {
 
 // ErrSampleApp is the error for applying/deleting Sample App
 func ErrSampleApp(err error, status string) error {
-	return errors.New(ErrSampleAppCode, errors.Alert, []string{"Error with sample app operation"}, []string{err.Error(), "Error occured while trying to install a sample application using manifests"}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reconnect your adapter to meshery server to refresh the kubeclient"})
+	return errors.New(ErrSampleAppCode, errors.Alert, []string{"Error with sample app operation"}, []string{err.Error(), "Error occured while trying to install a sample application using manifests"}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reconnect your adapter to Meshery Server to refresh the kubeclient"})
 }
 
 // ErrGetKumactl is the error for getting `kumactl`

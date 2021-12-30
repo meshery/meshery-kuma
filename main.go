@@ -23,12 +23,12 @@ import (
 )
 
 var (
-	serviceName = "kuma-adaptor"
+	serviceName = "kuma-adapter"
 	version     = "none"
 	gitsha      = "none"
 )
 
-// main is the entrypoint of the adaptor
+// main is the entrypoint of the adapter
 func main() {
 
 	// Initialize Logger instance
@@ -75,7 +75,7 @@ func main() {
 	go registerDynamicCapabilities(service.Port, log) //Registering latest capabilities periodically
 
 	// Server Initialization
-	log.Info("Adaptor Listening at port: ", service.Port)
+	log.Info("Adapter listening on port: ", service.Port)
 	err = grpc.Start(service, nil)
 	if err != nil {
 		log.Error(err)
@@ -118,7 +118,7 @@ func serviceAddress() string {
 		return svcAddr
 	}
 
-	return "mesherylocal.layer5.io"
+	return "localhost"
 }
 
 func registerCapabilities(port string, log logger.Handler) {
@@ -148,10 +148,10 @@ func registerDynamicCapabilities(port string, log logger.Handler) {
 func registerWorkloads(port string, log logger.Handler) {
 	appVersion, chartVersion, err := getLatestValidAppVersionAndChartVersion()
 	if err != nil {
-		log.Info("Could not get latest version")
+		log.Info("Could not get latest service mesh version")
 		return
 	}
-	log.Info("Registering latest workload components")
+	log.Info("Registering latest service mesh components...")
 	// Register workloads
 	if err := adapter.RegisterWorkLoadsDynamically(mesheryServerAddress(), serviceAddress()+":"+port, &adapter.DynamicComponentsConfig{
 		TimeoutInMinutes: 10,
@@ -177,7 +177,7 @@ func registerWorkloads(port string, log logger.Handler) {
 		log.Info(err.Error())
 		return
 	}
-	log.Info("Latest workload components successfully registered.")
+	log.Info("Successfully registered latest service mesh components with Meshery Server at ", mesheryServerAddress())
 }
 func getLatestValidAppVersionAndChartVersion() (string, string, error) {
 	release, err := config.GetLatestReleases(100)
