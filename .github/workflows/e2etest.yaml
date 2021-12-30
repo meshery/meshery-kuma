@@ -94,8 +94,7 @@ jobs:
           echo $pretty > data.json
           cat data.json
           touch test.md
-          filename=$(date)
-          filename="${filename// /_}" 
+          filename=(`date +%m-%d-%Y-%H-%M-%m_${SHORT_SHA}`)
           echo $filename
           echo "---
           timestamp: $(jq '.metadata.runon' data.json)
