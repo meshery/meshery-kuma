@@ -24,7 +24,7 @@ import (
 
 var (
 	serviceName = "kuma-adapter"
-	version     = "none"
+	version     = "edge"
 	gitsha      = "none"
 )
 
