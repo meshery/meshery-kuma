@@ -11,7 +11,11 @@ replace (
 
 require (
 	github.com/layer5io/meshery-adapter-library v0.1.25
+<<<<<<< HEAD
 	github.com/layer5io/meshkit v0.2.36
+=======
+	github.com/layer5io/meshkit v0.5.1
+>>>>>>> upstream/master
 	github.com/layer5io/service-mesh-performance v0.3.3
 	gopkg.in/yaml.v2 v2.4.0 // direct
 	k8s.io/apimachinery v0.21.0 // direct
