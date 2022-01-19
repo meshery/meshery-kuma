@@ -68,6 +68,10 @@ func RegisterWorkloads(runtime, host string) error {
 // Registeration process will send POST request to $runtime/api/oam/trait
 func RegisterTraits(runtime, host string) error {
 	oamRDP := []adapter.OAMRegistrantDefinitionPath{}
+	pathSets, err := load(traitPath)
+	if err != nil {
+		return err
+	}
 	for _, pathSet := range pathSets {
 		metadata := map[string]string{
 			config.OAMAdapterNameMetadataKey: config.KumaOperation,
