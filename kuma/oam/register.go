@@ -14,9 +14,9 @@ var (
 	basePath, _ = os.Getwd()
 
 	//WorkloadPath will be used by both static and component generation
-	WorkloadPath = filepath.Join(basePath, "templates", "oam", "workloads")
-	traitPath    = filepath.Join(basePath, "templates", "oam", "traits")
-	pathSets     = []schemaDefinitionPathSet{}
+	WorkloadPath     = filepath.Join(basePath, "templates", "oam", "workloads")
+	traitPath        = filepath.Join(basePath, "templates", "oam", "traits")
+	workloadPathSets = []schemaDefinitionPathSet{}
 )
 
 // AvailableVersions denote the component versions available statically
@@ -35,12 +35,7 @@ type schemaDefinitionPathSet struct {
 func RegisterWorkloads(runtime, host string) error {
 	oamRDP := []adapter.OAMRegistrantDefinitionPath{}
 
-	pathSets, err := load(WorkloadPath)
-	if err != nil {
-		return err
-	}
-
-	for _, pathSet := range pathSets {
+	for _, pathSet := range workloadPathSets {
 		metadata := map[string]string{
 			config.OAMAdapterNameMetadataKey: config.KumaOperation,
 		}
@@ -124,7 +119,7 @@ func load(basePath string) ([]schemaDefinitionPathSet, error) {
 }
 func init() {
 	var err error
-	pathSets, err = load(WorkloadPath)
+	workloadPathSets, err = load(WorkloadPath)
 	if err != nil {
 		fmt.Printf("Could not load definitions and schemas for static component registeration: %v", err.Error())
 		return
