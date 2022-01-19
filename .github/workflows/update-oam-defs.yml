@@ -1,4 +1,4 @@
-name: Meshery Istio Pattern Components Generator
+name: Meshery Kuma Pattern Components Generator
 on:
   push:
     branches:
