@@ -11,10 +11,16 @@ import (
 )
 
 var (
-	basePath, _  = os.Getwd()
-	workloadPath = filepath.Join(basePath, "templates", "oam", "workloads")
+	basePath, _ = os.Getwd()
+
+	//WorkloadPath will be used by both static and component generation
+	WorkloadPath = filepath.Join(basePath, "templates", "oam", "workloads")
 	traitPath    = filepath.Join(basePath, "templates", "oam", "traits")
+	pathSets     = []schemaDefinitionPathSet{}
 )
+
+// AvailableVersions denote the component versions available statically
+var AvailableVersions = map[string]bool{}
 
 type schemaDefinitionPathSet struct {
 	oamDefinitionPath string
@@ -29,7 +35,7 @@ type schemaDefinitionPathSet struct {
 func RegisterWorkloads(runtime, host string) error {
 	oamRDP := []adapter.OAMRegistrantDefinitionPath{}
 
-	pathSets, err := load(workloadPath)
+	pathSets, err := load(WorkloadPath)
 	if err != nil {
 		return err
 	}
@@ -62,12 +68,6 @@ func RegisterWorkloads(runtime, host string) error {
 // Registeration process will send POST request to $runtime/api/oam/trait
 func RegisterTraits(runtime, host string) error {
 	oamRDP := []adapter.OAMRegistrantDefinitionPath{}
-
-	pathSets, err := load(traitPath)
-	if err != nil {
-		return err
-	}
-
 	for _, pathSet := range pathSets {
 		metadata := map[string]string{
 			config.OAMAdapterNameMetadataKey: config.KumaOperation,
@@ -108,6 +108,7 @@ func load(basePath string) ([]schemaDefinitionPathSet, error) {
 				jsonSchemaPath:    fmt.Sprintf("%s.meshery.layer5io.schema.json", nameWithPath),
 				name:              filepath.Base(nameWithPath),
 			})
+			AvailableVersions[filepath.Base(filepath.Dir(path))] = true
 		}
 
 		return nil
@@ -116,4 +117,12 @@ func load(basePath string) ([]schemaDefinitionPathSet, error) {
 	}
 
 	return res, nil
+}
+func init() {
+	var err error
+	pathSets, err = load(WorkloadPath)
+	if err != nil {
+		fmt.Printf("Could not load definitions and schemas for static component registeration: %v", err.Error())
+		return
+	}
 }

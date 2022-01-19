@@ -4,22 +4,21 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/layer5io/meshkit/logger"
 	"github.com/layer5io/meshkit/utils"
-	"github.com/layer5io/meshkit/utils/manifests"
 
 	// "github.com/layer5io/meshkit/tracing"
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/api/grpc"
+	"github.com/layer5io/meshery-kuma/build"
 	"github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/kuma"
 	"github.com/layer5io/meshery-kuma/kuma/oam"
 	configprovider "github.com/layer5io/meshkit/config/provider"
-	"github.com/layer5io/meshkit/utils/kubernetes"
-	smp "github.com/layer5io/service-mesh-performance/spec"
 )
 
 var (
@@ -146,50 +145,49 @@ func registerDynamicCapabilities(port string, log logger.Handler) {
 }
 
 func registerWorkloads(port string, log logger.Handler) {
-	appVersion, chartVersion, err := getLatestValidAppVersionAndChartVersion()
-	if err != nil {
-		log.Info("Could not get latest service mesh version")
+	//First we create and store any new components if available
+	version := build.DefaultVersion
+	url := build.DefaultGenerationURL
+	gm := build.DefaultGenerationMethod
+	// Prechecking to skip comp gen
+	if os.Getenv("FORCE_DYNAMIC_REG") != "true" && oam.AvailableVersions[version] {
+		log.Info("Components available statically for version ", version, ". Skipping dynamic component registeration")
 		return
 	}
-	log.Info("Registering latest workload components for version ", appVersion)
+	//If a URL is passed from env variable, it will be used for component generation with default method being "using manifests"
+	// In case a helm chart URL is passed, COMP_GEN_METHOD env variable should be set to Helm otherwise the component generation fails
+	if os.Getenv("COMP_GEN_URL") != "" && (os.Getenv("COMP_GEN_METHOD") == "Helm" || os.Getenv("COMP_GEN_METHOD") == "Manifest") {
+		url = os.Getenv("COMP_GEN_URL")
+		gm = os.Getenv("COMP_GEN_METHOD")
+		log.Info("Registering workload components from url ", url, " using ", gm, " method...")
+	}
+	log.Info("Registering latest workload components for version ", version)
 	// Register workloads
-	if err := adapter.RegisterWorkLoadsDynamically(mesheryServerAddress(), serviceAddress()+":"+port, &adapter.DynamicComponentsConfig{
-		TimeoutInMinutes: 10,
-		URL:              "https://github.com/kumahq/charts/releases/download/kuma-" + chartVersion + "/kuma-" + chartVersion + ".tgz",
-		GenerationMethod: adapter.HelmCHARTS,
-		Config: manifests.Config{
-			Name:        smp.ServiceMesh_Type_name[int32(smp.ServiceMesh_KUMA)],
-			MeshVersion: appVersion,
-			Filter: manifests.CrdFilter{
-				RootFilter:    []string{"$[?(@.kind==\"CustomResourceDefinition\")]"},
-				NameFilter:    []string{"$..[\"spec\"][\"names\"][\"kind\"]"},
-				VersionFilter: []string{"$[0]..spec.versions[0]"},
-				GroupFilter:   []string{"$[0]..spec"},
-				SpecFilter:    []string{"$[0]..openAPIV3Schema.properties.spec"},
-				ItrFilter:     []string{"$[?(@.spec.names.kind"},
-				ItrSpecFilter: []string{"$[?(@.spec.names.kind"},
-				VField:        "name",
-				GField:        "group",
-			},
-		},
-		Operation: config.KumaOperation,
+	if err := adapter.CreateComponents(adapter.StaticCompConfig{
+		URL:     url,
+		Method:  gm,
+		Path:    build.WorkloadPath,
+		DirName: version,
+		Config:  build.NewConfig(version),
 	}); err != nil {
+		log.Info("Failed to generate components for version "+version, "ERR: ", err.Error())
+		return
+	}
+	//The below log is checked in the workflows. If you change this log, reflect that change in the workflow where components are generated
+	log.Info("Component creation completed for version ", version)
+
+	//Now we will register in case
+	log.Info("Registering workloads with Meshery Server for version ", version)
+	originalPath := oam.WorkloadPath
+	oam.WorkloadPath = filepath.Join(originalPath, version)
+	defer resetWorkloadPath(originalPath)
+	if err := oam.RegisterWorkloads(mesheryServerAddress(), serviceAddress()+":"+port); err != nil {
 		log.Info(err.Error())
 		return
 	}
 	log.Info("Successfully registered latest service mesh components with Meshery Server at ", mesheryServerAddress())
 }
-func getLatestValidAppVersionAndChartVersion() (string, string, error) {
-	release, err := utils.GetLatestReleaseTagsSorted("kumahq", "kuma")
-	if err != nil {
-		return "", "", kuma.ErrGetLatestRelease(err)
-	}
-	//loops through latest 10 app versions untill it finds one which is available in helm chart's index.yaml
-	for i := range release {
-		if chartVersion, err := kubernetes.HelmAppVersionToChartVersion("https://kumahq.github.io/charts", "kuma", release[len(release)-i-1]); err == nil {
-			return release[len(release)-i-1], chartVersion, nil
-		}
 
-	}
-	return "", "", kuma.ErrGetLatestRelease(err)
+func resetWorkloadPath(orig string) {
+	oam.WorkloadPath = orig
 }

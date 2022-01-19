@@ -1,0 +1,5 @@
+{
+ "title": "Mesh Insight",
+ "type": "object",
+ "x-kubernetes-preserve-unknown-fields": true
+}
