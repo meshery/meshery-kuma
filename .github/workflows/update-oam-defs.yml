@@ -2,39 +2,11 @@ name: Meshery Kuma Pattern Components Generator
 on:
   push:
     branches:
-      - "master"
+      - 'master'
+  schedule:
+  - cron: "0 0 * * *"
 jobs:
-  check_kuma_version:
-    name: Check KUMA Version
-    runs-on: ubuntu-latest
-    outputs:
-      NEW_KUMA_VERSION: ${{ steps.glrt.outputs.release }}
-      EXISTS: ${{ env.EXISTS }}
-    steps:
-      - name: Get latest release tag
-        id: glrt
-        uses: pozetroninc/github-action-get-latest-release@master
-        with:
-          repository: kumahq/kuma
-          excludes: prerelease, draft
-      - name: Check out code
-        uses: actions/checkout@master
-        with:
-          fetch-depth: 1
-      - name: Check if manifests for latest release exist
-        run: |
-          if [ -d templates/oam/workloads/${{ steps.glrt.outputs.release }} ]
-          then
-           echo "EXISTS=true" > $GITHUB_ENV
-          else
-           export "EXISTS=false" > $GITHUB_ENV
-          fi
-  generator:
-    name: Generate and push OAM definitions
-    needs: [check_kuma_version]
-    if: ${{ !needs.check_kuma_version.outputs.EXISTS }}
-    env:
-      NEW_KUMA_VERSION: ${{ needs.check_kuma_version.outputs.NEW_KUMA_VERSION }}
+  GenerateComponents:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -43,51 +15,23 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.GH_ACCESS_TOKEN }}
           ref: "master"
-      - name: Get kuma manifests
+      - name: Setup Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17
+      - name: Run adapter to create components
         run: |
-          mkdir ./kuma-crds
-          cd ./kuma-crds
-          curl --remote-name-all `curl -H "Accept: application/vnd.github.VERSION.raw" https://api.github.com/repositories/175425051/contents/deployments/charts/kuma/crds\?ref\=$NEW_KUMA_VERSION| jq 'map(.download_url) | .[]' | tr -d '"'`
-          cd ..
-          awk 'FNR==1 && NR>1 { printf("\n%s\n\n","---") } 1' kuma-crds/*.yaml > ~/kuma.yaml
-      - name: Build jsonschema util
-        run: |
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-          nvm install v14.15.3
-          nvm install-latest-npm
-          git clone https://github.com/layer5io/kubeopenapi-jsonschema util
-          cd util
-          npm i; npm i nexe -g
-          make linux
-      - name: Generate Workload definitions
-        run: |
-          dirPath=../templates/oam/workloads/$NEW_KUMA_VERSION
-          cd util
-          mkdir -p $dirPath
-          meshName=kuma
-          smpMeshName=KUMA
-          template='{"apiVersion":"core.oam.dev/v1alpha1","kind":"WorkloadDefinition","metadata":{},"spec":{"definitionRef":{},"metadata":{"@type":"pattern.meshery.io/mesh/workload","meshVersion":"'$NEW_KUMA_VERSION'","meshName":"'$smpMeshName'","k8sAPIVersion":null,"k8sKind":""}}}'
-          crds=$(./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition")]' -o json --o-filter '$..["spec"]["names"]["kind"]' | jq '.[]')
-          for t in ${crds[@]}; do
-            nameUpper=`echo $t  | tr -d '"'`
-            nameLower=`echo $t  | tr -d '"' | tr '[:upper:]' '[:lower:]'`
-            definitionRef=$(printf %s.kuma.meshery.layer5.io $nameLower)
-            apiVersion=$(./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition" && @.spec.names.kind=='$t')]..spec.versions[0]' --o-filter "$[].name" -o json | jq '.[]' | tr -d '"')
-            apiGroup=$(./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition" && @.spec.names.kind=='$t')]..spec' --o-filter "$[].group" -o json | jq '.[]' | tr -d '"')
-            ./kubeopenapi-jsonschema --location ~/kuma.yaml -t yaml --filter '$[?(@.kind=="CustomResourceDefinition" && @.spec.names.kind=='$t')]..openAPIV3Schema' --o-filter "$[]" -o json |\
-            jq '.[] | ."title" = "'$t'"' > $dirPath/$nameLower.kuma.meshery.layer5io.schema.json
-            echo $template |\
-            jq '
-            ."metadata"."name" = "'$(printf %s.KUMA $nameUpper)'"
-            | ."spec"."metadata"."k8sAPIVersion" = "'$(printf $apiGroup/$apiVersion $apiGroup $apiVersion)'"
-            | ."spec"."metadata"."k8sKind" = "'$nameUpper'"
-            | ."spec"."definitionRef"."name"="'$definitionRef'"' > $dirPath/$nameLower.kuma_definition.json
+          touch log.txt
+          mkdir -p ~/.meshery/bin
+          (FORCE_DYNAMIC_REG=true DEBUG=true go run main.go > log.txt 2>&1) &  
+          end=$((SECONDS+300))
+          while [ $SECONDS -lt $end ]; do
+              if  [ "$(cat log.txt | grep "Component Creation completed for version")" != "" ];then
+                  echo "New components created"
+                  break
+              fi
           done
-      - name: Cleanup
-        run: |
-          rm -rf util
+          rm log.txt
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
@@ -96,5 +40,5 @@ jobs:
           commit_user_email: ci@layer5.io
           commit_author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           commit_options: "--signoff"
-          commit_message: "[Patterns] Pattern components generated from latest kuma manifests"
+          commit_message: "[Patterns] Pattern components generated from latest Kuma Helm chart"
           branch: master
