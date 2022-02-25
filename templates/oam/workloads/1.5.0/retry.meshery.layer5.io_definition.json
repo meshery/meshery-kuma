@@ -1,0 +1,20 @@
+{
+ "kind": "WorkloadDefinition",
+ "apiVersion": "core.oam.dev/v1alpha1",
+ "metadata": {
+  "name": "Retry",
+  "creationTimestamp": null
+ },
+ "spec": {
+  "definitionRef": {
+   "name": "retry.meshery.layer5.io"
+  },
+  "metadata": {
+   "@type": "pattern.meshery.io/mesh/workload",
+   "k8sAPIVersion": "kuma.io/v1alpha1",
+   "k8sKind": "Retry",
+   "meshName": "KUMA",
+   "meshVersion": "1.5.0"
+  }
+ }
+}
