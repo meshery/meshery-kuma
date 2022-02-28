@@ -1,0 +1,20 @@
+{
+ "kind": "WorkloadDefinition",
+ "apiVersion": "core.oam.dev/v1alpha1",
+ "metadata": {
+  "name": "ZoneIngress",
+  "creationTimestamp": null
+ },
+ "spec": {
+  "definitionRef": {
+   "name": "zoneingress.meshery.layer5.io"
+  },
+  "metadata": {
+   "@type": "pattern.meshery.io/mesh/workload",
+   "k8sAPIVersion": "kuma.io/v1alpha1",
+   "k8sKind": "ZoneIngress",
+   "meshName": "KUMA",
+   "meshVersion": "1.5.0"
+  }
+ }
+}
