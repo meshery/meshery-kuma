@@ -6,6 +6,6 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   reviewers:
-  - utkarsh-pro
+  - Revolyssup
   labels:
     - "dependencies"
