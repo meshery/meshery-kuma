@@ -14,5 +14,5 @@ require (
 	github.com/layer5io/meshkit v0.5.8
 	github.com/layer5io/service-mesh-performance v0.3.3
 	gopkg.in/yaml.v2 v2.4.0 // direct
-	k8s.io/apimachinery v0.21.0 // direct
+	k8s.io/apimachinery v0.23.4 // direct
 )
