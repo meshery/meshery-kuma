@@ -94,6 +94,7 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
 		Namespace:       namespace,
 		Action:          act,
 		CreateNamespace: true,
+		ReleaseName:     kumaChartName,
 	})
 	if err != nil {
 		return ErrApplyHelmChart(err)
