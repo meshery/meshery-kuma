@@ -1,0 +1,5 @@
+{
+ "description": "Spec is the specification of the Kuma MeshInsight resource.",
+ "title": "Mesh Insight",
+ "x-kubernetes-preserve-unknown-fields": true
+}
