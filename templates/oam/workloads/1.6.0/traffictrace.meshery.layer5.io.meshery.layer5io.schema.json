@@ -1,0 +1,5 @@
+{
+ "description": "Spec is the specification of the Kuma TrafficTrace resource.",
+ "title": "Traffic Trace",
+ "x-kubernetes-preserve-unknown-fields": true
+}
