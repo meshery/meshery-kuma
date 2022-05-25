@@ -25,7 +25,7 @@ RUN chmod +x /kubeopenapi-jsonschema
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/nodejs:latest-arm64
+FROM gcr.io/distroless/nodejs:latest
 WORKDIR /
 ENV DISTRO="debian"
 ENV GOARCH="amd64"
