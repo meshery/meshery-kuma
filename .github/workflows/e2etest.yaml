@@ -49,10 +49,11 @@ jobs:
 
   TestKuma:
     needs: SetPatternfile
-    uses: meshery/meshery/.github/workflows/testadapters.yaml@master
+    uses: meshery/meshery/.github/workflows/test_adapters.yaml@master
     with:
-      expected_pods: kuma-control-plane
-      expected_pods_namespaces: kuma
+      expected_resources: kuma-control-plane
+      expected_resources_types: pod
+      expected_resources_namespaces: kuma
       deployment_url: https://raw.githubusercontent.com/meshery/meshery/master/install/deployment_yamls/k8s/meshery-kuma-deployment.yaml
       service_url: https://raw.githubusercontent.com/meshery/meshery/master/install/deployment_yamls/k8s/meshery-kuma-service.yaml
       adapter_name: kuma
@@ -111,7 +112,7 @@ jobs:
           service-mesh: Kuma
           service-mesh-version: $(jq '.metadata.service_mesh_version' data.json)
           tests:
-            kuma-control-plane: $(jq '.pods_status."kuma-control-plane"' data.json)
+            kuma-control-plane: $(jq '.resources_status."pod/kuma-control-plane"' data.json)
           overall-status: $(jq '."overall-status"' data.json)
           ---" >  test.md
           mv test.md $filename.md
