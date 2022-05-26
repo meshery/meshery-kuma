@@ -7,8 +7,7 @@ on:
     tags:
       - "v*"
     paths-ignore:
-      - 'docs/**'
-      - '.github/**'      
+      - 'docs/**'     
   pull_request:
     branches:
       - "*"
@@ -112,7 +111,7 @@ jobs:
           service-mesh: Kuma
           service-mesh-version: $(jq '.metadata.service_mesh_version' data.json)
           tests:
-            kuma-control-plane: $(jq '.resources_status."pod/kuma-control-plane"' data.json)
+            pod/kuma-control-plane: $(jq '.resources_status."pod/kuma-control-plane"' data.json)
           overall-status: $(jq '."overall-status"' data.json)
           ---" >  test.md
           mv test.md $filename.md
