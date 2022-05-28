@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path"
 	"runtime"
+	"sync"
 
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/status"
@@ -23,7 +24,7 @@ const (
 	kumaChartName  = "kuma"
 )
 
-func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, version string) (string, error) {
+func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, version string, kubeconfigs []string) (string, error) {
 	st := status.Installing
 
 	if del {
@@ -35,19 +36,19 @@ func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, vers
 		return st, ErrMeshConfig(err)
 	}
 	if useManifest {
-		return kuma.installUsingManifests(del, st, namespace, version)
+		return kuma.installUsingManifests(del, st, namespace, version, kubeconfigs)
 	}
 	kuma.Log.Info("Installing kuma using helm charts...")
-	err = kuma.applyHelmChart(del, version, namespace)
+	err = kuma.applyHelmChart(del, version, namespace, kubeconfigs)
 	if err != nil {
 
 		kuma.Log.Info("Failed helm installation. ", err)
 		kuma.Log.Info("Trying installing from manifests...")
-		return kuma.installUsingManifests(del, st, namespace, version)
+		return kuma.installUsingManifests(del, st, namespace, version, kubeconfigs)
 	}
 	return status.Installed, nil
 }
-func (kuma *Kuma) installUsingManifests(del bool, st string, namespace string, version string) (string, error) {
+func (kuma *Kuma) installUsingManifests(del bool, st string, namespace string, version string, kubeconfigs []string) (string, error) {
 	kuma.Log.Info("Installing kuma using manifests...")
 	manifest, err := kuma.fetchManifest(version)
 	if err != nil {
@@ -55,7 +56,7 @@ func (kuma *Kuma) installUsingManifests(del bool, st string, namespace string, v
 		return st, ErrInstallKuma(err)
 	}
 
-	err = kuma.applyManifest(del, namespace, []byte(manifest))
+	err = kuma.applyManifest(del, namespace, []byte(manifest), kubeconfigs)
 	if err != nil {
 		kuma.Log.Error(ErrInstallKuma(err))
 		return st, ErrInstallKuma(err)
@@ -66,11 +67,7 @@ func (kuma *Kuma) installUsingManifests(del bool, st string, namespace string, v
 	}
 	return status.Installed, nil
 }
-func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
-	kClient := kuma.MesheryKubeclient
-	if kClient == nil {
-		return ErrNilClient
-	}
+func (kuma *Kuma) applyHelmChart(del bool, version, namespace string, kubeconfigs []string) error {
 	chartVersion, err := mesherykube.HelmAppVersionToChartVersion(
 		kumaRepository,
 		kumaChartName,
@@ -85,19 +82,38 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string) error {
 	} else {
 		act = mesherykube.INSTALL
 	}
-	err = kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
-		ChartLocation: mesherykube.HelmChartLocation{
-			Repository: kumaRepository,
-			Chart:      kumaChartName,
-			Version:    chartVersion,
-		},
-		Namespace:       namespace,
-		Action:          act,
-		CreateNamespace: true,
-		ReleaseName:     kumaChartName,
-	})
-	if err != nil {
-		return ErrApplyHelmChart(err)
+	var errs []error
+	var wg sync.WaitGroup
+	for _, kubeconfig := range kubeconfigs {
+		wg.Add(1)
+		go func(kubeconfig string) {
+			defer wg.Done()
+			kClient, err := mesherykube.New([]byte(kubeconfig))
+			if err != nil {
+				errs = append(errs, err)
+				return
+			}
+			err = kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
+				ChartLocation: mesherykube.HelmChartLocation{
+					Repository: kumaRepository,
+					Chart:      kumaChartName,
+					Version:    chartVersion,
+				},
+				Namespace:       namespace,
+				Action:          act,
+				CreateNamespace: true,
+				ReleaseName:     kumaChartName,
+			})
+			if err != nil {
+				errs = append(errs, err)
+				return
+			}
+		}(kubeconfig)
+	}
+	wg.Wait()
+
+	if len(errs) != 0 {
+		return ErrApplyHelmChart(mergeErrors(errs))
 	}
 	return nil
 }
@@ -127,17 +143,34 @@ func (kuma *Kuma) fetchManifest(version string) (string, error) {
 	return out.String(), nil
 }
 
-func (kuma *Kuma) applyManifest(del bool, namespace string, contents []byte) error {
+func (kuma *Kuma) applyManifest(del bool, namespace string, contents []byte, kubeconfigs []string) error {
+	var errs []error
+	var wg sync.WaitGroup
+	for _, kubconfig := range kubeconfigs {
+		wg.Add(1)
+		go func(kubconfig string) {
+			defer wg.Done()
+			kClient, err := mesherykube.New([]byte(kubconfig))
+			if err != nil {
+				errs = append(errs, err)
+				return
+			}
+			err = kClient.ApplyManifest(contents, mesherykube.ApplyOptions{
+				Namespace: namespace,
+				Update:    true,
+				Delete:    del,
+			})
+			if err != nil {
+				errs = append(errs, err)
+				return
+			}
+		}(kubconfig)
 
-	err := kuma.MesheryKubeclient.ApplyManifest(contents, mesherykube.ApplyOptions{
-		Namespace: namespace,
-		Update:    true,
-		Delete:    del,
-	})
-	if err != nil {
-		return err
 	}
 
+	if len(errs) != 0 {
+		return mergeErrors(errs)
+	}
 	return nil
 }
 
