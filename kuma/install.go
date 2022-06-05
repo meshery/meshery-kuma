@@ -84,13 +84,16 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string, kubeconfig
 	}
 	var errs []error
 	var wg sync.WaitGroup
+	var errMx sync.Mutex
 	for _, kubeconfig := range kubeconfigs {
 		wg.Add(1)
 		go func(kubeconfig string) {
 			defer wg.Done()
 			kClient, err := mesherykube.New([]byte(kubeconfig))
 			if err != nil {
+				errMx.Lock()
 				errs = append(errs, err)
+				errMx.Unlock()
 				return
 			}
 			err = kClient.ApplyHelmChart(mesherykube.ApplyHelmChartConfig{
@@ -105,7 +108,9 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string, kubeconfig
 				ReleaseName:     kumaChartName,
 			})
 			if err != nil {
+				errMx.Lock()
 				errs = append(errs, err)
+				errMx.Unlock()
 				return
 			}
 		}(kubeconfig)
@@ -146,13 +151,16 @@ func (kuma *Kuma) fetchManifest(version string) (string, error) {
 func (kuma *Kuma) applyManifest(del bool, namespace string, contents []byte, kubeconfigs []string) error {
 	var errs []error
 	var wg sync.WaitGroup
+	var errMx sync.Mutex
 	for _, kubconfig := range kubeconfigs {
 		wg.Add(1)
 		go func(kubconfig string) {
 			defer wg.Done()
 			kClient, err := mesherykube.New([]byte(kubconfig))
 			if err != nil {
+				errMx.Lock()
 				errs = append(errs, err)
+				errMx.Unlock()
 				return
 			}
 			err = kClient.ApplyManifest(contents, mesherykube.ApplyOptions{
@@ -161,13 +169,15 @@ func (kuma *Kuma) applyManifest(del bool, namespace string, contents []byte, kub
 				Delete:    del,
 			})
 			if err != nil {
+				errMx.Lock()
 				errs = append(errs, err)
+				errMx.Unlock()
 				return
 			}
 		}(kubconfig)
 
 	}
-
+	wg.Wait()
 	if len(errs) != 0 {
 		return mergeErrors(errs)
 	}

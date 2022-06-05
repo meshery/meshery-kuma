@@ -30,19 +30,24 @@ func (kuma *Kuma) installSampleApp(del bool, namespace string, templates []adapt
 func (kuma *Kuma) sidecarInjection(namespace string, del bool, kubeconfigs []string) error {
 	var wg sync.WaitGroup
 	var errs []error
+	var errMx sync.Mutex
 	for _, kubeconfig := range kubeconfigs {
 		wg.Add(1)
 		go func(kubeconfig string) {
 			defer wg.Done()
 			kClient, err := mesherykube.New([]byte(kubeconfig))
 			if err != nil {
+				errMx.Lock()
 				errs = append(errs, err)
+				errMx.Unlock()
 				return
 			}
 			// updating the label on the namespace
 			ns, err := kClient.KubeClient.CoreV1().Namespaces().Get(context.TODO(), namespace, metav1.GetOptions{})
 			if err != nil {
+				errMx.Lock()
 				errs = append(errs, err)
+				errMx.Unlock()
 				return
 			}
 
@@ -58,7 +63,9 @@ func (kuma *Kuma) sidecarInjection(namespace string, del bool, kubeconfigs []str
 
 			_, err = kClient.KubeClient.CoreV1().Namespaces().Update(context.TODO(), ns, metav1.UpdateOptions{})
 			if err != nil {
+				errMx.Lock()
 				errs = append(errs, err)
+				errMx.Unlock()
 				return
 			}
 		}(kubeconfig)
