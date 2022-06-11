@@ -16,13 +16,60 @@ import (
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/status"
 	"github.com/layer5io/meshery-kuma/internal/config"
+	"github.com/layer5io/meshkit/models"
 	mesherykube "github.com/layer5io/meshkit/utils/kubernetes"
+	"gopkg.in/yaml.v2"
 )
 
 const (
 	kumaRepository = "https://kumahq.github.io/charts"
 	kumaChartName  = "kuma"
 )
+
+//CreateKubeconfigs creates and writes passed kubeconfig onto the filesystem
+func (kuma *Kuma) CreateKubeconfigs(kubeconfigs []string) error {
+	var errs = make([]error, 0)
+	for _, kubeconfig := range kubeconfigs {
+		kconfig := models.Kubeconfig{}
+		err := yaml.Unmarshal([]byte(kubeconfig), &kconfig)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+
+		// To have control over what exactly to take in on kubeconfig
+		kuma.KubeconfigHandler.SetKey("kind", kconfig.Kind)
+		kuma.KubeconfigHandler.SetKey("apiVersion", kconfig.APIVersion)
+		kuma.KubeconfigHandler.SetKey("current-context", kconfig.CurrentContext)
+		err = kuma.KubeconfigHandler.SetObject("preferences", kconfig.Preferences)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+
+		err = kuma.KubeconfigHandler.SetObject("clusters", kconfig.Clusters)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+
+		err = kuma.KubeconfigHandler.SetObject("users", kconfig.Users)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+
+		err = kuma.KubeconfigHandler.SetObject("contexts", kconfig.Contexts)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+	}
+	if len(errs) == 0 {
+		return nil
+	}
+	return mergeErrors(errs)
+}
 
 func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, version string, kubeconfigs []string) (string, error) {
 	st := status.Installing

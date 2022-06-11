@@ -37,10 +37,14 @@ func New(c meshkitCfg.Handler, l logger.Handler, kc meshkitCfg.Handler) adapter.
 
 // ApplyOperation applies the operation on kuma
 func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationRequest, hchan *chan interface{}) error {
+	err := kuma.CreateKubeconfigs(opReq.K8sConfigs)
+	if err != nil {
+		return err
+	}
 	kuma.SetChannel(hchan)
 	kubeconfigs := opReq.K8sConfigs
 	operations := adapter.Operations{}
-	err := kuma.Config.GetObject(adapter.OperationsKey, &operations)
+	err = kuma.Config.GetObject(adapter.OperationsKey, &operations)
 	if err != nil {
 		return err
 	}
@@ -123,6 +127,10 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 
 // ProcessOAM will handles the grpc invocation for handling OAM objects
 func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest, hchan *chan interface{}) (string, error) {
+	err := kuma.CreateKubeconfigs(oamReq.K8sConfigs)
+	if err != nil {
+		return "", err
+	}
 	kuma.SetChannel(hchan)
 	kubeconfigs := oamReq.K8sConfigs
 	var comps []v1alpha1.Component
