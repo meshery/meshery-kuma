@@ -9,10 +9,10 @@ import (
 )
 
 // CompHandler is the type for functions which can handle OAM components
-type CompHandler func(*Kuma, v1alpha1.Component, bool) (string, error)
+type CompHandler func(*Kuma, v1alpha1.Component, bool, []string) (string, error)
 
 // HandleComponents handles the processing of OAM components
-func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool) (string, error) {
+func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool, kubeconfigs []string) (string, error) {
 	var errs []error
 	var msgs []string
 
@@ -23,7 +23,7 @@ func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool) (stri
 	for _, comp := range comps {
 		fnc, ok := compFuncMap[comp.Spec.Type]
 		if !ok {
-			msg, err := handleKumaCoreComponent(kuma, comp, isDel, "", "")
+			msg, err := handleKumaCoreComponent(kuma, comp, isDel, "", "", kubeconfigs)
 			if err != nil {
 				errs = append(errs, err)
 				continue
@@ -33,7 +33,7 @@ func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool) (stri
 			continue
 		}
 
-		msg, err := fnc(kuma, comp, isDel)
+		msg, err := fnc(kuma, comp, isDel, kubeconfigs)
 		if err != nil {
 			errs = append(errs, err)
 			continue
@@ -50,14 +50,14 @@ func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool) (stri
 }
 
 // HandleApplicationConfiguration handles the processing of OAM application configuration
-func (kuma *Kuma) HandleApplicationConfiguration(config v1alpha1.Configuration, isDel bool) (string, error) {
+func (kuma *Kuma) HandleApplicationConfiguration(config v1alpha1.Configuration, isDel bool, kubeconfigs []string) (string, error) {
 	var errs []error
 	var msgs []string
 	for _, comp := range config.Spec.Components {
 		for _, trait := range comp.Traits {
 			if trait.Name == "automaticSidecarInjection.Kuma" {
 				namespaces := castSliceInterfaceToSliceString(trait.Properties["namespaces"].([]interface{}))
-				if err := handleNamespaceLabel(kuma, namespaces, isDel); err != nil {
+				if err := handleNamespaceLabel(kuma, namespaces, isDel, kubeconfigs); err != nil {
 					errs = append(errs, err)
 				}
 			}
@@ -74,10 +74,10 @@ func (kuma *Kuma) HandleApplicationConfiguration(config v1alpha1.Configuration, 
 
 }
 
-func handleNamespaceLabel(kuma *Kuma, namespaces []string, isDel bool) error {
+func handleNamespaceLabel(kuma *Kuma, namespaces []string, isDel bool, kubeconfigs []string) error {
 	var errs []error
 	for _, ns := range namespaces {
-		if err := kuma.sidecarInjection(ns, isDel); err != nil {
+		if err := kuma.sidecarInjection(ns, isDel, kubeconfigs); err != nil {
 			errs = append(errs, err)
 		}
 	}
@@ -85,13 +85,13 @@ func handleNamespaceLabel(kuma *Kuma, namespaces []string, isDel bool) error {
 	return mergeErrors(errs)
 }
 
-func handleComponentKumaMesh(kuma *Kuma, comp v1alpha1.Component, isDel bool) (string, error) {
+func handleComponentKumaMesh(kuma *Kuma, comp v1alpha1.Component, isDel bool, kubeconfigs []string) (string, error) {
 	// Get the kuma version from the settings
 	// we are sure that the version of kuma would be present
 	// because the configuration is already validated against the schema
 	version := comp.Spec.Settings["version"].(string)
 
-	msg, err := kuma.installKuma(isDel, false, comp.Namespace, version)
+	msg, err := kuma.installKuma(isDel, false, comp.Namespace, version, kubeconfigs)
 	if err != nil {
 		return fmt.Sprintf("%s: %s", comp.Name, msg), err
 	}
@@ -104,7 +104,8 @@ func handleKumaCoreComponent(
 	comp v1alpha1.Component,
 	isDel bool,
 	apiVersion,
-	kind string) (string, error) {
+	kind string,
+	kubeconfigs []string) (string, error) {
 	if apiVersion == "" {
 		apiVersion = getAPIVersionFromComponent(comp)
 		if apiVersion == "" {
@@ -143,7 +144,7 @@ func handleKumaCoreComponent(
 		msg = fmt.Sprintf("deleted %s config \"%s\" in namespace \"%s\"", kind, comp.Name, comp.Namespace)
 	}
 
-	return msg, kuma.applyManifest(isDel, comp.Namespace, yamlByt)
+	return msg, kuma.applyManifest(isDel, comp.Namespace, yamlByt, kubeconfigs)
 }
 
 func getAPIVersionFromComponent(comp v1alpha1.Component) string {

@@ -37,10 +37,15 @@ func New(c meshkitCfg.Handler, l logger.Handler, kc meshkitCfg.Handler) adapter.
 }
 
 // ApplyOperation applies the operation on kuma
-func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationRequest) error {
-
+func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationRequest, hchan *chan interface{}) error {
+	err := kuma.CreateKubeconfigs(opReq.K8sConfigs)
+	if err != nil {
+		return err
+	}
+	kuma.SetChannel(hchan)
+	kubeconfigs := opReq.K8sConfigs
 	operations := adapter.Operations{}
-	err := kuma.Config.GetObject(adapter.OperationsKey, &operations)
+	err = kuma.Config.GetObject(adapter.OperationsKey, &operations)
 	if err != nil {
 		return err
 	}
@@ -55,7 +60,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	case internalconfig.KumaOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			version := string(operations[opReq.OperationName].Versions[0])
-			stat, err := hh.installKuma(opReq.IsDeleteOperation, false, opReq.Namespace, version)
+			stat, err := hh.installKuma(opReq.IsDeleteOperation, false, opReq.Namespace, version, kubeconfigs)
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", stat)
 				e.Details = err.Error()
@@ -69,7 +74,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	case common.BookInfoOperation, common.HTTPBinOperation, common.ImageHubOperation, common.EmojiVotoOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
 			appName := operations[opReq.OperationName].AdditionalProperties[common.ServiceName]
-			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, opReq.Namespace, operations[opReq.OperationName].Templates)
+			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, opReq.Namespace, operations[opReq.OperationName].Templates, kubeconfigs)
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s %s application", stat, appName)
 				e.Details = err.Error()
@@ -86,6 +91,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			_, err := hh.RunSMITest(adapter.SMITestOptions{
 				Ctx:         context.TODO(),
 				OperationID: ee.Operationid,
+				Kubeconfigs: kubeconfigs,
 				Manifest:    string(operations[opReq.OperationName].Templates[0]),
 				Namespace:   "meshery",
 				Labels: map[string]string{
@@ -102,7 +108,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 		}(kuma, e)
 	case common.CustomOperation:
 		go func(hh *Kuma, ee *adapter.Event) {
-			stat, err := hh.applyCustomOperation(opReq.Namespace, opReq.CustomBody, opReq.IsDeleteOperation)
+			stat, err := hh.applyCustomOperation(opReq.Namespace, opReq.CustomBody, opReq.IsDeleteOperation, kubeconfigs)
 			if err != nil {
 				e.Summary = fmt.Sprintf("Error while %s custom operation", stat)
 				e.Details = err.Error()
@@ -121,7 +127,13 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 }
 
 // ProcessOAM will handles the grpc invocation for handling OAM objects
-func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest) (string, error) {
+func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest, hchan *chan interface{}) (string, error) {
+	err := kuma.CreateKubeconfigs(oamReq.K8sConfigs)
+	if err != nil {
+		return "", err
+	}
+	kuma.SetChannel(hchan)
+	kubeconfigs := oamReq.K8sConfigs
 	var comps []v1alpha1.Component
 	for _, acomp := range oamReq.OamComps {
 		comp, err := oam.ParseApplicationComponent(acomp)
@@ -141,13 +153,13 @@ func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest) (st
 	// If operation is delete then first HandleConfiguration and then handle the deployment
 	if oamReq.DeleteOp {
 		// Process configuration
-		msg2, err := kuma.HandleApplicationConfiguration(config, oamReq.DeleteOp)
+		msg2, err := kuma.HandleApplicationConfiguration(config, oamReq.DeleteOp, kubeconfigs)
 		if err != nil {
 			return msg2, ErrProcessOAM(err)
 		}
 
 		// Process components
-		msg1, err := kuma.HandleComponents(comps, oamReq.DeleteOp)
+		msg1, err := kuma.HandleComponents(comps, oamReq.DeleteOp, kubeconfigs)
 		if err != nil {
 			return msg1 + "\n" + msg2, ErrProcessOAM(err)
 		}
@@ -156,13 +168,13 @@ func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest) (st
 	}
 
 	// Process components
-	msg1, err := kuma.HandleComponents(comps, oamReq.DeleteOp)
+	msg1, err := kuma.HandleComponents(comps, oamReq.DeleteOp, kubeconfigs)
 	if err != nil {
 		return msg1, ErrProcessOAM(err)
 	}
 
 	// Process configuration
-	msg2, err := kuma.HandleApplicationConfiguration(config, oamReq.DeleteOp)
+	msg2, err := kuma.HandleApplicationConfiguration(config, oamReq.DeleteOp, kubeconfigs)
 	if err != nil {
 		return msg1 + "\n" + msg2, ErrProcessOAM(err)
 	}
