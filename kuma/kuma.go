@@ -29,8 +29,9 @@ type Kuma struct {
 func New(c meshkitCfg.Handler, l logger.Handler, kc meshkitCfg.Handler) adapter.Handler {
 	return &Kuma{
 		Adapter: adapter.Adapter{
-			Config: c,
-			Log:    l,
+			Config:            c,
+			Log:               l,
+			KubeconfigHandler: kc,
 		},
 	}
 }
