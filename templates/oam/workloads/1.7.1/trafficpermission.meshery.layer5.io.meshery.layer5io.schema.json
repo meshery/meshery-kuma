@@ -1,0 +1,5 @@
+{
+ "description": "Spec is the specification of the Kuma TrafficPermission resource.",
+ "title": "Traffic Permission",
+ "x-kubernetes-preserve-unknown-fields": true
+}
