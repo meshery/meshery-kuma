@@ -89,7 +89,11 @@ func handleComponentKumaMesh(kuma *Kuma, comp v1alpha1.Component, isDel bool, ku
 	// Get the kuma version from the settings
 	// we are sure that the version of kuma would be present
 	// because the configuration is already validated against the schema
-	version := comp.Spec.Settings["version"].(string)
+	version := comp.Spec.Version
+	if version == "" {
+		return "", fmt.Errorf("pass valid version inside service for Istio installation")
+	}
+	//TODO: When no version is passed in service, use the latest Kuma version
 
 	msg, err := kuma.installKuma(isDel, false, comp.Namespace, version, kubeconfigs)
 	if err != nil {
