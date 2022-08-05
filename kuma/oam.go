@@ -89,7 +89,7 @@ func handleComponentKumaMesh(kuma *Kuma, comp v1alpha1.Component, isDel bool, ku
 	// Get the kuma version from the settings
 	// we are sure that the version of kuma would be present
 	// because the configuration is already validated against the schema
-	version := comp.Spec.Settings["version"].(string)
+	version := comp.Spec.Version
 
 	msg, err := kuma.installKuma(isDel, false, comp.Namespace, version, kubeconfigs)
 	if err != nil {

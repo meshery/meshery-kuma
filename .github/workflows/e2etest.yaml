@@ -38,7 +38,7 @@ jobs:
       - name: Change service mesh version in patternfile
         run: | 
            
-           yq e -i '.services.kuma.settings.version="${{ steps.gettag.outputs.release }}"' ./.github/install/deploy.yaml 
+           yq e -i '.services.kuma.version="${{ steps.gettag.outputs.release }}"' ./.github/install/deploy.yaml 
            cat ./.github/install/deploy.yaml
       - name: Uploading file
         uses: actions/upload-artifact@v2
