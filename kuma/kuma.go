@@ -7,6 +7,7 @@ import (
 
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/common"
+	"github.com/layer5io/meshery-adapter-library/meshes"
 	"github.com/layer5io/meshery-adapter-library/status"
 	internalconfig "github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/kuma/oam"
@@ -51,8 +52,8 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 		return err
 	}
 
-	e := &adapter.Event{
-		Operationid: opReq.OperationID,
+	e := &meshes.EventsResponse{
+		OperationId: opReq.OperationID,
 		Summary:     status.Deploying,
 		Details:     "Operation is not supported",
 		Component:   internalconfig.ServerConfig["type"],
@@ -61,7 +62,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 
 	switch opReq.OperationName {
 	case internalconfig.KumaOperation:
-		go func(hh *Kuma, ee *adapter.Event) {
+		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			version := string(operations[opReq.OperationName].Versions[0])
 			stat, err := hh.installKuma(opReq.IsDeleteOperation, false, opReq.Namespace, version, kubeconfigs)
 			if err != nil {
@@ -74,7 +75,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			hh.StreamInfo(e)
 		}(kuma, e)
 	case common.BookInfoOperation, common.HTTPBinOperation, common.ImageHubOperation, common.EmojiVotoOperation:
-		go func(hh *Kuma, ee *adapter.Event) {
+		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			appName := operations[opReq.OperationName].AdditionalProperties[common.ServiceName]
 			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, opReq.Namespace, operations[opReq.OperationName].Templates, kubeconfigs)
 			if err != nil {
@@ -87,11 +88,11 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			hh.StreamInfo(e)
 		}(kuma, e)
 	case common.SmiConformanceOperation:
-		go func(hh *Kuma, ee *adapter.Event) {
+		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			name := operations[opReq.OperationName].Description
 			_, err := hh.RunSMITest(adapter.SMITestOptions{
 				Ctx:         context.TODO(),
-				OperationID: ee.Operationid,
+				OperationID: ee.OperationId,
 				Kubeconfigs: kubeconfigs,
 				Manifest:    string(operations[opReq.OperationName].Templates[0]),
 				Namespace:   "meshery",
@@ -107,7 +108,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			}
 		}(kuma, e)
 	case common.CustomOperation:
-		go func(hh *Kuma, ee *adapter.Event) {
+		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			stat, err := hh.applyCustomOperation(opReq.Namespace, opReq.CustomBody, opReq.IsDeleteOperation, kubeconfigs)
 			if err != nil {
 				summary := fmt.Sprintf("Error while %s custom operation", stat)
@@ -181,7 +182,7 @@ func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest, hch
 	return msg1 + "\n" + msg2, nil
 }
 
-func(kuma *Kuma) streamErr(summary string, e *adapter.Event, err error) {
+func(kuma *Kuma) streamErr(summary string, e *meshes.EventsResponse, err error) {
 	e.Summary = summary
 	e.Details = err.Error()
 	e.ErrorCode = errors.GetCode(err)
