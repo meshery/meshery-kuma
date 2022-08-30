@@ -68,10 +68,6 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			stat, err := hh.installKuma(opReq.IsDeleteOperation, false, opReq.Namespace, version, kubeconfigs)
 			if err != nil {
 				summary := fmt.Sprintf("Error while %s Kuma service mesh", stat)
-				ee.Details = err.Error()
-				ee.ErrorCode = errors.GetCode(err)
-				ee.ProbableCause = errors.GetCause(err)
-				ee.SuggestedRemediation = errors.GetRemedy(err)
 				hh.streamErr(summary, ee, err)
 				return
 			}
@@ -85,10 +81,6 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, opReq.Namespace, operations[opReq.OperationName].Templates, kubeconfigs)
 			if err != nil {
 				summary := fmt.Sprintf("Error while %s %s application", stat, appName)
-				ee.Details = err.Error()
-				ee.ErrorCode = errors.GetCode(err)
-				ee.ProbableCause = errors.GetCause(err)
-				ee.SuggestedRemediation = errors.GetRemedy(err)
 				hh.streamErr(summary, ee, err)
 				return
 			}
@@ -111,10 +103,6 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				Annotations: make(map[string]string),
 			})
 			if err != nil {
-				ee.Details = err.Error()
-				ee.ErrorCode = errors.GetCode(err)
-				ee.ProbableCause = errors.GetCause(err)
-				ee.SuggestedRemediation = errors.GetRemedy(err)
 				summary := fmt.Sprintf("Error while %s %s test", status.Running, name)
 				hh.streamErr(summary, ee, err)
 				return
@@ -127,10 +115,6 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			stat, err := hh.applyCustomOperation(opReq.Namespace, opReq.CustomBody, opReq.IsDeleteOperation, kubeconfigs)
 			if err != nil {
-				ee.Details = err.Error()
-				ee.ErrorCode = errors.GetCode(err)
-				ee.ProbableCause = errors.GetCause(err)
-				ee.SuggestedRemediation = errors.GetRemedy(err)
 				summary := fmt.Sprintf("Error while %s custom operation", stat)
 				hh.streamErr(summary, ee, err)
 				return

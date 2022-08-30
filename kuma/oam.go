@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/layer5io/meshery-adapter-library/meshes"
 	"github.com/layer5io/meshery-kuma/internal/config"
-	"github.com/layer5io/meshkit/errors"
 	"github.com/layer5io/meshkit/models/oam/core/v1alpha1"
 	"gopkg.in/yaml.v2"
 )
@@ -40,17 +39,12 @@ func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool, kubec
 		if !ok {
 			msg, err := handleKumaCoreComponent(kuma, comp, isDel, "", "", kubeconfigs)
 			if err != nil {
-				ee.Summary = fmt.Sprintf("Error while %s %s", stat1, comp.Spec.Type)
-				ee.Details = err.Error()
-				ee.ErrorCode = errors.GetCode(err)
-				ee.ProbableCause = errors.GetCause(err)
-				ee.SuggestedRemediation = errors.GetRemedy(err)
-				kuma.StreamErr(ee, err)
+				kuma.streamErr(fmt.Sprintf("Error while %s %s", stat1, strings.TrimSuffix(comp.Spec.Type, ".KUMA")), ee, err)
 				errs = append(errs, err)
 				continue
 			}
-			ee.Summary = fmt.Sprintf("%s %s successfully", comp.Spec.Type, stat2)
-			ee.Details = fmt.Sprintf("The %s is now %s.", comp.Spec.Type, stat2)
+			ee.Summary = fmt.Sprintf("%s %s successfully", strings.TrimSuffix(comp.Spec.Type, ".KUMA"), stat2)
+			ee.Details = fmt.Sprintf("The %s is now %s.", strings.TrimSuffix(comp.Spec.Type, ".KUMA"), stat2)
 			kuma.StreamInfo(ee)
 			msgs = append(msgs, msg)
 			continue
@@ -58,12 +52,7 @@ func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool, kubec
 
 		msg, err := fnc(kuma, comp, isDel, kubeconfigs)
 		if err != nil {
-			ee.Summary = fmt.Sprintf("Error while %s %s", stat1, comp.Spec.Type)
-			ee.Details = err.Error()
-			ee.ErrorCode = errors.GetCode(err)
-			ee.ProbableCause = errors.GetCause(err)
-			ee.SuggestedRemediation = errors.GetRemedy(err)
-			kuma.StreamErr(ee, err)
+			kuma.streamErr(fmt.Sprintf("Error while %s %s", stat1, comp.Spec.Type), ee, err)
 			errs = append(errs, err)
 			continue
 		}
