@@ -15,6 +15,7 @@ import (
 	"github.com/layer5io/meshkit/errors"
 	"github.com/layer5io/meshkit/logger"
 	"github.com/layer5io/meshkit/models/oam/core/v1alpha1"
+	"github.com/layer5io/meshkit/utils/events"
 )
 
 const (
@@ -28,23 +29,23 @@ type Kuma struct {
 }
 
 // New initializes kuma handler.
-func New(c meshkitCfg.Handler, l logger.Handler, kc meshkitCfg.Handler) adapter.Handler {
+func New(c meshkitCfg.Handler, l logger.Handler, kc meshkitCfg.Handler, ev *events.EventStreamer) adapter.Handler {
 	return &Kuma{
 		Adapter: adapter.Adapter{
 			Config:            c,
 			Log:               l,
 			KubeconfigHandler: kc,
+			EventStreamer:     ev,
 		},
 	}
 }
 
 // ApplyOperation applies the operation on kuma
-func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationRequest, hchan *chan interface{}) error {
+func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationRequest) error {
 	err := kuma.CreateKubeconfigs(opReq.K8sConfigs)
 	if err != nil {
 		return err
 	}
-	kuma.SetChannel(hchan)
 	kubeconfigs := opReq.K8sConfigs
 	operations := adapter.Operations{}
 	err = kuma.Config.GetObject(adapter.OperationsKey, &operations)
@@ -53,10 +54,10 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 	}
 
 	e := &meshes.EventsResponse{
-		OperationId: opReq.OperationID,
-		Summary:     status.Deploying,
-		Details:     "Operation is not supported",
-		Component:   internalconfig.ServerConfig["type"],
+		OperationId:   opReq.OperationID,
+		Summary:       status.Deploying,
+		Details:       "Operation is not supported",
+		Component:     internalconfig.ServerConfig["type"],
 		ComponentName: internalconfig.ServerConfig["name"],
 	}
 
@@ -67,12 +68,16 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			stat, err := hh.installKuma(opReq.IsDeleteOperation, false, opReq.Namespace, version, kubeconfigs)
 			if err != nil {
 				summary := fmt.Sprintf("Error while %s Kuma service mesh", stat)
-				hh.streamErr(summary, e, err)
+				ee.Details = err.Error()
+				ee.ErrorCode = errors.GetCode(err)
+				ee.ProbableCause = errors.GetCause(err)
+				ee.SuggestedRemediation = errors.GetRemedy(err)
+				hh.streamErr(summary, ee, err)
 				return
 			}
 			ee.Summary = fmt.Sprintf("Kuma service mesh %s successfully", stat)
 			ee.Details = fmt.Sprintf("The Kuma service mesh is now %s.", stat)
-			hh.StreamInfo(e)
+			hh.StreamInfo(ee)
 		}(kuma, e)
 	case common.BookInfoOperation, common.HTTPBinOperation, common.ImageHubOperation, common.EmojiVotoOperation:
 		go func(hh *Kuma, ee *meshes.EventsResponse) {
@@ -80,12 +85,16 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, opReq.Namespace, operations[opReq.OperationName].Templates, kubeconfigs)
 			if err != nil {
 				summary := fmt.Sprintf("Error while %s %s application", stat, appName)
-				hh.streamErr(summary, e, err)
+				ee.Details = err.Error()
+				ee.ErrorCode = errors.GetCode(err)
+				ee.ProbableCause = errors.GetCause(err)
+				ee.SuggestedRemediation = errors.GetRemedy(err)
+				hh.streamErr(summary, ee, err)
 				return
 			}
 			ee.Summary = fmt.Sprintf("%s application %s successfully", appName, stat)
 			ee.Details = fmt.Sprintf("The %s application is now %s.", appName, stat)
-			hh.StreamInfo(e)
+			hh.StreamInfo(ee)
 		}(kuma, e)
 	case common.SmiConformanceOperation:
 		go func(hh *Kuma, ee *meshes.EventsResponse) {
@@ -102,22 +111,33 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				Annotations: make(map[string]string),
 			})
 			if err != nil {
+				ee.Details = err.Error()
+				ee.ErrorCode = errors.GetCode(err)
+				ee.ProbableCause = errors.GetCause(err)
+				ee.SuggestedRemediation = errors.GetRemedy(err)
 				summary := fmt.Sprintf("Error while %s %s test", status.Running, name)
-				hh.streamErr(summary, e, err)
+				hh.streamErr(summary, ee, err)
 				return
 			}
+			ee.Summary = fmt.Sprintf("SMI conformance passed successfully")
+			ee.Details = ""
+			hh.StreamInfo(ee)
 		}(kuma, e)
 	case common.CustomOperation:
 		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			stat, err := hh.applyCustomOperation(opReq.Namespace, opReq.CustomBody, opReq.IsDeleteOperation, kubeconfigs)
 			if err != nil {
+				ee.Details = err.Error()
+				ee.ErrorCode = errors.GetCode(err)
+				ee.ProbableCause = errors.GetCause(err)
+				ee.SuggestedRemediation = errors.GetRemedy(err)
 				summary := fmt.Sprintf("Error while %s custom operation", stat)
-				hh.streamErr(summary, e, err)
+				hh.streamErr(summary, ee, err)
 				return
 			}
 			ee.Summary = fmt.Sprintf("Manifest %s successfully", status.Deployed)
 			ee.Details = ""
-			hh.StreamInfo(e)
+			hh.StreamInfo(ee)
 		}(kuma, e)
 	default:
 		kuma.streamErr("Invalid operation", e, ErrOpInvalid)
@@ -127,12 +147,11 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 }
 
 // ProcessOAM will handles the grpc invocation for handling OAM objects
-func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest, hchan *chan interface{}) (string, error) {
+func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest) (string, error) {
 	err := kuma.CreateKubeconfigs(oamReq.K8sConfigs)
 	if err != nil {
 		return "", err
 	}
-	kuma.SetChannel(hchan)
 	kubeconfigs := oamReq.K8sConfigs
 	var comps []v1alpha1.Component
 	for _, acomp := range oamReq.OamComps {
@@ -182,7 +201,7 @@ func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest, hch
 	return msg1 + "\n" + msg2, nil
 }
 
-func(kuma *Kuma) streamErr(summary string, e *meshes.EventsResponse, err error) {
+func (kuma *Kuma) streamErr(summary string, e *meshes.EventsResponse, err error) {
 	e.Summary = summary
 	e.Details = err.Error()
 	e.ErrorCode = errors.GetCode(err)
