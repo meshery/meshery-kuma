@@ -119,7 +119,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				hh.streamErr(summary, ee, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("SMI conformance passed successfully")
+			ee.Summary = "SMI conformance passed successfully"
 			ee.Details = ""
 			hh.StreamInfo(ee)
 		}(kuma, e)
