@@ -7,10 +7,12 @@ import (
 
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-adapter-library/common"
+	"github.com/layer5io/meshery-adapter-library/meshes"
 	"github.com/layer5io/meshery-adapter-library/status"
 	internalconfig "github.com/layer5io/meshery-kuma/internal/config"
 	"github.com/layer5io/meshery-kuma/kuma/oam"
 	meshkitCfg "github.com/layer5io/meshkit/config"
+	"github.com/layer5io/meshkit/errors"
 	"github.com/layer5io/meshkit/logger"
 	"github.com/layer5io/meshkit/models/oam/core/v1alpha1"
 )
@@ -50,21 +52,22 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 		return err
 	}
 
-	e := &adapter.Event{
-		Operationid: opReq.OperationID,
+	e := &meshes.EventsResponse{
+		OperationId: opReq.OperationID,
 		Summary:     status.Deploying,
 		Details:     "Operation is not supported",
+		Component:   internalconfig.ServerConfig["type"],
+		ComponentName: internalconfig.ServerConfig["name"],
 	}
 
 	switch opReq.OperationName {
 	case internalconfig.KumaOperation:
-		go func(hh *Kuma, ee *adapter.Event) {
+		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			version := string(operations[opReq.OperationName].Versions[0])
 			stat, err := hh.installKuma(opReq.IsDeleteOperation, false, opReq.Namespace, version, kubeconfigs)
 			if err != nil {
-				e.Summary = fmt.Sprintf("Error while %s Kuma service mesh", stat)
-				e.Details = err.Error()
-				hh.StreamErr(e, err)
+				summary := fmt.Sprintf("Error while %s Kuma service mesh", stat)
+				hh.streamErr(summary, e, err)
 				return
 			}
 			ee.Summary = fmt.Sprintf("Kuma service mesh %s successfully", stat)
@@ -72,13 +75,12 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			hh.StreamInfo(e)
 		}(kuma, e)
 	case common.BookInfoOperation, common.HTTPBinOperation, common.ImageHubOperation, common.EmojiVotoOperation:
-		go func(hh *Kuma, ee *adapter.Event) {
+		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			appName := operations[opReq.OperationName].AdditionalProperties[common.ServiceName]
 			stat, err := hh.installSampleApp(opReq.IsDeleteOperation, opReq.Namespace, operations[opReq.OperationName].Templates, kubeconfigs)
 			if err != nil {
-				e.Summary = fmt.Sprintf("Error while %s %s application", stat, appName)
-				e.Details = err.Error()
-				hh.StreamErr(e, err)
+				summary := fmt.Sprintf("Error while %s %s application", stat, appName)
+				hh.streamErr(summary, e, err)
 				return
 			}
 			ee.Summary = fmt.Sprintf("%s application %s successfully", appName, stat)
@@ -86,11 +88,11 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			hh.StreamInfo(e)
 		}(kuma, e)
 	case common.SmiConformanceOperation:
-		go func(hh *Kuma, ee *adapter.Event) {
+		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			name := operations[opReq.OperationName].Description
 			_, err := hh.RunSMITest(adapter.SMITestOptions{
 				Ctx:         context.TODO(),
-				OperationID: ee.Operationid,
+				OperationID: ee.OperationId,
 				Kubeconfigs: kubeconfigs,
 				Manifest:    string(operations[opReq.OperationName].Templates[0]),
 				Namespace:   "meshery",
@@ -100,19 +102,17 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				Annotations: make(map[string]string),
 			})
 			if err != nil {
-				e.Summary = fmt.Sprintf("Error while %s %s test", status.Running, name)
-				e.Details = err.Error()
-				hh.StreamErr(e, err)
+				summary := fmt.Sprintf("Error while %s %s test", status.Running, name)
+				hh.streamErr(summary, e, err)
 				return
 			}
 		}(kuma, e)
 	case common.CustomOperation:
-		go func(hh *Kuma, ee *adapter.Event) {
+		go func(hh *Kuma, ee *meshes.EventsResponse) {
 			stat, err := hh.applyCustomOperation(opReq.Namespace, opReq.CustomBody, opReq.IsDeleteOperation, kubeconfigs)
 			if err != nil {
-				e.Summary = fmt.Sprintf("Error while %s custom operation", stat)
-				e.Details = err.Error()
-				hh.StreamErr(e, err)
+				summary := fmt.Sprintf("Error while %s custom operation", stat)
+				hh.streamErr(summary, e, err)
 				return
 			}
 			ee.Summary = fmt.Sprintf("Manifest %s successfully", status.Deployed)
@@ -120,7 +120,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 			hh.StreamInfo(e)
 		}(kuma, e)
 	default:
-		kuma.StreamErr(e, ErrOpInvalid)
+		kuma.streamErr("Invalid operation", e, ErrOpInvalid)
 	}
 
 	return nil
@@ -180,4 +180,13 @@ func (kuma *Kuma) ProcessOAM(ctx context.Context, oamReq adapter.OAMRequest, hch
 	}
 
 	return msg1 + "\n" + msg2, nil
+}
+
+func(kuma *Kuma) streamErr(summary string, e *meshes.EventsResponse, err error) {
+	e.Summary = summary
+	e.Details = err.Error()
+	e.ErrorCode = errors.GetCode(err)
+	e.ProbableCause = errors.GetCause(err)
+	e.SuggestedRemediation = errors.GetRemedy(err)
+	kuma.StreamErr(e, err)
 }
