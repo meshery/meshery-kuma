@@ -23,7 +23,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.19
       - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off go get -u golang.org/x/lint/golint; go list ./kuma/... | grep -v /vendor/ | xargs -L1 /home/runner/go/bin/golint -set_exit_status
   error_check:
     name: Error check
@@ -36,7 +36,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.19
       - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go get -u github.com/kisielk/errcheck; /home/runner/go/bin/errcheck -tags draft ./...
   error_code_check:
     name: Error code utility check
@@ -49,7 +49,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
+          go-version: 1.19
       - run: |
             errWillHave="level=error"
             GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go install github.com/layer5io/meshkit/cmd/errorutil;
@@ -71,7 +71,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.19
       - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go get -u honnef.co/go/tools/cmd/staticcheck; /home/runner/go/bin/staticcheck -tags draft -checks all ./kuma/... # https://staticcheck.io/docs/checks
   vet:
     name: Vet
@@ -84,7 +84,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.19
       - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go vet -tags draft ./...
   sec_check:
     name: Security check
@@ -114,7 +114,7 @@ jobs:
      - name: Setup Go
        uses: actions/setup-go@v1
        with:
-        go-version: 1.17
+        go-version: 1.19
      - name: Create cluster using KinD
        uses: engineerd/setup-kind@v0.3.0
        with:

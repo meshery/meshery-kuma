@@ -21,7 +21,7 @@ include build/Makefile.show-help.mk
 BUILDER=buildx-multi-arch
 ADAPTER=nginx-sm
 
-v ?= 1.17.8 # Default go version to be used
+v ?= 1.19.1 # Default go version to be used
 
 
 #-----------------------------------------------------------------------------
