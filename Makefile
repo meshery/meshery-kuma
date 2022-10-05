@@ -57,7 +57,7 @@ docker-run:
 
 ## Build and run Adapter locally
 run:
-	go$(v) mod tidy -compat=1.17; \
+	go$(v) mod tidy; \
 	DEBUG=true GOPROXY=direct GOSUMDB=off go run main.go
 
 ## Build and run Adapter locally; force component registration
