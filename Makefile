@@ -19,7 +19,7 @@ include build/Makefile.show-help.mk
 # Environment Setup
 #-----------------------------------------------------------------------------
 BUILDER=buildx-multi-arch
-ADAPTER=nginx-sm
+ADAPTER=kuma
 
 v ?= 1.19.1 # Default go version to be used
 
@@ -27,21 +27,12 @@ v ?= 1.19.1 # Default go version to be used
 #-----------------------------------------------------------------------------
 # Docker-based Builds
 #-----------------------------------------------------------------------------
-.PHONY: docker docker-run lint proto-setup proto error test run run-force-dynamic-reg
+.PHONY: docker docker-run lint error test run run-force-dynamic-reg
 
 
 ## Lint check Golang
 lint:
-	golangci-lint run
-
-## Retrieve protos
-proto-setup:
-	cd meshes
-	wget https://raw.githubusercontent.com/layer5io/meshery/master/meshes/meshops.proto
-
-## Generate protos
-proto:	
-	protoc -I meshes/ meshes/meshops.proto --go_out=plugins=grpc:./meshes/
+	golangci-lint run ./...
 
 ## Build Adapter container image with "edge-latest" tag
 docker:

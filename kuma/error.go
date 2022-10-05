@@ -104,11 +104,11 @@ var (
 
 	// ErrOpInvalid represents the errors which are generated
 	// when an operation is invalid
-	ErrOpInvalid = errors.New(ErrOpInvalidCode, errors.Alert, []string{"Invalid operation"}, []string{"Kuma adapter recived an invalid operation from the meshey server"}, []string{"The operation is not supported by the adapter", "Invalid operation name"}, []string{"Check if the operation name is valid and supported by the adapter"})
+	ErrOpInvalid = errors.New(ErrOpInvalidCode, errors.Alert, []string{"Invalid operation"}, []string{"Kuma adapter received an invalid operation from the meshey server"}, []string{"The operation is not supported by the adapter", "Invalid operation name"}, []string{"Check if the operation name is valid and supported by the adapter"})
 
 	// ErrUntarDefault represents the errors which are generated
 	// during the process of untaring a compressed file
-	ErrUntarDefault = errors.New(ErrUntarDefaultCode, errors.Alert, []string{"Error untaring opeartion default"}, []string{"Error occured in the process of untaring a compressed file"}, []string{"The compressed file might be corrupted"}, []string{"Clear the cache and retry the operation"})
+	ErrUntarDefault = errors.New(ErrUntarDefaultCode, errors.Alert, []string{"Error untaring opeartion default"}, []string{"Error occurred in the process of untaring a compressed file"}, []string{"The compressed file might be corrupted"}, []string{"Clear the cache and retry the operation"})
 
 	// ErrParseOAMComponent represents the error which is
 	// generated during the OAM component parsing
@@ -116,7 +116,7 @@ var (
 
 	// ErrParseOAMConfig represents the error which is
 	// generated during the OAM configuration parsing
-	ErrParseOAMConfig = errors.New(ErrParseOAMConfigCode, errors.Alert, []string{"error parsing the configuration"}, []string{"Error occured while parsing configuration in the request made by Meshery Server"}, []string{"Could not unmarshall OAM config recieved via ProcessOAM gRPC call into a valid Config struct"}, []string{"Check if Meshery Server is creating valid config for ProcessOAM gRPC call. This error should never happen and can be reported as a bug in Meshery Server. Also, confirm that Meshery Server and Adapters are referring to same config struct provided in MeshKit"})
+	ErrParseOAMConfig = errors.New(ErrParseOAMConfigCode, errors.Alert, []string{"error parsing the configuration"}, []string{"Error occurred while parsing configuration in the request made by Meshery Server"}, []string{"Could not unmarshall OAM config received via ProcessOAM gRPC call into a valid Config struct"}, []string{"Check if Meshery Server is creating valid config for ProcessOAM gRPC call. This error should never happen and can be reported as a bug in Meshery Server. Also, confirm that Meshery Server and Adapters are referring to same config struct provided in MeshKit"})
 
 	// ErrNilClient represents the error which is
 	// generated when Kubernetes client is nil
@@ -130,7 +130,7 @@ var (
 
 // ErrInstallKuma is the error for install mesh
 func ErrInstallKuma(err error) error {
-	return errors.New(ErrInstallKumaCode, errors.Alert, []string{"Error with kuma operation"}, []string{"Error occured while installing kuma mesh through kumactl", err.Error()}, []string{}, []string{})
+	return errors.New(ErrInstallKumaCode, errors.Alert, []string{"Error with kuma operation"}, []string{"Error occurred while installing kuma mesh through kumactl", err.Error()}, []string{}, []string{})
 }
 
 // ErrMeshConfig is the error for mesh config
@@ -138,40 +138,40 @@ func ErrMeshConfig(err error) error {
 	return errors.New(ErrMeshConfigCode, errors.Alert, []string{"Error configuration mesh"}, []string{err.Error(), "Error getting MeshSpecKey config from in-memory configuration"}, []string{}, []string{"Reconnect the adapter to the Meshery Server"})
 }
 
-// ErrFetchManifest is the error occured during the process
+// ErrFetchManifest is the error occurred during the process
 // fetching manifest
 func ErrFetchManifest(err error, des string) error {
-	return errors.New(ErrFetchManifestCode, errors.Alert, []string{"Error occured while fetching the mainfest", des}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrFetchManifestCode, errors.Alert, []string{"Error occurred while fetching the manifest", des}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrClientConfig is the error for setting client config
 func ErrClientConfig(err error) error {
-	return errors.New(ErrClientConfigCode, errors.Alert, []string{"Error occured while setting client config"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrClientConfigCode, errors.Alert, []string{"Error occurred while setting client config"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrClientSet is the error for setting clientset
 func ErrClientSet(err error) error {
-	return errors.New(ErrClientSetCode, errors.Alert, []string{"Error occured while setting clientset"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrClientSetCode, errors.Alert, []string{"Error occurred while setting clientset"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrStreamEvent is the error for streaming event
 func ErrStreamEvent(err error) error {
-	return errors.New(ErrStreamEventCode, errors.Alert, []string{"Error occured while streaming events"}, []string{err.Error()}, []string{}, []string{})
+	return errors.New(ErrStreamEventCode, errors.Alert, []string{"Error occurred while streaming events"}, []string{err.Error()}, []string{}, []string{})
 }
 
 // ErrSampleApp is the error for applying/deleting Sample App
 func ErrSampleApp(err error, status string) error {
-	return errors.New(ErrSampleAppCode, errors.Alert, []string{"Error with sample app operation"}, []string{err.Error(), "Error occured while trying to install a sample application using manifests"}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reconnect your adapter to Meshery Server to refresh the kubeclient"})
+	return errors.New(ErrSampleAppCode, errors.Alert, []string{"Error with sample app operation"}, []string{err.Error(), "Error occurred while trying to install a sample application using manifests"}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reconnect your adapter to Meshery Server to refresh the kubeclient"})
 }
 
 // ErrGetKumactl is the error for getting `kumactl`
 func ErrGetKumactl(err error) error {
-	return errors.New(ErrGetKumactlCode, errors.Alert, []string{"Error getting kumactl comamndline"}, []string{"Error occured while downloading`kumactl` and moving it to .meshery/bin]", err.Error()}, []string{"https://download.konghq.com/mesh-alpine/kuma-<release>-<platform>-<arch>.tar.gz might be deprecated"}, []string{})
+	return errors.New(ErrGetKumactlCode, errors.Alert, []string{"Error getting kumactl comamndline"}, []string{"Error occurred while downloading`kumactl` and moving it to .meshery/bin]", err.Error()}, []string{"https://download.konghq.com/mesh-alpine/kuma-<release>-<platform>-<arch>.tar.gz might be deprecated"}, []string{})
 }
 
 // ErrDownloadBinary is the error for downloading binary
 func ErrDownloadBinary(err error) error {
-	return errors.New(ErrDownloadBinaryCode, errors.Alert, []string{"Error downloading kuma binary"}, []string{err.Error(), "Error occured while download kuma binary from its release url"}, []string{"Checkout https://download.konghq.com/mesh-alpine/kuma-<release>-<platform>-<arch>.tar.gz for more details"}, []string{})
+	return errors.New(ErrDownloadBinaryCode, errors.Alert, []string{"Error downloading kuma binary"}, []string{err.Error(), "Error occurred while download kuma binary from its release url"}, []string{"Checkout https://download.konghq.com/mesh-alpine/kuma-<release>-<platform>-<arch>.tar.gz for more details"}, []string{})
 }
 
 // ErrUntar is the error for streaming event
@@ -181,18 +181,18 @@ func ErrUntar(err error) error {
 
 // ErrInstallBinary is the error for installing binary
 func ErrInstallBinary(err error) error {
-	return errors.New(ErrInstallBinaryCode, errors.Alert, []string{"Error installing kumactl"}, []string{"Error occured while installing kuma mesh through kumactl", err.Error()}, []string{}, []string{})
+	return errors.New(ErrInstallBinaryCode, errors.Alert, []string{"Error installing kumactl"}, []string{"Error occurred while installing kuma mesh through kumactl", err.Error()}, []string{}, []string{})
 }
 
 // ErrMoveBinary is the error for moving binary
 func ErrMoveBinary(err error) error {
-	return errors.New(ErrMoveBinaryCode, errors.Alert, []string{"Error occured while moving the kumactl binary"}, []string{err.Error()}, []string{"Meshery adapter might not have write access"}, []string{})
+	return errors.New(ErrMoveBinaryCode, errors.Alert, []string{"Error occurred while moving the kumactl binary"}, []string{err.Error()}, []string{"Meshery adapter might not have write access"}, []string{})
 }
 
-// ErrCustomOperation is the error occured during the process of
+// ErrCustomOperation is the error occurred during the process of
 // applying custom operation
 func ErrCustomOperation(err error) error {
-	return errors.New(ErrCustomOperationCode, errors.Alert, []string{"Error with custom operation"}, []string{"Error occured while applying custom manifest to the cluster", err.Error()}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reupload the kubconfig in the Meshery Server and reconnect the adapter"})
+	return errors.New(ErrCustomOperationCode, errors.Alert, []string{"Error with custom operation"}, []string{"Error occurred while applying custom manifest to the cluster", err.Error()}, []string{"Invalid kubeclient config", "Invalid manifest"}, []string{"Reupload the kubconfig in the Meshery Server and reconnect the adapter"})
 }
 
 // ErrParseKumaCoreComponent is the error when kuma core component manifest parsing fails
@@ -213,12 +213,11 @@ func ErrKumaCoreComponentFail(err error) error {
 // ErrProcessOAM is a generic error which is thrown when an OAM operations fails
 func ErrProcessOAM(err error) error {
 	return errors.New(ErrProcessOAMCode, errors.Alert, []string{"error performing OAM operations"}, []string{err.Error()}, []string{}, []string{})
-
 }
 
 // ErrApplyHelmChart is the error for applying helm chart
 func ErrApplyHelmChart(err error) error {
-	return errors.New(ErrApplyHelmChartCode, errors.Alert, []string{"Error with helm chart operation"}, []string{"Error occured while applying Helm Chart"}, []string{err.Error()}, []string{"Invalid helm chart configuration"})
+	return errors.New(ErrApplyHelmChartCode, errors.Alert, []string{"Error with helm chart operation"}, []string{"Error occurred while applying Helm Chart"}, []string{err.Error()}, []string{"Invalid helm chart configuration"})
 }
 
 // ErrGetLatestRelease is the error for get latest versions
@@ -228,6 +227,5 @@ func ErrGetLatestRelease(err error) error {
 
 // ErrLoadNamespace is the occurend while applying namespace
 func ErrLoadNamespace(err error, s string) error {
-	return errors.New(ErrLoadNamespaceCode, errors.Alert, []string{"Error occured while applying namespace "}, []string{err.Error()}, []string{"Trying to access a namespace which is not available"}, []string{"Verify presence of namespace. Confirm Meshery ServiceAccount permissions"})
-
+	return errors.New(ErrLoadNamespaceCode, errors.Alert, []string{"Error occurred while applying namespace "}, []string{err.Error()}, []string{"Trying to access a namespace which is not available"}, []string{"Verify presence of namespace. Confirm Meshery ServiceAccount permissions"})
 }

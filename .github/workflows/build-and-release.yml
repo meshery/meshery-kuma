@@ -17,7 +17,7 @@ jobs:
       with:
         fetch-depth: 1
     - name: Setup Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@master
       with:
         go-version: '1.19'
     - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go build .
