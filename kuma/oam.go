@@ -91,7 +91,6 @@ func (kuma *Kuma) HandleApplicationConfiguration(config v1alpha1.Configuration, 
 	}
 
 	return mergeMsgs(msgs), nil
-
 }
 
 func handleNamespaceLabel(kuma *Kuma, namespaces []string, isDel bool, kubeconfigs []string) error {

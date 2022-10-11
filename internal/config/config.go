@@ -84,7 +84,6 @@ func New(provider string) (h config.Handler, err error) {
 }
 
 func NewKubeconfigBuilder(provider string) (config.Handler, error) {
-
 	opts := configprovider.Options{
 		FilePath: configRootPath,
 		FileType: "yaml",
