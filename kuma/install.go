@@ -26,7 +26,7 @@ const (
 	kumaChartName  = "kuma"
 )
 
-//CreateKubeconfigs creates and writes passed kubeconfig onto the filesystem
+// CreateKubeconfigs creates and writes passed kubeconfig onto the filesystem
 func (kuma *Kuma) CreateKubeconfigs(kubeconfigs []string) error {
 	var errs = make([]error, 0)
 	for _, kubeconfig := range kubeconfigs {
@@ -88,7 +88,6 @@ func (kuma *Kuma) installKuma(del bool, useManifest bool, namespace string, vers
 	kuma.Log.Info("Installing kuma using helm charts...")
 	err = kuma.applyHelmChart(del, version, namespace, kubeconfigs)
 	if err != nil {
-
 		kuma.Log.Info("Failed helm installation. ", err)
 		kuma.Log.Info("Trying installing from manifests...")
 		return kuma.installUsingManifests(del, st, namespace, version, kubeconfigs)
@@ -171,7 +170,6 @@ func (kuma *Kuma) applyHelmChart(del bool, version, namespace string, kubeconfig
 }
 
 func (kuma *Kuma) fetchManifest(version string) (string, error) {
-
 	var (
 		out bytes.Buffer
 		er  bytes.Buffer
@@ -222,7 +220,6 @@ func (kuma *Kuma) applyManifest(del bool, namespace string, contents []byte, kub
 				return
 			}
 		}(kubconfig)
-
 	}
 	wg.Wait()
 	if len(errs) != 0 {
