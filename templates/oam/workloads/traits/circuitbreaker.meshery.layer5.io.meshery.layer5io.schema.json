@@ -1,0 +1,5 @@
+{
+ "description": "Spec is the specification of the Kuma CircuitBreaker resource.",
+ "title": "Circuit Breaker",
+ "x-kubernetes-preserve-unknown-fields": true
+}
