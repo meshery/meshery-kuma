@@ -1,6 +1,6 @@
 {
     "kind": "KumaMesh",
-    "apiVersion": "kuma.io/v1alpha1",
+    "apiVersion": "core.meshmodel.dev/v1alpha1",
     "display-name": "Kuma Mesh",
     "format": "JSON",
     "metadata":
