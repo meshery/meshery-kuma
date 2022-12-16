@@ -1,0 +1,81 @@
+{
+ "description": "ContainerPatchSpec specifies the options available for a ContainerPatch",
+ "properties": {
+  "initPatch": {
+   "description": "InitPatch specifies jsonpatch to apply to an init container.",
+   "items": {
+    "description": "JsonPatchBlock is one json patch operation block.",
+    "properties": {
+     "from": {
+      "description": "From is a jsonpatch from string, used by move and copy operations.",
+      "type": "string"
+     },
+     "op": {
+      "description": "Op is a jsonpatch operation string.",
+      "enum": [
+       "add",
+       "remove",
+       "replace",
+       "move",
+       "copy"
+      ],
+      "type": "string"
+     },
+     "path": {
+      "description": "Path is a jsonpatch path string.",
+      "type": "string"
+     },
+     "value": {
+      "description": "Value must be a string representing a valid json object used by replace and add operations. String has to be escaped with \" to be valid a json object.",
+      "type": "string"
+     }
+    },
+    "required": [
+     "op",
+     "path"
+    ],
+    "type": "object"
+   },
+   "type": "array"
+  },
+  "sidecarPatch": {
+   "description": "SidecarPatch specifies jsonpatch to apply to a sidecar container.",
+   "items": {
+    "description": "JsonPatchBlock is one json patch operation block.",
+    "properties": {
+     "from": {
+      "description": "From is a jsonpatch from string, used by move and copy operations.",
+      "type": "string"
+     },
+     "op": {
+      "description": "Op is a jsonpatch operation string.",
+      "enum": [
+       "add",
+       "remove",
+       "replace",
+       "move",
+       "copy"
+      ],
+      "type": "string"
+     },
+     "path": {
+      "description": "Path is a jsonpatch path string.",
+      "type": "string"
+     },
+     "value": {
+      "description": "Value must be a string representing a valid json object used by replace and add operations. String has to be escaped with \" to be valid a json object.",
+      "type": "string"
+     }
+    },
+    "required": [
+     "op",
+     "path"
+    ],
+    "type": "object"
+   },
+   "type": "array"
+  }
+ },
+ "title": "Container Patch",
+ "type": "object"
+}

@@ -1,0 +1,20 @@
+{
+ "kind": "WorkloadDefinition",
+ "apiVersion": "core.oam.dev/v1alpha1",
+ "metadata": {
+  "name": "MeshTrace",
+  "creationTimestamp": null
+ },
+ "spec": {
+  "definitionRef": {
+   "name": "meshtrace.meshery.layer5.io"
+  },
+  "metadata": {
+   "@type": "pattern.meshery.io/mesh/workload",
+   "k8sAPIVersion": "kuma.io/v1alpha1",
+   "k8sKind": "MeshTrace",
+   "meshName": "KUMA",
+   "meshVersion": "1.4.1"
+  }
+ }
+}

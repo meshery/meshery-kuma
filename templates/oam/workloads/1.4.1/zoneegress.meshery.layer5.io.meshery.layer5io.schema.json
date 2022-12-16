@@ -1,0 +1,5 @@
+{
+ "description": "Spec is the specification of the Kuma ZoneEgress resource.",
+ "title": "Zone Egress",
+ "x-kubernetes-preserve-unknown-fields": true
+}
