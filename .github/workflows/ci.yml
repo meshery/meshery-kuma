@@ -11,17 +11,18 @@ on:
   pull_request:
     branches:
       - master
+
 jobs:
   golangci:
     name: golangci-lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/setup-go@master
+      - uses: actions/setup-go@v3
         with:
           go-version: 1.19
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@master
+        uses: golangci/golangci-lint-action@v3
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
           version: v1.49
@@ -36,27 +37,27 @@ jobs:
           # only-new-issues: true
   error_check:
     name: Error check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v3
         with:
-          go-version: '1.19'
+          go-version: 1.19
       - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go install github.com/kisielk/errcheck@latest; /home/runner/go/bin/errcheck -tags draft ./...
   error_code_check:
     name: Error code utility check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v3
         with:
           go-version: 1.19
       - run: |
@@ -71,14 +72,14 @@ jobs:
             fi
   static_check:
     name: Static check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v3
         with:
           go-version: 1.19
       - uses: dominikh/staticcheck-action@v1.2.0
@@ -87,25 +88,25 @@ jobs:
           version: "2022.1"
   vet:
     name: Vet
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v3
         with:
           go-version: 1.19
       - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go vet -tags draft ./...
   sec_check:
     name: Security check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       GO111MODULE: on
     steps:
       - name: Check out code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Run Gosec Security Scanner
@@ -115,16 +116,16 @@ jobs:
   tests:
     #  needs: [lint, error_check, static_check, vet, sec_check]
      name: Tests
+     runs-on: ubuntu-22.04
      env:
        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-     runs-on: ubuntu-latest
      steps:
      - name: Check out code
-       uses: actions/checkout@master
+       uses: actions/checkout@v3
        with:
         fetch-depth: 1
      - name: Setup Go
-       uses: actions/setup-go@master
+       uses: actions/setup-go@v3
        with:
         go-version: 1.19
      - name: Create cluster using KinD

@@ -58,7 +58,6 @@ func init() {
 		}
 	}()
 	byt, _ := io.ReadAll(f)
-
 	_ = json.Unmarshal(byt, &Meshmodelmetadata)
 	wd, _ := os.Getwd()
 	WorkloadPath = filepath.Join(wd, "templates", "oam", "workloads")

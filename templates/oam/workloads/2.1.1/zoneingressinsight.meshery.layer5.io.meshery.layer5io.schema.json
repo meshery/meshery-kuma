@@ -1,0 +1,5 @@
+{
+ "description": "Spec is the specification of the Kuma ZoneIngressInsight resource.",
+ "title": "Zone Ingress Insight",
+ "x-kubernetes-preserve-unknown-fields": true
+}
