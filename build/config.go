@@ -26,9 +26,8 @@ const Component = "Kuma"
 var Meshmodelmetadata = make(map[string]interface{})
 
 var MeshModelConfig = adapter.MeshModelConfig{ //Move to build/config.go
-	Category:    "Orchestration & Management",
-	SubCategory: "Service Mesh",
-	Metadata:    Meshmodelmetadata,
+	Category: "Orchestration & Management",
+	Metadata: Meshmodelmetadata,
 }
 
 // NewConfig creates the configuration for creating components
