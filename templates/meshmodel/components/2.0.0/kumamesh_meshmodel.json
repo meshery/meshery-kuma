@@ -16,9 +16,9 @@
     {
         "name": "KUMA",
         "version": "2.0.0",
-        "displayName": "KUMA",
+        "displayName": "Kuma",
         "category": {
-			"name": "Orchestration \u0026 Management",
+			"name": "Cloud Native Network",
 			"metadata": null
 		},
         "subCategory": "Service Mesh"
