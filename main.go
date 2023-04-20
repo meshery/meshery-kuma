@@ -141,7 +141,7 @@ func registerDynamicCapabilities(port string, log logger.Handler) {
 
 func registerWorkloads(port string, log logger.Handler) {
 	//First we create and store any new components if available
-	version := build.DefaultVersion
+	version := build.LatestVersion
 	url := build.DefaultGenerationURL
 	gm := build.DefaultGenerationMethod
 	// Prechecking to skip comp gen
@@ -161,7 +161,6 @@ func registerWorkloads(port string, log logger.Handler) {
 	if err := adapter.CreateComponents(adapter.StaticCompConfig{
 		URL:             url,
 		Method:          gm,
-		OAMPath:         build.WorkloadPath,
 		MeshModelPath:   build.MeshModelPath,
 		MeshModelConfig: build.MeshModelConfig,
 		DirName:         version,
