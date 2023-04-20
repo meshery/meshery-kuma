@@ -1,5 +1,0 @@
-{
- "title": "Retry",
- "type": "object",
- "x-kubernetes-preserve-unknown-fields": true
-}

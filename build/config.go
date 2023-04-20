@@ -7,7 +7,6 @@ import (
 
 	"github.com/layer5io/meshery-adapter-library/adapter"
 	"github.com/layer5io/meshery-kuma/kuma"
-	"github.com/layer5io/meshery-kuma/kuma/oam"
 	"github.com/layer5io/meshkit/utils"
 	"github.com/layer5io/meshkit/utils/kubernetes"
 	"github.com/layer5io/meshkit/utils/manifests"
@@ -30,7 +29,7 @@ var meshmodelmetadata = map[string]interface{}{
 }
 
 var MeshModelConfig = adapter.MeshModelConfig{ //Move to build/config.go
-	Category:    "Orchestration & Management",
+	Category:    "Cloud Native Network",
 	SubCategory: "Service Mesh",
 	Metadata:    meshmodelmetadata,
 }
@@ -73,6 +72,5 @@ func init() {
 	DefaultVersion, chartVersion, _ = getLatestValidAppVersionAndChartVersion()
 	DefaultGenerationURL = "https://github.com/kumahq/charts/releases/download/kuma-" + chartVersion + "/kuma-" + chartVersion + ".tgz"
 	DefaultGenerationMethod = adapter.HelmCHARTS
-	WorkloadPath = oam.WorkloadPath
 	MeshModelPath = filepath.Join(wd, "templates", "meshmodel", "components")
 }

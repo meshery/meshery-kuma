@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma Timeout resource.",
- "title": "Timeout",
- "x-kubernetes-preserve-unknown-fields": true
-}

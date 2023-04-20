@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma Zone resource.",
- "title": "Zone",
- "x-kubernetes-preserve-unknown-fields": true
-}

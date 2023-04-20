@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma FaultInjection resource.",
- "title": "Fault Injection",
- "x-kubernetes-preserve-unknown-fields": true
-}

@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma MeshGatewayRoute resource.",
- "title": "Mesh Gateway Route",
- "x-kubernetes-preserve-unknown-fields": true
-}
