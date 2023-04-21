@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma ExternalService resource.",
- "title": "External Service",
- "x-kubernetes-preserve-unknown-fields": true
-}

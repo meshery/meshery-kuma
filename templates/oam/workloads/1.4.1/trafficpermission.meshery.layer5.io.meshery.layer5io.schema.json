@@ -1,5 +1,0 @@
-{
- "title": "Traffic Permission",
- "type": "object",
- "x-kubernetes-preserve-unknown-fields": true
-}

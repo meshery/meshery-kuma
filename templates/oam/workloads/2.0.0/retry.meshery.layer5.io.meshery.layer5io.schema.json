@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma Retry resource.",
- "title": "Retry",
- "x-kubernetes-preserve-unknown-fields": true
-}

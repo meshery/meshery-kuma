@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma HealthCheck resource.",
- "title": "Health Check",
- "x-kubernetes-preserve-unknown-fields": true
-}
