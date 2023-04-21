@@ -15,7 +15,7 @@
 		"name": "KUMA",
 		"version": "2.0.1",
 		"display-name": "KUMA",
-		"category": "Cloud Native Network",
+		"category":{"name":"Cloud Native Network"},
 		"metadata": {
 			"Logo URL": "https://github.com/cncf/artwork/blob/master/projects/kuma/icon/white/kuma-icon-white.svg",
 			"Primary Color": "#291953",
