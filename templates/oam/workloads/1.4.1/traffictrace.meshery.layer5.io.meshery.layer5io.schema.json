@@ -1,5 +1,0 @@
-{
- "title": "Traffic Trace",
- "type": "object",
- "x-kubernetes-preserve-unknown-fields": true
-}

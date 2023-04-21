@@ -1,5 +1,0 @@
-{
- "title": "Traffic Log",
- "type": "object",
- "x-kubernetes-preserve-unknown-fields": true
-}

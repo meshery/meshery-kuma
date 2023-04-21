@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma VirtualOutbound resource.",
- "title": "Virtual Outbound",
- "x-kubernetes-preserve-unknown-fields": true
-}

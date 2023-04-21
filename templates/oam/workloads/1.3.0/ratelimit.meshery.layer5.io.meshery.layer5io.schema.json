@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma RateLimit resource.",
- "title": "Rate Limit",
- "x-kubernetes-preserve-unknown-fields": true
-}

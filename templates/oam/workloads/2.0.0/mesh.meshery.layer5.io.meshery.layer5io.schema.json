@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma Mesh resource.",
- "title": "Mesh",
- "x-kubernetes-preserve-unknown-fields": true
-}

@@ -23,11 +23,8 @@ var AllVersions []string
 
 const Component = "Kuma"
 
-var Meshmodelmetadata = make(map[string]interface{})
-
 var MeshModelConfig = adapter.MeshModelConfig{ //Move to build/config.go
-	Category: "Orchestration & Management",
-	Metadata: Meshmodelmetadata,
+	Category: "Cloud Native Network",
 }
 
 // NewConfig creates the configuration for creating components
@@ -57,7 +54,7 @@ func init() {
 		}
 	}()
 	byt, _ := io.ReadAll(f)
-	_ = json.Unmarshal(byt, &Meshmodelmetadata)
+	_ = json.Unmarshal(byt, &MeshModelConfig.Metadata)
 	wd, _ := os.Getwd()
 	WorkloadPath = filepath.Join(wd, "templates", "oam", "workloads")
 	MeshModelPath = filepath.Join(wd, "templates", "meshmodel", "components")

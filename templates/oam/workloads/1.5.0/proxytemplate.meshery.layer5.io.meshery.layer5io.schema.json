@@ -1,5 +1,0 @@
-{
- "description": "Spec is the specification of the Kuma ProxyTemplate resource.",
- "title": "Proxy Template",
- "x-kubernetes-preserve-unknown-fields": true
-}
