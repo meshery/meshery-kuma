@@ -16,13 +16,6 @@ assignees: ''
 
 #### Acceptance Tests
 <!-- Stipulations of functional behavior or non-functional items that must be in-place in order for the issue to be closed. -->
-1. All references to Figma include the "open invite" link.
-
-- 🎨 Wireframes and [designs for Meshery UI](https://www.figma.com/file/SMP3zxOjZztdOLtgN4dS2W/Meshery-UI) in Figma [(open invite)](https://www.figma.com/team_invite/redeem/qJy1c95qirjgWQODApilR9)```
-
-
-
-
 
 #### Contributor [Guides](https://docs.meshery.io/project/contributing) and Resources
 - 📝 [Meshery Adapters Spreadsheet](https://docs.google.com/spreadsheets/d/1rGGpSXC68iDJzNRU-qZIRQsZUwkt1qLFg7JCs4pfvbU/edit?usp=sharing)

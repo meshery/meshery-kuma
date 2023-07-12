@@ -21,10 +21,6 @@ assignees: ''
 <!-- [Optional] Any visual diagrams of the desired user interface. -->
 
 ---
-- 🎨 Wireframes and [designs for Meshery UI](https://www.figma.com/file/SMP3zxOjZztdOLtgN4dS2W/Meshery-UI) in Figma [(open invite)](https://www.figma.com/team_invite/redeem/qJy1c95qirjgWQODApilR9)```
-
-#### Acceptance Tests
-1. All references to Figma include the "open invite" link.
 
 
 #### Contributor [Guides](https://docs.meshery.io/project/contributing) and Resources
