@@ -6,6 +6,6 @@ updates:
     interval: weekly
   open-pull-requests-limit: 5
   reviewers:
-  - Revolyssup
+  - meshery/maintainers
   labels:
     - "dependencies"
