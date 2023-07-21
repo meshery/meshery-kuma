@@ -44,20 +44,20 @@ func main() {
 	// App and request config
 	cfg, err := config.New(configprovider.ViperKey)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("Error initializing config: %v", err)
 		os.Exit(1)
 	}
 
 	service := &grpc.Service{}
 	err = cfg.GetObject(adapter.ServerKey, service)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("Error getting object for key %s: %v", adapter.ServerKey, err)
 		os.Exit(1)
 	}
 
 	kubeconfigHandler, err := config.NewKubeconfigBuilder(configprovider.ViperKey)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("Error initializing kubeconfig handler: %v", err)
 		os.Exit(1)
 	}
 	e := events.NewEventStreamer()
@@ -75,10 +75,10 @@ func main() {
 	go registerDynamicCapabilities(service.Port, log) //Registering latest capabilities periodically
 
 	// Server Initialization
-	log.Info("Adapter listening on port: ", service.Port)
+	log.Infof("Adapter listening on port: %s", service.Port)
 	err = grpc.Start(service, nil)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("Error starting grpc service: %v", err)
 		os.Exit(1)
 	}
 }
@@ -124,7 +124,7 @@ func serviceAddress() string {
 func registerCapabilities(port string, log logger.Handler) {
 	// Register meshmodel components
 	if err := oam.RegisterMeshModelComponents(instanceID, mesheryServerAddress(), serviceAddress(), port); err != nil {
-		log.Info(err.Error())
+		log.Infof(err.Error())
 	}
 }
 
@@ -146,7 +146,7 @@ func registerWorkloads(port string, log logger.Handler) {
 	gm := build.DefaultGenerationMethod
 	// Prechecking to skip comp gen
 	if os.Getenv("FORCE_DYNAMIC_REG") != "true" && oam.AvailableVersions[version] {
-		log.Info("Components available statically for version ", version, ". Skipping dynamic component registeration")
+		log.Infof("Components available statically for version %s. Skipping dynamic component registration", version)
 		return
 	}
 	//If a URL is passed from env variable, it will be used for component generation with default method being "using manifests"
@@ -154,9 +154,9 @@ func registerWorkloads(port string, log logger.Handler) {
 	if os.Getenv("COMP_GEN_URL") != "" && (os.Getenv("COMP_GEN_METHOD") == "Helm" || os.Getenv("COMP_GEN_METHOD") == "Manifest") {
 		url = os.Getenv("COMP_GEN_URL")
 		gm = os.Getenv("COMP_GEN_METHOD")
-		log.Info("Registering workload components from url ", url, " using ", gm, " method...")
+		log.Infof("Registering workload components from url %s using %s method...", url, gm)
 	}
-	log.Info("Registering latest workload components for version ", version)
+	log.Infof("Registering latest workload components for version %s", version)
 	// Register workloads
 	if err := adapter.CreateComponents(adapter.StaticCompConfig{
 		URL:             url,
@@ -165,18 +165,18 @@ func registerWorkloads(port string, log logger.Handler) {
 		MeshModelConfig: build.MeshModelConfig,
 		DirName:         version,
 		Config:          build.NewConfig(version),
-	}); err != nil {
-		log.Info("Failed to generate components for version "+version, "ERR: ", err.Error())
+	}, log); err != nil {
+		log.Infof("Failed to generate components for version %s, ERR: %s", version, err.Error())
 		return
 	}
 	//The below log is checked in the workflows. If you change this log, reflect that change in the workflow where components are generated
-	log.Info("Component creation completed for version ", version)
+	log.Infof("Component creation completed for version %s", version)
 
 	//Now we will register in case
-	log.Info("Registering workloads with Meshery Server for version ", version)
+	log.Infof("Registering workloads with Meshery Server for version %s", version)
 	if err := oam.RegisterMeshModelComponents(instanceID, mesheryServerAddress(), serviceAddress(), port); err != nil {
-		log.Info(err.Error())
+		log.Infof(err.Error())
 		return
 	}
-	log.Info("Successfully registered latest service mesh components with Meshery Server at ", mesheryServerAddress())
+	log.Infof("Successfully registered latest service mesh components with Meshery Server at %s", mesheryServerAddress())
 }

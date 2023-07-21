@@ -46,19 +46,42 @@ func NewConfig(version string) manifests.Config {
 	}
 }
 func init() {
-	//Initialize Metadata including logo svgs
-	f, _ := os.Open("./build/meshmodel_metadata.json")
+	// Initialize Metadata including logo svgs
+	f, err := os.Open("./build/meshmodel_metadata.json")
+	if err != nil {
+		fmt.Printf("Error opening file: %s\n", err)
+		return
+	}
 	defer func() {
 		if err := f.Close(); err != nil {
 			fmt.Printf("Error closing file: %s\n", err)
 		}
 	}()
-	byt, _ := io.ReadAll(f)
-	_ = json.Unmarshal(byt, &MeshModelConfig.Metadata)
-	wd, _ := os.Getwd()
+	byt, err := io.ReadAll(f)
+	if err != nil {
+		fmt.Printf("Error reading file: %s\n", err)
+		return
+	}
+
+	err = json.Unmarshal(byt, &MeshModelConfig.Metadata)
+	if err != nil {
+		fmt.Printf("Error unmarshaling JSON: %s\n", err)
+		return
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Error getting working directory: %s\n", err)
+		return
+	}
 	WorkloadPath = filepath.Join(wd, "templates", "oam", "workloads")
 	MeshModelPath = filepath.Join(wd, "templates", "meshmodel", "components")
-	AllVersions, _ = utils.GetLatestReleaseTagsSorted("kumahq", "kuma")
+
+	AllVersions, err = utils.GetLatestReleaseTagsSorted("kumahq", "kuma")
+	if err != nil {
+		fmt.Printf("Error getting latest release tags: %s\n", err)
+		return
+	}
 	if len(AllVersions) == 0 {
 		return
 	}
