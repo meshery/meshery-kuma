@@ -254,7 +254,7 @@ func (kuma *Kuma) getExecutable(release string) (string, error) {
 	binPath := path.Join(config.RootPath(), "bin")
 	kuma.Log.Info("Looking for kuma in", binPath, "...")
 	executable = path.Join(binPath, alternateBinaryName)
-	if _, err := os.Stat(executable); err == nil {
+	if _, err = os.Stat(executable); err == nil {
 		return executable, nil
 	}
 
@@ -356,32 +356,26 @@ func installBinary(location, platform string, res *http.Response) error {
 			switch header.Typeflag {
 			case tar.TypeDir:
 				// File traversal is required to store the binary at the right place
-				// #nosec
-				if err := os.MkdirAll(path.Join(location, header.Name), 0750); err != nil {
+				if err = os.MkdirAll(path.Join(location, header.Name), 0750); err != nil {
 					return ErrInstallBinary(err)
 				}
 			case tar.TypeReg:
 				// File traversal is required to store the binary at the right place
-				// #nosec
-				outFile, err := os.Create(path.Join(location, header.Name))
-				if err != nil {
+				outFile, errCreateFile := os.Create(path.Join(location, header.Name))
+				if errCreateFile != nil {
 					return ErrInstallBinary(err)
 				}
 				// Trust kuma tar
-				// #nosec
-				if _, err := io.Copy(outFile, tarReader); err != nil {
+				if _, err = io.Copy(outFile, tarReader); err != nil {
 					return ErrInstallBinary(err)
 				}
 				if err = outFile.Close(); err != nil {
 					return ErrInstallBinary(err)
 				}
-
 			default:
 				return ErrInstallBinary(err)
 			}
 		}
-	case "windows":
 	}
-
 	return nil
 }
