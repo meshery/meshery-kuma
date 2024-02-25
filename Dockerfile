@@ -2,7 +2,7 @@
 FROM golang:1.19 as builder
 
 # Install necessary dependencies
-RUN apt-get update && apt-get install -y curl
+RUN apk --no-cache add curl
 
 # Set necessary environment variables
 ENV GO111MODULE=on
