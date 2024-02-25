@@ -1,55 +1,41 @@
-# Stage 1: Build the Meshery Kuma adapter
-FROM golang:1.19 as builder
+# Use Alpine Linux with glibc 2.33 as the base image
+FROM frolvlad/alpine-glibc:alpine-3.14_glibc-2.33 as builder
 
-# Install necessary dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+ARG VERSION
+ARG GIT_COMMITSHA
 
-# Set necessary environment variables
-ENV GO111MODULE=on
-
-# Set up working directory
 WORKDIR /build
+
+# Install build-time dependencies
+RUN apk --no-cache add curl
 
 # Copy the Go Modules manifests
 COPY go.mod go.mod
 COPY go.sum go.sum
 
 # Cache dependencies before building and copying source
-RUN go mod download
-
-# Update the version of github.com/layer5io/meshkit
-RUN go get github.com/layer5io/meshkit@latest
+RUN GOPROXY=https://proxy.golang.org,direct go mod download
 
 # Copy the go source
-COPY . .
+COPY main.go main.go
+COPY internal/ internal/
+COPY kuma/ kuma/
+COPY build/ build/
 
 # Build the Go application
-RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s -X main.version=$VERSION -X main.gitsha=$GIT_COMMITSHA" -o /meshery-kuma
+RUN CGO_ENABLED=1 GOOS=linux GO111MODULE=on go build -ldflags="-w -s -X main.version=$VERSION -X main.gitsha=$GIT_COMMITSHA" -a -o meshery-kuma main.go
 
-# Stage 2: Create the final production image
-FROM alpine:3.14
+# Use distroless as minimal base image to package the manager binary
+# Refer to https://github.com/GoogleContainerTools/distroless for more details
+FROM gcr.io/distroless/nodejs:latest
 
-# Install glibc
-RUN apk --no-cache add ca-certificates wget && \
-    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
-    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.33-r0/glibc-2.33-r0.apk && \
-    apk add glibc-2.33-r0.apk && \
-    rm glibc-2.33-r0.apk && \
-    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.33-r0/glibc-bin-2.33-r0.apk && \
-    apk add glibc-bin-2.33-r0.apk && \
-    rm glibc-bin-2.33-r0.apk && \
-    /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib && \
-    echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
+WORKDIR /
 
-# Set necessary environment variables
-ENV DISTRO="alpine"
+ENV DISTRO="debian"
 ENV SERVICE_ADDR="meshery-kuma"
 ENV MESHERY_SERVER="http://meshery:9081"
 
-# Copy the built Meshery Kuma adapter binary into the image from the builder stage
-COPY --from=builder /meshery-kuma /meshery-kuma
+COPY templates/ ./templates
+COPY --from=builder /build/meshery-kuma .
 
-# Set the entry point
 ENTRYPOINT ["/meshery-kuma"]
