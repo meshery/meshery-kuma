@@ -1,29 +1,45 @@
+# Use golang as builder stage
 FROM golang:1.19 as builder
 
+# Set environment variables
 ARG VERSION
 ARG GIT_COMMITSHA
-WORKDIR /build
-# Copy the Go Modules manifests
-COPY go.mod go.mod
-COPY go.sum go.sum
-# cache deps before building and copying source so that we don't need to re-download as much
-# and so that source changes don't invalidate our downloaded layer
-RUN GOPROXY=https://proxy.golang.org,direct go mod download
-# Copy the go source
-COPY main.go main.go
-COPY internal/ internal/
-COPY kuma/ kuma/
-COPY build/ build/
-# Build
-RUN GOPROXY=https://proxy.golang.org,direct CGO_ENABLED=1 GOOS=linux GO111MODULE=on go build -ldflags="-w -s -X main.version=$VERSION -X main.gitsha=$GIT_COMMITSHA" -a -o meshery-kuma main.go
 
-# Use distroless as minimal base image to package the manager binary
-# Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/nodejs:latest
-WORKDIR /
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the Go module files
+COPY go.mod go.sum ./
+
+# Download and install dependencies
+RUN go mod download
+
+# Copy the rest of the application code
+COPY . ./
+
+# Build the Go binary with static linking
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s -X main.version=$VERSION -X main.gitsha=$GIT_COMMITSHA" -o app -tags netgo -installsuffix netgo .
+
+
+# Start a new stage
+FROM alpine:3.16
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the built binary from the builder stage to the final image
+COPY --from=builder /app/app .
+
+# Set environment variables
 ENV DISTRO="debian"
 ENV SERVICE_ADDR="meshery-kuma"
 ENV MESHERY_SERVER="http://meshery:9081"
+
+# Copy templates directory
 COPY templates/ ./templates
-COPY --from=builder /build/meshery-kuma .
-ENTRYPOINT ["/meshery-kuma"]
+
+# Expose the port the application listens on
+EXPOSE 8080
+
+# Set the entrypoint for the image
+ENTRYPOINT ["/app/app"]
