@@ -1,4 +1,4 @@
-# Use the official Golang image as the base image
+# Use golang as builder stage
 FROM golang:1.19 as builder
 
 # Set environment variables
@@ -20,6 +20,7 @@ COPY . ./
 # Build the Go binary with static linking
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s -X main.version=$VERSION -X main.gitsha=$GIT_COMMITSHA" -o app -tags netgo -installsuffix netgo .
 
+
 # Start a new stage
 FROM alpine:3.16
 
@@ -29,8 +30,16 @@ WORKDIR /app
 # Copy the built binary from the builder stage to the final image
 COPY --from=builder /app/app .
 
+# Set environment variables
+ENV DISTRO="debian"
+ENV SERVICE_ADDR="meshery-kuma"
+ENV MESHERY_SERVER="http://meshery:9081"
+
+# Copy templates directory
+COPY templates/ ./templates
+
 # Expose the port the application listens on
 EXPOSE 8080
 
-# Command to run the executable
-CMD ["./app"]
+# Set the entrypoint for the image
+ENTRYPOINT ["/app/app"]
