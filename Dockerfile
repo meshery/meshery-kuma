@@ -1,44 +1,36 @@
-# Use Alpine Linux as the base image
+# Use the official Golang image as the base image
 FROM golang:1.19 as builder
 
-# Install necessary dependencies
-RUN apt-get update && apt-get install -y curl
+# Set environment variables
+ARG VERSION
+ARG GIT_COMMITSHA
 
-# Set necessary environment variables
-ENV GO111MODULE=on
+# Set the working directory inside the container
+WORKDIR /app
 
-# Set up working directory
-WORKDIR /build
+# Copy the Go module files
+COPY go.mod go.sum ./
 
-# Copy the Go Modules manifests
-COPY go.mod go.mod
-COPY go.sum go.sum
-
-# Cache dependencies before building and copying source
+# Download and install dependencies
 RUN go mod download
 
-# Update the version of github.com/layer5io/meshkit
-RUN go get github.com/layer5io/meshkit@latest
+# Copy the rest of the application code
+COPY . ./
 
-# Copy the go source
-COPY . .
+# Build the Go binary with static linking
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s -X main.version=$VERSION -X main.gitsha=$GIT_COMMITSHA" -o app -tags netgo -installsuffix netgo .
 
-# Build the Go application
-RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s -X main.version=$VERSION -X main.gitsha=$GIT_COMMITSHA" -o /meshery-kuma
+# Start a new stage
+FROM alpine:3.16
 
-# Use Alpine Linux as the final base image
-FROM alpine:3.14
+# Set the working directory inside the container
+WORKDIR /app
 
-# Install necessary dependencies
-RUN apk --no-cache add curl
+# Copy the built binary from the builder stage to the final image
+COPY --from=builder /app/app .
 
-# Set environment variables
-ENV DISTRO="alpine"
-ENV SERVICE_ADDR="meshery-kuma"
-ENV MESHERY_SERVER="http://meshery:9081"
+# Expose the port the application listens on
+EXPOSE 8080
 
-# Copy the built binary from the builder stage
-COPY --from=builder /meshery-kuma /meshery-kuma
-
-# Set the entry point
-ENTRYPOINT ["/meshery-kuma"]
+# Command to run the executable
+CMD ["./app"]
