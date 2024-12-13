@@ -178,5 +178,5 @@ func registerWorkloads(port string, log logger.Handler) {
 		log.Info(err.Error())
 		return
 	}
-	log.Info("Successfully registered latest service mesh components with Meshery Server at ", mesheryServerAddress())
+	log.Info("Registered latest service mesh components with Meshery Server at ", mesheryServerAddress())
 }

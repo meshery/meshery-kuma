@@ -43,7 +43,7 @@ func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool, kubec
 				errs = append(errs, err)
 				continue
 			}
-			ee.Summary = fmt.Sprintf("%s %s successfully", strings.TrimSuffix(comp.Spec.Type, ".KUMA"), stat2)
+			ee.Summary = fmt.Sprintf("%s %s.", strings.TrimSuffix(comp.Spec.Type, ".KUMA"), stat2)
 			ee.Details = fmt.Sprintf("The %s is now %s.", strings.TrimSuffix(comp.Spec.Type, ".KUMA"), stat2)
 			kuma.StreamInfo(ee)
 			msgs = append(msgs, msg)
@@ -56,7 +56,7 @@ func (kuma *Kuma) HandleComponents(comps []v1alpha1.Component, isDel bool, kubec
 			errs = append(errs, err)
 			continue
 		}
-		ee.Summary = fmt.Sprintf("%s %s %s successfully", comp.Name, comp.Spec.Type, stat2)
+		ee.Summary = fmt.Sprintf("%s %s %s.", comp.Name, comp.Spec.Type, stat2)
 		ee.Details = fmt.Sprintf("The %s %s is now %s.", comp.Name, comp.Spec.Type, stat2)
 		kuma.StreamInfo(ee)
 		msgs = append(msgs, msg)
