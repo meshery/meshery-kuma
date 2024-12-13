@@ -85,7 +85,7 @@ jobs:
       - uses: dominikh/staticcheck-action@v1
         with:
           install-go: false
-          version: "2022.1"
+          version: "2024.1"
   vet:
     name: Vet
     runs-on: ubuntu-22.04
