@@ -41,7 +41,7 @@ jobs:
            yq e -i '.services.kuma.version="${{ steps.gettag.outputs.release }}"' ./.github/install/deploy.yaml 
            cat ./.github/install/deploy.yaml
       - name: Uploading file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: patternfile
           path: ./.github/install/deploy.yaml 
