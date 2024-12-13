@@ -66,7 +66,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				hh.streamErr(summary, ee, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("Kuma service mesh %s successfully", stat)
+			ee.Summary = fmt.Sprintf("Kuma service mesh %s.", stat)
 			ee.Details = fmt.Sprintf("The Kuma service mesh is now %s.", stat)
 			hh.StreamInfo(ee)
 		}(kuma, e)
@@ -79,7 +79,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				hh.streamErr(summary, ee, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("%s application %s successfully", appName, stat)
+			ee.Summary = fmt.Sprintf("%s application %s", appName, stat)
 			ee.Details = fmt.Sprintf("The %s application is now %s.", appName, stat)
 			hh.StreamInfo(ee)
 		}(kuma, e)
@@ -102,7 +102,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				hh.streamErr(summary, ee, err)
 				return
 			}
-			ee.Summary = "SMI conformance passed successfully"
+			ee.Summary = "SMI conformance passed"
 			ee.Details = ""
 			hh.StreamInfo(ee)
 		}(kuma, e)
@@ -114,7 +114,7 @@ func (kuma *Kuma) ApplyOperation(ctx context.Context, opReq adapter.OperationReq
 				hh.streamErr(summary, ee, err)
 				return
 			}
-			ee.Summary = fmt.Sprintf("Manifest %s successfully", status.Deployed)
+			ee.Summary = fmt.Sprintf("Manifest status is: %s", status.Deployed)
 			ee.Details = ""
 			hh.StreamInfo(ee)
 		}(kuma, e)
