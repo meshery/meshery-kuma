@@ -1,4 +1,4 @@
-<p style="text-align:center;" align="center"><a href="https://layer5.io/meshery"><picture align="center">
+<p style="text-align:center;" align="center"><a href="https://meshery.io/"><picture align="center">
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/meshery/meshery-kuma/master/.github/assets/images/meshery/meshery-logo-dark-text-side.svg"  width="70%" align="center" style="margin-bottom:20px;">
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/meshery/meshery-kuma/master/.github/assets/images/meshery/meshery-logo-light-text-side.svg" width="70%" align="center" style="margin-bottom:20px;">
   <img alt="Shows an illustrated light mode meshery logo in light color mode and a dark mode meshery logo dark color mode." src="https://raw.githubusercontent.com/meshery/meshery/master/.github/assets/images/meshery/meshery-logo-tag-light-text-side.png" width="70%" align="center" style="margin-bottom:20px;"><br /><br /></p>
@@ -14,11 +14,11 @@
   <img src="(https://img.shields.io/github/license/layer5io/meshery-kuma.svg" /></a>
 <a href="https://github.com/layer5io/meshery-kuma/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22" alt="GitHub issues by-label">
   <img src="https://img.shields.io/github/issues/layer5io/meshery-kuma/help%20wanted.svg" /></a>
-<a href="https://layer5.io/meshery" alt="Website">
+<a href="https://meshery.io/" alt="Website">
   <img src="https://img.shields.io/website/https/layer5.io/meshery.svg" /></a>
-<a href="https://twitter.com/intent/follow?screen_name=layer5" alt="Twitter Follow">
-  <img src="https://img.shields.io/twitter/follow/layer5.svg?label=Follow&style=social" /></a>
-<a href="https://slack.layer5.io" alt="Slack">
+<a href="https://twitter.com/intent/follow?screen_name=meshery" alt="Twitter Follow">
+  <img src="https://img.shields.io/twitter/follow/layer5.svg?label=Follow Meshery&style=social" /></a>
+<a href="https://slack.meshery.io" alt="Slack">
   <img src="https://img.shields.io/badge/Slack-@layer5.svg?logo=slack"></a>
 <a href="https://bestpractices.coreinfrastructure.org/projects/3564" alt="CLI Best Practices">
   <img src="https://bestpractices.coreinfrastructure.org/projects/3564/badge" /></a>
@@ -27,30 +27,28 @@
 # Meshery Adapter for Kuma
 
 <p style="clear:both;">
-<h2><a href="https://layer5.io/meshery">Meshery</a></h2>
+<h2><a href="https://meshery.io">Meshery</a></h2>
 <a href="https://meshery.io"><img src="img/readme/meshery-logo-light-text.svg"
 style="margin:10px;" width="125px" 
-alt="Meshery - the Service Mesh Management Plane" align="left" /></a>
-<a href="https://meshery.io">Meshery</a> is the multi-service mesh management plane offering lifecycle management of more types of service meshes than any other tool available today. Meshery facilitates adopting, configuring, operating and managing performance of different service meshes and incorporates the collection and display of metrics from applications running on top of any service mesh. 
-<br /><br /><p align="center"><i>If you’re using Meshery or if you like the project, please <a href="https://github.com/layer5io/meshery/stargazers">★</a> star this repository to show your support! 🤩</i></p>
+alt="Meshery - the Cloud Native Manager" align="left" /></a>
+A self-service engineering platform, <a href="https://meshery.io">Meshery</a>, is the open source, cloud native manager that enables the design and management of all Kubernetes-based infrastructure and applications (multi-cloud). Among other features, As an extensible platform, Meshery offers visual and collaborative GitOps, freeing you from the chains of YAML while managing Kubernetes multi-cluster deployments.
+<br /><p align="center"><i>If you’re using Meshery or if you like the project, please <a href="https://github.com/meshery/meshery/stargazers">★</a> star this repository to show your support! 🤩</i></p>
 </p>
-
-<br />
 
 <div>&nbsp;</div>
 
 ## Join the Meshery community!
 
 <a name="contributing"></a><a name="community"></a>
-Our projects are community-built and welcome collaboration. 👍 Be sure to see the <a href="https://layer5.io/community/newcomers">Contributor Journey Map</a> and <a href="https://layer5.io/community/handbook">Community Handbook</a> for a tour of resources available to you and the <a href="https://layer5.io/community/handbook/repository-overview">Repository Overview</a> for a cursory description of repository by technology and programming language. Jump into community <a href="https://slack.meshery.io">Slack</a> or <a href="http://discuss.meshery.io">discussion forum</a> to participate.
+Our projects are community-built and welcome collaboration. 👍 Be sure to see the <a href="https://docs.meshery.io/project/contributing#not-sure-where-to-start">Contributor Welcome Guide</a> and <a href="https://meshery.io/community#handbook">Community Handbook</a> for a tour of resources available to you and the <a href="https://layer5.io/community/handbook/repository-overview">Repository Overview</a> for a cursory description of repository by technology and programming language. Jump into community <a href="https://slack.meshery.io">Slack</a> or <a href="https://meshery.io/community#discussion-forums">discussion forum</a> to participate.
 
 <p style="clear:both;">
-<a href ="https://layer5.io/community"><img alt="MeshMates" src="https://raw.githubusercontent.com/meshery/meshery/master/.github/assets/images/readme/layer5-community-sign.png" style="margin-right:36px; margin-bottom:7px;" width="140px" align="left" /></a>
+<a href ="https://meshery.io/community"><img alt="MeshMates" src="https://raw.githubusercontent.com/meshery/meshery/master/.github/assets/images/readme/layer5-community-sign.png" style="margin-right:36px; margin-bottom:7px;" width="140px" align="left" /></a>
 <h3>Find your MeshMate</h3>
 
-<p>MeshMates are experienced Layer5 community members, who will help you learn your way around, discover live projects, and expand your community network. Connect with a Meshmate today!</p>
+<p>MeshMates are experienced community members, who will help you learn your way around, discover live projects, and expand your community network. Connect with a Meshmate today!</p>
 
-Find out more on the <a href="https://layer5.io/community#meshmate">Layer5 community</a>. <br />
+Find out more on the <a href="https://meshery.io/community#meshmates">Meshery community</a>. <br />
 
 </p>
 <br /><br />
@@ -61,11 +59,11 @@ Find out more on the <a href="https://layer5.io/community#meshmate">Layer5 commu
 <div style="width:60%; padding-left: 16px; padding-right: 16px">
 <p>
 ✔️ <em><strong>Join</strong></em> any or all of the weekly meetings on <a href="https://meshery.io/calendar">community calendar</a>.<br />
-✔️ <em><strong>Watch</strong></em> community <a href="https://www.youtube.com/playlist?list=PL3A-A6hPO2IMPPqVjuzgqNU5xwnFFn3n0">meeting recordings</a>.<br />
+✔️ <em><strong>Watch</strong></em> community <a href="https://www.youtube.com/@mesheryio?sub_confirmation=1">meeting recordings</a>.<br />
 ✔️ <em><strong>Fill-in</strong></em> a <a href="https://layer5.io/newcomers">community member form</a> to gain access to community resources.
 <br />
-✔️ <em><strong>Discuss</strong></em> in the <a href="http://discuss.meshery.io">Community Forum</a>.<br />
-✔️ <em><strong>Explore more</strong></em> in the <a href="https://layer5.io/community/handbook">Community Handbook</a>.<br />
+✔️ <em><strong>Discuss</strong></em> in the <a href="https://meshery.io/community#discussion-forums">Community Forum</a>.<br />
+✔️ <em><strong>Explore more</strong></em> in the <a href="https://meshery.io/community#handbook">Community Handbook</a>.<br />
 </p>
 </div><br /><br />
 <div>
