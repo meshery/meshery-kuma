@@ -4,16 +4,16 @@
   <img alt="Shows an illustrated light mode meshery logo in light color mode and a dark mode meshery logo dark color mode." src="https://raw.githubusercontent.com/meshery/meshery/master/.github/assets/images/meshery/meshery-logo-tag-light-text-side.png" width="70%" align="center" style="margin-bottom:20px;"><br /><br /></p>
   
 <p align="center">
-<a href="https://hub.docker.com/r/layer5/meshery-kuma" alt="Docker pulls">
-  <img src="https://img.shields.io/docker/pulls/layer5/meshery-kuma.svg" /></a>
-<a href="https://goreportcard.com/report/github.com/layer5io/meshery-kuma" alt="Go Report Card">
-  <img src="https://goreportcard.com/badge/github.com/layer5io/meshery-kuma" /></a>
-<a href="(https://github.com/layer5io/meshery-kuma/actions" alt="Build Status">
-  <img src="https://github.com/layer5io/meshery-kuma/workflows/Meshery-Kuma/badge.svg" /></a>
-<a href="https://github.com/layer5io/meshery-kuma/blob/master/LICENSE" alt="LICENSE">
-  <img src="(https://img.shields.io/github/license/layer5io/meshery-kuma.svg" /></a>
-<a href="https://github.com/layer5io/meshery-kuma/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22" alt="GitHub issues by-label">
-  <img src="https://img.shields.io/github/issues/layer5io/meshery-kuma/help%20wanted.svg" /></a>
+<a href="https://hub.docker.com/r/meshery/meshery-kuma" alt="Docker pulls">
+  <img src="https://img.shields.io/docker/pulls/meshery/meshery-kuma.svg" /></a>
+<a href="https://goreportcard.com/report/github.com/meshery /meshery-kuma" alt="Go Report Card">
+  <img src="https://goreportcard.com/badge/github.com/meshery/meshery-kuma" /></a>
+<a href="(https://github.com/meshery/meshery-kuma/actions" alt="Build Status">
+  <img src="https://github.com/meshery/meshery-kuma/workflows/Meshery-Kuma/badge.svg" /></a>
+<a href="https://github.com/meshery/meshery-kuma/blob/master/LICENSE" alt="LICENSE">
+  <img src="https://img.shields.io/github/license/meshery/meshery-kuma.svg" /></a>
+<a href="https://github.com/meshery/meshery-kuma/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22" alt="GitHub issues by-label">
+  <img src="https://img.shields.io/github/issues/meshery/meshery-kuma/help%20wanted.svg" /></a>
 <a href="https://meshery.io/" alt="Website">
   <img src="https://img.shields.io/website/https/layer5.io/meshery.svg" /></a>
 <a href="https://twitter.com/intent/follow?screen_name=meshery" alt="Twitter Follow">
