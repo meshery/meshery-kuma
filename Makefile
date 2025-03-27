@@ -36,7 +36,7 @@ lint:
 
 ## Build Adapter container image with "edge-latest" tag
 docker:
-	DOCKER_BUILDKIT=1 docker build -t layer5/meshery-$(ADAPTER):$(RELEASE_CHANNEL)-latest .
+	DOCKER_BUILDKIT=1 docker build -t meshery/meshery-$(ADAPTER):$(RELEASE_CHANNEL)-latest .
 
 ## Run Adapter container with "edge-latest" tag
 docker-run:
@@ -44,7 +44,7 @@ docker-run:
 	docker run --name meshery-$(ADAPTER) -d \
 	-p 10000:10000 \
 	-e DEBUG=true \
-	layer5/meshery-$(ADAPTER):$(RELEASE_CHANNEL)-latest
+	meshery/meshery-$(ADAPTER):$(RELEASE_CHANNEL)-latest
 
 ## Build and run Adapter locally
 run:
